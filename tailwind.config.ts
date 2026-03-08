@@ -13,7 +13,23 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+        sans: ["Poppins", "sans-serif"],
+      },
       colors: {
+        mcmc: {
+          primary: "#044cd0",
+          danger: "#d72503",
+          success: "#1fae51",
+          warning: "#e6bc15",
+          info: "#09aeae",
+          generate: "#5cb85c",
+          export: "#0cb59d",
+          secondary: "#7a8793",
+          warningHover: "#ffe45c",
+          darkText: "#111111",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

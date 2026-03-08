@@ -9,78 +9,69 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Dark theme base colors */
-    --background: 222 47% 3%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
 
-    --card: 220 26% 8%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
 
-    --popover: 220 26% 8%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
 
-    --primary: 191 100% 50%;
-    --primary-foreground: 222 47% 3%;
+    --primary: 219 96% 42%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 26% 14%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 209 11% 53%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 26% 14%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 26% 94%;
+    --muted-foreground: 215 20.2% 40%;
 
-    --accent: 220 26% 18%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 26% 90%;
+    --accent-foreground: 219 96% 42%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 9 98% 43%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 26% 14%;
-    --input: 220 26% 14%;
-    --ring: 191 100% 50%;
+    --border: 220 26% 84%;
+    --input: 220 26% 84%;
+    --ring: 219 96% 42%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     /* Role colors */
-    --role-reporter: 191 100% 50%;
+    --role-reporter: 219 96% 42%;
     --role-licensee-admin: 271 76% 53%;
-    --role-reviewer: 203 89% 53%;
-    --role-validator: 38 92% 50%;
-    --role-investigator: 0 78% 62%;
-    --role-system-admin: 168 76% 42%;
-    --role-super-admin: 45 93% 47%;
-
-    /* Neon glow effects */
-    --glow-cyan: 0 0 20px hsl(191 100% 50% / 0.5);
-    --glow-purple: 0 0 20px hsl(271 76% 53% / 0.5);
-    --glow-blue: 0 0 20px hsl(203 89% 53% / 0.5);
-    --glow-amber: 0 0 20px hsl(38 92% 50% / 0.5);
-    --glow-red: 0 0 20px hsl(0 78% 62% / 0.5);
-    --glow-teal: 0 0 20px hsl(168 76% 42% / 0.5);
-    --glow-gold: 0 0 20px hsl(45 93% 47% / 0.5);
+    --role-reviewer: 219 96% 42%;
+    --role-validator: 48 83% 49%;
+    --role-investigator: 9 98% 43%;
+    --role-system-admin: 180 90% 36%;
+    --role-super-admin: 48 83% 49%;
 
     /* Gradients */
-    --gradient-dark: linear-gradient(135deg, hsl(222 47% 3%), hsl(220 26% 8%));
-    --gradient-card: linear-gradient(135deg, hsl(220 26% 8%), hsl(220 26% 10%));
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 100%), hsl(220 26% 96%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
 
     /* Status colors */
-    --status-draft: 210 20% 50%;
-    --status-submitted: 203 89% 53%;
-    --status-in-review: 38 92% 50%;
+    --status-draft: 209 11% 53%;
+    --status-submitted: 219 96% 42%;
+    --status-in-review: 48 83% 49%;
     --status-rfi: 271 76% 53%;
-    --status-investigation: 0 78% 62%;
-    --status-closed: 142 76% 36%;
-    --status-rejected: 0 72% 51%;
+    --status-investigation: 9 98% 43%;
+    --status-closed: 141 70% 40%;
+    --status-rejected: 9 98% 43%;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 3% / 0.5);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 3% / 0.5), 0 2px 4px -1px hsl(222 47% 3% / 0.3);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 3% / 0.5), 0 4px 6px -2px hsl(222 47% 3% / 0.3);
-    --shadow-glow: 0 0 15px hsl(191 100% 50% / 0.3);
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -2px hsl(0 0% 0% / 0.05);
 
     /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
+    /* MCMC System doesn't typically force dark mode by default, standardizing on a clean light theme, but if forced we provide basic dark variants */
     --background: 222 47% 3%;
     --foreground: 210 40% 98%;
 
@@ -90,10 +81,10 @@ All colors MUST be HSL.
     --popover: 220 26% 8%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 191 100% 50%;
-    --primary-foreground: 222 47% 3%;
+    --primary: 219 96% 42%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 220 26% 14%;
+    --secondary: 209 11% 53%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 220 26% 14%;
@@ -102,53 +93,34 @@ All colors MUST be HSL.
     --accent: 220 26% 18%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 9 98% 43%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 220 26% 14%;
     --input: 220 26% 14%;
-    --ring: 191 100% 50%;
+    --ring: 219 96% 42%;
   }
 
   .light {
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 191 100% 42%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 219 96% 42%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 209 11% 53%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 26% 94%;
+    --muted-foreground: 215 20.2% 40%;
+    --accent: 220 26% 90%;
+    --accent-foreground: 219 96% 42%;
+    --destructive: 9 98% 43%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 191 100% 42%;
-    --radius: 0.75rem;
-
-    /* Role colors - adjusted for light mode */
-    --role-reporter: 191 100% 42%;
-    --role-licensee-admin: 271 76% 48%;
-    --role-reviewer: 203 89% 48%;
-    --role-validator: 38 92% 45%;
-    --role-investigator: 0 78% 57%;
-    --role-system-admin: 168 76% 37%;
-    --role-super-admin: 45 93% 42%;
-
-    /* Status colors - adjusted for light mode */
-    --status-draft: 210 20% 45%;
-    --status-submitted: 203 89% 48%;
-    --status-in-review: 38 92% 45%;
-    --status-rfi: 271 76% 48%;
-    --status-investigation: 0 78% 57%;
-    --status-closed: 142 76% 31%;
-    --status-rejected: 0 72% 46%;
+    --border: 220 26% 84%;
+    --input: 220 26% 84%;
+    --ring: 219 96% 42%;
   }
 }
 
@@ -165,37 +137,42 @@ All colors MUST be HSL.
     background: linear-gradient(135deg, hsl(222 47% 3%), hsl(220 26% 6%));
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
 }
 
 @layer utilities {
   .glow-cyan {
-    box-shadow: 0 0 20px hsl(191 100% 50% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
   }
-  
+
   .glow-purple {
-    box-shadow: 0 0 20px hsl(271 76% 53% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--role-licensee-admin) / 0.5);
   }
-  
+
   .glow-blue {
-    box-shadow: 0 0 20px hsl(203 89% 53% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--role-reviewer) / 0.5);
   }
-  
+
   .glow-amber {
-    box-shadow: 0 0 20px hsl(38 92% 50% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--role-validator) / 0.5);
   }
-  
+
   .glow-red {
-    box-shadow: 0 0 20px hsl(0 78% 62% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--role-investigator) / 0.5);
   }
-  
+
   .glow-teal {
-    box-shadow: 0 0 20px hsl(168 76% 42% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--role-system-admin) / 0.5);
   }
-  
+
   .glow-gold {
-    box-shadow: 0 0 20px hsl(45 93% 47% / 0.5);
+    box-shadow: 0 0 20px hsl(var(--role-super-admin) / 0.5);
   }
 }

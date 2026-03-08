@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
 import { getCurrentUser } from "./lib/auth";
 import Landing from "./pages/Landing";
 import ChooseRole from "./pages/ChooseRole";
@@ -91,108 +92,109 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-        <div className="min-h-screen w-full flex flex-col">
-          <Header />
-          <main className="flex-1">
-            <div className="container mx-auto px-4 py-6">
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/choose-role" element={<ChooseRole />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/otp" element={<OtpVerification />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                
-                {/* Reporter Routes - with sidebar layout */}
-                <Route path="/reporter" element={<ProtectedRoute><ReporterLayout /></ProtectedRoute>}>
-                  <Route path="dashboard" element={<ReporterDashboard />} />
-                  <Route path="incidents" element={<ReporterIncidents />} />
-                  <Route path="incidents/new" element={<NewIncident />} />
-                  <Route path="incidents/:id" element={<IncidentDetails />} />
-                  <Route path="notifications" element={<ReporterNotifications />} />
-                  <Route path="analytics" element={<ReporterAnalytics />} />
-                  <Route path="profile" element={<ReporterProfileSecurity />} />
-                </Route>
-                
-                {/* Licensee Admin Routes - with sidebar layout */}
-                <Route path="/licensee-admin" element={<ProtectedRoute><LicenseeAdminLayout /></ProtectedRoute>}>
-                  <Route path="dashboard" element={<LicenseeAdminDashboard />} />
-                  <Route path="incidents" element={<LicenseeAdminIncidents />} />
-                  <Route path="incidents/:id" element={<LicenseeAdminIncidentDetails />} />
-                  <Route path="users" element={<LicenseeAdminUsers />} />
-                  <Route path="profile" element={<LicenseeAdminProfile />} />
-                  <Route path="analytics" element={<LicenseeAdminAnalytics />} />
-                  <Route path="notifications" element={<LicenseeAdminNotifications />} />
-                  <Route path="security" element={<LicenseeAdminSecuritySettings />} />
-                  <Route path="testing" element={<LicenseeAdminTesting />} />
-                </Route>
-                
-                {/* Case Officer Routes - with sidebar layout */}
-                <Route path="/reviewer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
-                  <Route path="dashboard" element={<ReviewerDashboard />} />
-                  <Route path="inbox" element={<CaseOfficerInbox />} />
-                  <Route path="all-cases" element={<ReviewerAllCases />} />
-                  <Route path="incidents" element={<ReviewerIncidents />} />
-                  <Route path="cases/:id" element={<CaseReview />} />
-                  <Route path="search" element={<CaseOfficerSearch />} />
-                  <Route path="reports" element={<CaseOfficerReports />} />
-                  <Route path="announcements" element={<CaseOfficerAnnouncements />} />
-                  <Route path="notifications" element={<CaseOfficerNotifications />} />
-                  <Route path="security" element={<CaseOfficerSecurity />} />
-                </Route>
-                
-                {/* Validator Routes */}
-                {/* Supervisor Routes - with sidebar layout */}
-                <Route path="/validator" element={<ProtectedRoute><SupervisorLayout /></ProtectedRoute>}>
-                  <Route path="search" element={<SupervisorSearchFilter />} />
-                  <Route path="dashboard" element={<ValidatorDashboard />} />
-                  <Route path="cases" element={<CaseMonitoring />} />
-                  <Route path="cases/:id" element={<CaseDetail />} />
-                  <Route path="escalations" element={<EscalationQueue />} />
-                  <Route path="escalations/:id" element={<EscalationQueue />} />
-                  <Route path="audit" element={<AuditCompliance />} />
-                  <Route path="notifications" element={<SupervisorNotifications />} />
-                  <Route path="analytics" element={<SupervisorAnalytics />} />
-                  <Route path="security" element={<SupervisorSecurity />} />
-                </Route>
-                
-                {/* Investigator / MCMC Internal Routes - with sidebar layout */}
-                <Route path="/investigator" element={<ProtectedRoute><InvestigatorLayout /></ProtectedRoute>}>
-                  <Route path="dashboard" element={<InvestigatorDashboard />} />
-                  <Route path="analytics" element={<InvestigatorAnalytics />} />
-                  <Route path="cases" element={<InvestigatorAllCases />} />
-                  <Route path="cases/:id" element={<InvestigatorCaseDetail />} />
-                  <Route path="notifications" element={<InvestigatorNotifications />} />
-                  <Route path="security" element={<InvestigatorSecurity />} />
-                </Route>
-                
-                {/* System Admin Routes */}
-                <Route path="/admin/dashboard" element={<ProtectedRoute><SystemAdminDashboard /></ProtectedRoute>} />
-                <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
-                <Route path="/admin/organisations" element={<ProtectedRoute><AdminOrganisations /></ProtectedRoute>} />
-                <Route path="/admin/master-data" element={<ProtectedRoute><MasterData /></ProtectedRoute>} />
-                <Route path="/admin/audit-logs" element={<ProtectedRoute><AuditLogs /></ProtectedRoute>} />
-                
-                {/* Super Admin Routes */}
-                <Route path="/super-admin/dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
-                
-                {/* LEA Routes - with sidebar layout */}
-                <Route path="/lea" element={<ProtectedRoute><LEALayout /></ProtectedRoute>}>
-                  <Route path="dashboard" element={<LEADashboard />} />
-                  <Route path="cases" element={<LEACaseList />} />
-                  <Route path="cases/:id" element={<LEACaseDetail />} />
-                  <Route path="analytics" element={<LEAAnalytics />} />
-                  <Route path="notifications" element={<LEANotifications />} />
-                  <Route path="security" element={<LEASecurity />} />
-                </Route>
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
-          </main>
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
+          <div className="min-h-screen w-full flex flex-col">
+            <Header />
+            <main className="flex-1">
+              <div className="container mx-auto px-4 py-6">
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/choose-role" element={<ChooseRole />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/otp" element={<OtpVerification />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+
+                  {/* Reporter Routes - with sidebar layout */}
+                  <Route path="/reporter" element={<ProtectedRoute><ReporterLayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<ReporterDashboard />} />
+                    <Route path="incidents" element={<ReporterIncidents />} />
+                    <Route path="incidents/new" element={<NewIncident />} />
+                    <Route path="incidents/:id" element={<IncidentDetails />} />
+                    <Route path="notifications" element={<ReporterNotifications />} />
+                    <Route path="analytics" element={<ReporterAnalytics />} />
+                    <Route path="profile" element={<ReporterProfileSecurity />} />
+                  </Route>
+
+                  {/* Licensee Admin Routes - with sidebar layout */}
+                  <Route path="/licensee-admin" element={<ProtectedRoute><LicenseeAdminLayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<LicenseeAdminDashboard />} />
+                    <Route path="incidents" element={<LicenseeAdminIncidents />} />
+                    <Route path="incidents/:id" element={<LicenseeAdminIncidentDetails />} />
+                    <Route path="users" element={<LicenseeAdminUsers />} />
+                    <Route path="profile" element={<LicenseeAdminProfile />} />
+                    <Route path="analytics" element={<LicenseeAdminAnalytics />} />
+                    <Route path="notifications" element={<LicenseeAdminNotifications />} />
+                    <Route path="security" element={<LicenseeAdminSecuritySettings />} />
+                    <Route path="testing" element={<LicenseeAdminTesting />} />
+                  </Route>
+
+                  {/* Case Officer Routes - with sidebar layout */}
+                  <Route path="/reviewer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<ReviewerDashboard />} />
+                    <Route path="inbox" element={<CaseOfficerInbox />} />
+                    <Route path="all-cases" element={<ReviewerAllCases />} />
+                    <Route path="incidents" element={<ReviewerIncidents />} />
+                    <Route path="cases/:id" element={<CaseReview />} />
+                    <Route path="search" element={<CaseOfficerSearch />} />
+                    <Route path="reports" element={<CaseOfficerReports />} />
+                    <Route path="announcements" element={<CaseOfficerAnnouncements />} />
+                    <Route path="notifications" element={<CaseOfficerNotifications />} />
+                    <Route path="security" element={<CaseOfficerSecurity />} />
+                  </Route>
+
+                  {/* Validator Routes */}
+                  {/* Supervisor Routes - with sidebar layout */}
+                  <Route path="/validator" element={<ProtectedRoute><SupervisorLayout /></ProtectedRoute>}>
+                    <Route path="search" element={<SupervisorSearchFilter />} />
+                    <Route path="dashboard" element={<ValidatorDashboard />} />
+                    <Route path="cases" element={<CaseMonitoring />} />
+                    <Route path="cases/:id" element={<CaseDetail />} />
+                    <Route path="escalations" element={<EscalationQueue />} />
+                    <Route path="escalations/:id" element={<EscalationQueue />} />
+                    <Route path="audit" element={<AuditCompliance />} />
+                    <Route path="notifications" element={<SupervisorNotifications />} />
+                    <Route path="analytics" element={<SupervisorAnalytics />} />
+                    <Route path="security" element={<SupervisorSecurity />} />
+                  </Route>
+
+                  {/* Investigator / MCMC Internal Routes - with sidebar layout */}
+                  <Route path="/investigator" element={<ProtectedRoute><InvestigatorLayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<InvestigatorDashboard />} />
+                    <Route path="analytics" element={<InvestigatorAnalytics />} />
+                    <Route path="cases" element={<InvestigatorAllCases />} />
+                    <Route path="cases/:id" element={<InvestigatorCaseDetail />} />
+                    <Route path="notifications" element={<InvestigatorNotifications />} />
+                    <Route path="security" element={<InvestigatorSecurity />} />
+                  </Route>
+
+                  {/* System Admin Routes */}
+                  <Route path="/admin/dashboard" element={<ProtectedRoute><SystemAdminDashboard /></ProtectedRoute>} />
+                  <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+                  <Route path="/admin/organisations" element={<ProtectedRoute><AdminOrganisations /></ProtectedRoute>} />
+                  <Route path="/admin/master-data" element={<ProtectedRoute><MasterData /></ProtectedRoute>} />
+                  <Route path="/admin/audit-logs" element={<ProtectedRoute><AuditLogs /></ProtectedRoute>} />
+
+                  {/* Super Admin Routes */}
+                  <Route path="/super-admin/dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
+
+                  {/* LEA Routes - with sidebar layout */}
+                  <Route path="/lea" element={<ProtectedRoute><LEALayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<LEADashboard />} />
+                    <Route path="cases" element={<LEACaseList />} />
+                    <Route path="cases/:id" element={<LEACaseDetail />} />
+                    <Route path="analytics" element={<LEAAnalytics />} />
+                    <Route path="notifications" element={<LEANotifications />} />
+                    <Route path="security" element={<LEASecurity />} />
+                  </Route>
+
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+            </main>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

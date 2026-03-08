@@ -86,6 +86,7 @@ export const Header = () => {
             alt="MCMC Logo"
             className="h-12 w-auto object-contain"
           />
+          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block tracking-wide">POSTAL & COURIER INCIDENT REPORTING</h1>
         </div>
 
         <div className="flex items-center gap-4">
@@ -177,10 +178,10 @@ export const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-3 h-auto py-2">
-                    <span className="font-medium text-sm">{user.name}</span>
                     <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
                       <User className="h-4 w-4 text-primary" />
                     </div>
+                    <span className="font-poppins font-semibold text-xs text-[#111111] dark:text-white uppercase tracking-wider">{user.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -202,6 +203,10 @@ export const Header = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout" className="text-destructive hover:bg-destructive/10">
+                <LogOut className="h-5 w-5" />
+              </Button>
             </>
           )}
         </div>
