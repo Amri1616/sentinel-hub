@@ -27,7 +27,7 @@ const mapToCaseData = (inc: typeof incidents[0]): CaseData => ({
   address: '—',
   state: '—',
   postalCode: '—',
-  companyName: 'Express Courier Sdn Bhd',
+  companyName: 'Global Express Logistics Sdn Bhd',
   reporterName: inc.reporter,
   reporterDesignation: 'Reporter',
   status: inc.status,
@@ -99,7 +99,7 @@ export default function LicenseeAdminIncidentDetails() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">{incident.id}</h1>
-          <p className="text-muted-foreground">{incident.description} — Express Courier Sdn Bhd</p>
+          <p className="text-muted-foreground">{incident.description} — Global Express Logistics Sdn Bhd</p>
         </div>
         <div className="flex flex-col items-end gap-1.5">
           <div className="flex items-center gap-2">

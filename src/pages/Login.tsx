@@ -81,7 +81,7 @@ export default function Login() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="name@mcmc.gov.my"
+                  placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={handleAutoFill}

@@ -39,7 +39,7 @@ export default function CaseDetail() {
     address: 'Jalan Tun Razak, 50400 Kuala Lumpur',
     state: 'W.P. Kuala Lumpur',
     postalCode: '50400',
-    companyName: 'Express Courier Sdn Bhd',
+    companyName: 'Global Express Logistics Sdn Bhd',
     reporterName: 'Ali Hassan',
     reporterDesignation: 'Facility Manager',
     status: 'Escalation Pending',

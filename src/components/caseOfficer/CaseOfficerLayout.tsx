@@ -50,7 +50,7 @@ export default function CaseOfficerLayout() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">MCMC Case Officer</p>
-                <p className="text-xs text-muted-foreground truncate">Officer ID: CO-2024-015</p>
+                <p className="text-xs text-muted-foreground truncate">Mohd Kamal</p>
               </div>
             </div>
           ) : (

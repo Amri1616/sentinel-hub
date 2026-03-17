@@ -46,8 +46,8 @@ export default function LicenseeAdminLayout() {
                 <Building2 className="h-5 w-5 text-role-licensee-admin" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">Express Courier</p>
-                <p className="text-xs text-muted-foreground truncate">PL-2024-001234</p>
+                <p className="text-sm font-semibold truncate">Global Express Logistics</p>
+                <p className="text-xs text-muted-foreground truncate">Tan Wei Ming</p>
               </div>
             </div>
           ) : (

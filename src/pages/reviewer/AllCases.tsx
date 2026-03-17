@@ -14,12 +14,12 @@ export default function ReviewerAllCases() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const allCases = [
-    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Express Courier Sdn Bhd', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', isOwn: true },
+    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', isOwn: true },
     { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', organisation: 'Swift Logistics Sdn Bhd', officer: 'You', severity: 'High', status: 'Pending Review', submitted: '2025-01-16', isOwn: true },
     { id: 'PSIRP-2025-0030', title: 'Warehouse Break-in', organisation: 'Pos Malaysia Berhad', officer: 'Nurul Hana', severity: 'High', status: 'Under Review', submitted: '2025-01-17', isOwn: false },
-    { id: 'PSIRP-2025-0031', title: 'Package Diversion Scheme', organisation: 'Express Courier Sdn Bhd', officer: 'Lee Wei', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-01-17', isOwn: false },
+    { id: 'PSIRP-2025-0031', title: 'Package Diversion Scheme', organisation: 'Global Express Logistics Sdn Bhd', officer: 'Lee Wei', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-01-17', isOwn: false },
     { id: 'PSIRP-2025-0029', title: 'Missing Registered Mail', organisation: 'Fast Delivery Enterprise', officer: 'Farah Amin', severity: 'Medium', status: 'RFI Sent', submitted: '2025-01-16', isOwn: false },
-    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Express Courier Sdn Bhd', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', isOwn: true },
+    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', isOwn: true },
     { id: 'PSIRP-2025-0032', title: 'Delayed Goods Complaint', organisation: 'Swift Logistics Sdn Bhd', officer: 'Ahmad Razif', severity: 'Low', status: 'Under Review', submitted: '2025-01-18', isOwn: false },
   ];
 

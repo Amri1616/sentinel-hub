@@ -28,10 +28,10 @@ export default function ReviewerDashboard() {
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<(typeof announcements)[number] | null>(null);
 
   const priorityIncidents = [
-    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', licensee: 'Express Courier Sdn Bhd', severity: 'Critical', status: 'Pending Review' },
+    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', licensee: 'Global Express Logistics Sdn Bhd', severity: 'Critical', status: 'Pending Review' },
     { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', licensee: 'Swift Logistics Sdn Bhd', severity: 'High', status: 'Pending Review' },
-    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', licensee: 'Express Courier Sdn Bhd', severity: 'High', status: 'RFI Sent' },
-    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', licensee: 'Express Courier Sdn Bhd', severity: 'High', status: 'RFI Sent' },
+    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', licensee: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'RFI Sent' },
+    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', licensee: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'RFI Sent' },
   ];
 
   const recentUpdates = [
@@ -110,15 +110,51 @@ export default function ReviewerDashboard() {
         </Card>
       </div>
 
+      {/* Priority Alerts Widget */}
+      <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/reviewer/inbox')}>
+        <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 shrink-0 rounded-full bg-destructive/20 flex items-center justify-center">
+              <ShieldAlert className="h-5 w-5 text-destructive" />
+            </div>
+            <div>
+              <p className="font-semibold text-destructive">Priority Alerts</p>
+              <p className="text-sm text-muted-foreground">3 Critical Cases Awaiting Review — Ensure critical incidents are handled first.</p>
+            </div>
+          </div>
+          <Button variant="outline" className="shrink-0 border-destructive/30 text-destructive hover:bg-destructive/10 w-full sm:w-auto">
+            Review Cases
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Escalation Reminder Widget */}
+      <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/reviewer/inbox')}>
+        <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 shrink-0 rounded-full bg-amber-500/20 flex items-center justify-center">
+              <ArrowUpRight className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div>
+              <p className="font-semibold text-amber-600 dark:text-amber-400">Escalation Reminder</p>
+              <p className="text-sm text-muted-foreground">1 Case Awaiting Escalation Decision.</p>
+            </div>
+          </div>
+          <Button variant="outline" className="shrink-0 border-amber-500/30 text-amber-600 hover:bg-amber-500/10 dark:text-amber-400 w-full sm:w-auto">
+            View Status
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Go to Inbox */}
       <Button onClick={() => navigate('/reviewer/inbox')} size="lg" className="w-full h-auto py-5 text-lg glow-blue">
         <Inbox className="mr-3 h-6 w-6" />
         Go to Assignment Inbox
       </Button>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="flex flex-col gap-6">
         {/* Recent Assigned */}
-        <Card className="lg:col-span-2">
+        <Card>
           <CardHeader><CardTitle>Recent Assigned Cases</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -144,8 +180,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        {/* Right Column */}
-        <div className="space-y-6">
+        {/* Recently Updated */}
           {/* Recently Updated */}
           <Card>
             <CardHeader><CardTitle>Recently Updated</CardTitle></CardHeader>
@@ -217,7 +252,6 @@ export default function ReviewerDashboard() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
       </div>
     </div>
   );

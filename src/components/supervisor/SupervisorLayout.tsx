@@ -49,7 +49,7 @@ export default function SupervisorLayout() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">MCMC Supervisor</p>
-                <p className="text-xs text-muted-foreground truncate">SV-2024-003</p>
+                <p className="text-xs text-muted-foreground truncate">Sarah Lim</p>
               </div>
             </div>
           ) : (

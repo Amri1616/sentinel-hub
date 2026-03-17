@@ -21,21 +21,13 @@ import {
 
 const kpiCards = [
   { label: 'Total Incidents', value: 47, icon: FileText, color: 'text-primary' },
+  { label: 'Draft Reports', value: 3, icon: FileText, color: 'text-muted-foreground' },
   { label: 'Under Review', value: 8, icon: Clock, color: 'text-status-in-review' },
   { label: 'Escalated Cases', value: 5, icon: AlertTriangle, color: 'text-destructive' },
   { label: 'Closed Cases', value: 30, icon: CheckCircle2, color: 'text-status-closed' },
 ];
 
-const casesByState = [
-  { state: 'Selangor', cases: 12 },
-  { state: 'KL', cases: 9 },
-  { state: 'Johor', cases: 7 },
-  { state: 'Penang', cases: 5 },
-  { state: 'Sabah', cases: 4 },
-  { state: 'Sarawak', cases: 3 },
-  { state: 'Perak', cases: 3 },
-  { state: 'Others', cases: 4 },
-];
+
 
 const statusDistribution = [
   { name: 'Draft', value: 3, color: 'hsl(var(--status-draft))' },
@@ -45,13 +37,7 @@ const statusDistribution = [
   { name: 'Closed', value: 25, color: 'hsl(var(--status-closed))' },
 ];
 
-const caseSubmissionByReporter = [
-  { name: 'Ahmad Abdullah', submissions: 14 },
-  { name: 'Mastura Hassan', submissions: 11 },
-  { name: 'Kamal Hassan', submissions: 9 },
-  { name: 'Fatimah Zahra', submissions: 8 },
-  { name: 'Azman Ali', submissions: 5 },
-];
+
 
 const caseTypeByMonth = [
   { month: 'Aug', theft: 2, suspicious: 1, prohibited: 1, breach: 1, others: 1 },
@@ -82,11 +68,11 @@ export default function LicenseeAdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold mb-1">Dashboard</h1>
-        <p className="text-muted-foreground">Organisational overview — Express Courier Sdn Bhd</p>
+        <p className="text-muted-foreground">Organisational overview — Global Express Logistics Sdn Bhd</p>
       </div>
 
       {/* KPI Cards — no trend indicators */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
         {kpiCards.map((kpi) => (
           <Card key={kpi.label} className="hover:shadow-lg transition-shadow duration-200">
             <CardContent className="p-4">
@@ -100,26 +86,8 @@ export default function LicenseeAdminDashboard() {
         ))}
       </div>
 
-      {/* Charts Row 1 */}
+      {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Incident Cases by State */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Incident Cases by State</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={casesByState}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="state" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} allowDecimals={false} />
-                <Tooltip contentStyle={chartTooltipStyle} />
-                <Bar dataKey="cases" fill="hsl(var(--role-licensee-admin))" radius={[4, 4, 0, 0]} name="Cases" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
         {/* Status Distribution Donut */}
         <Card>
           <CardHeader>
@@ -155,27 +123,6 @@ export default function LicenseeAdminDashboard() {
                 ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts Row 2 */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Case Submission by Reporter — no Top/Lowest indicators */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Case Submission by Reporter</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={caseSubmissionByReporter} layout="vertical" margin={{ left: 30 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={11} width={110} />
-                <Tooltip contentStyle={chartTooltipStyle} />
-                <Bar dataKey="submissions" fill="hsl(var(--role-licensee-admin))" radius={[0, 4, 4, 0]} name="Submissions" />
-              </BarChart>
-            </ResponsiveContainer>
           </CardContent>
         </Card>
 

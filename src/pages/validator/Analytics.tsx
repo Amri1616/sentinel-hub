@@ -29,6 +29,13 @@ const severityDistribution = [
   { name: 'Low', value: 12, color: 'hsl(var(--status-closed))' },
 ];
 
+const statusDistribution = [
+  { name: 'Under Review', value: 14, color: 'hsl(var(--primary))' },
+  { name: 'Escalation Pending', value: 5, color: 'hsl(var(--destructive))' },
+  { name: 'Escalated', value: 8, color: 'hsl(var(--role-reviewer))' },
+  { name: 'Closed', value: 12, color: 'hsl(var(--status-closed))' },
+];
+
 const categoryBreakdown = [
   { category: 'Prohibited Items', count: 14 },
   { category: 'Serious Threat', count: 8 },
@@ -48,10 +55,10 @@ const officerWorkload = [
 ];
 
 const reportData = [
-  { id: 'PSIRP-2025-0063', status: 'Under Review', severity: 'Medium', org: 'Express Courier', officer: 'Raj Kumar' },
+  { id: 'PSIRP-2025-0063', status: 'Under Review', severity: 'Medium', org: 'Global Express Logistics', officer: 'Raj Kumar' },
   { id: 'PSIRP-2025-0060', status: 'Escalation Pending', severity: 'Critical', org: 'Pos Malaysia', officer: 'Farah Amin' },
   { id: 'PSIRP-2025-0058', status: 'Escalation Pending', severity: 'High', org: 'J&T Express', officer: 'Lee Wei' },
-  { id: 'PSIRP-2025-0045', status: 'Escalation Pending', severity: 'Critical', org: 'Express Courier', officer: 'Ahmad Razif' },
+  { id: 'PSIRP-2025-0045', status: 'Escalation Pending', severity: 'Critical', org: 'Global Express Logistics', officer: 'Ahmad Razif' },
   { id: 'PSIRP-2025-0030', status: 'Closed', severity: 'Medium', org: 'Pos Malaysia', officer: 'Nurul Hana' },
   { id: 'PSIRP-2025-0025', status: 'Escalated', severity: 'High', org: 'DHL eCommerce', officer: 'Farah Amin' },
 ];
@@ -203,6 +210,38 @@ export default function SupervisorAnalyticsReport() {
                     <Bar dataKey="escalated" stackId="a" fill="hsl(var(--destructive))" name="Escalated" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts Row 3 */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Case Status Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center">
+                  <ResponsiveContainer width="55%" height={240}>
+                    <PieChart>
+                      <Pie data={statusDistribution} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={3} dataKey="value">
+                        {statusDistribution.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip contentStyle={chartTooltipStyle} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="w-[45%] space-y-2">
+                    {statusDistribution.map((s) => (
+                      <div key={s.name} className="flex items-center gap-2 text-sm">
+                        <span className="h-3 w-3 rounded-sm shrink-0" style={{ backgroundColor: s.color }} />
+                        <span className="text-muted-foreground text-xs">{s.name}</span>
+                        <span className="ml-auto font-medium">{s.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -9,10 +9,10 @@ import { Search, Download, FileBarChart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const reportData = [
-  { id: 'PSIRP-2025-0063', status: 'Under Review', severity: 'Medium', org: 'Express Courier', officer: 'Raj Kumar' },
+  { id: 'PSIRP-2025-0063', status: 'Under Review', severity: 'Medium', org: 'Global Express Logistics', officer: 'Raj Kumar' },
   { id: 'PSIRP-2025-0060', status: 'Escalation Pending', severity: 'Critical', org: 'Pos Malaysia', officer: 'Farah Amin' },
   { id: 'PSIRP-2025-0058', status: 'Escalation Pending', severity: 'High', org: 'J&T Express', officer: 'Lee Wei' },
-  { id: 'PSIRP-2025-0045', status: 'Escalation Pending', severity: 'Critical', org: 'Express Courier', officer: 'Ahmad Razif' },
+  { id: 'PSIRP-2025-0045', status: 'Escalation Pending', severity: 'Critical', org: 'Global Express Logistics', officer: 'Ahmad Razif' },
   { id: 'PSIRP-2025-0039', status: 'Under Review', severity: 'Medium', org: 'CityLink', officer: 'Ahmad Razif' },
   { id: 'PSIRP-2025-0030', status: 'Closed', severity: 'Medium', org: 'Pos Malaysia', officer: 'Nurul Hana' },
   { id: 'PSIRP-2025-0025', status: 'Escalated', severity: 'High', org: 'DHL eCommerce', officer: 'Farah Amin' },

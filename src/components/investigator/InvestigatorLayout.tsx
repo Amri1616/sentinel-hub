@@ -43,7 +43,7 @@ export default function InvestigatorLayout() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">MCMC Internal</p>
-                <p className="text-xs text-muted-foreground truncate">Governance & Oversight</p>
+                <p className="text-xs text-muted-foreground truncate">Nurul Huda</p>
               </div>
             </div>
           ) : (

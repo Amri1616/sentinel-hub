@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import { FileText, Plus, MessageSquare, Clock, CheckCircle2, Trash2, ArrowUpRight, ShieldCheck, Megaphone } from 'lucide-react';
+import { FileText, Plus, MessageSquare, Clock, CheckCircle2, Trash2, ArrowUpRight, ShieldCheck, Megaphone, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -65,9 +65,20 @@ export default function ReporterDashboard() {
         <p className="text-muted-foreground">Welcome back, Licensee Reporter</p>
       </div>
 
+
+      {/* Create New Incident */}
+      <Button
+        onClick={() => navigate('/reporter/incidents/new')}
+        size="lg"
+        className="w-full h-auto py-5 text-lg glow-cyan"
+      >
+        <Plus className="mr-3 h-6 w-6" />
+        Create New Incident
+      </Button>
+
       {/* KPI Cards - 5 cards */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-primary/20 transition-all">
+        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => navigate('/reporter/drafts')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">My Drafts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -179,21 +190,15 @@ export default function ReporterDashboard() {
         </CardContent>
       </Card>
 
-      {/* Create New Incident */}
-      <Button
-        onClick={() => navigate('/reporter/incidents/new')}
-        size="lg"
-        className="w-full h-auto py-5 text-lg glow-cyan"
-      >
-        <Plus className="mr-3 h-6 w-6" />
-        Create New Incident
-      </Button>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="flex flex-col gap-6">
         {/* My Drafts */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle>My Drafts</CardTitle>
+            <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => navigate('/reporter/drafts')}>
+              View All Drafts
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -226,6 +231,42 @@ export default function ReporterDashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+          </CardContent>
+        </Card>
+
+
+        {/* Recent Activity Widget */}
+        <Card className="border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-4 w-4 text-primary" />
+              Recent Activity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
+                <div className="h-2 w-2 rounded-full bg-status-in-review mt-1.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-medium">Case PSIR-2026-004 moved to <span className="text-status-in-review">Under Review</span></p>
+                  <p className="text-xs text-muted-foreground">2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
+                <div className="h-2 w-2 rounded-full bg-status-rfi mt-1.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-medium">Clarification requested for Case PSIR-2026-002</p>
+                  <p className="text-xs text-muted-foreground">5 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
+                <div className="h-2 w-2 rounded-full bg-status-closed mt-1.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-medium">Case PSIR-2026-001 <span className="text-status-closed">Closed</span></p>
+                  <p className="text-xs text-muted-foreground">1 day ago</p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

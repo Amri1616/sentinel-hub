@@ -18,6 +18,7 @@ import NewIncident from "./pages/reporter/NewIncident";
 import IncidentDetails from "./pages/reporter/IncidentDetails";
 import ReporterNotifications from "./pages/reporter/Notifications";
 import ReporterAnalytics from "./pages/reporter/Analytics";
+import ReporterDrafts from "./pages/reporter/Drafts";
 import ReporterProfileSecurity from "./pages/reporter/ProfileSecurity";
 import CaseOfficerLayout from "./components/caseOfficer/CaseOfficerLayout";
 import ReviewerDashboard from "./pages/reviewer/Dashboard";
@@ -35,7 +36,7 @@ import LicenseeAdminDashboard from "./pages/licenseeAdmin/Dashboard";
 import LicenseeAdminIncidents from "./pages/licenseeAdmin/Incidents";
 import LicenseeAdminIncidentDetails from "./pages/licenseeAdmin/IncidentDetails";
 import LicenseeAdminUsers from "./pages/licenseeAdmin/Users";
-import LicenseeAdminProfile from "./pages/licenseeAdmin/Profile";
+
 import LicenseeAdminAnalytics from "./pages/licenseeAdmin/Analytics";
 import LicenseeAdminNotifications from "./pages/licenseeAdmin/Notifications";
 import LicenseeAdminSecuritySettings from "./pages/licenseeAdmin/SecuritySettings";
@@ -106,6 +107,7 @@ const App = () => (
                   {/* Reporter Routes - with sidebar layout */}
                   <Route path="/reporter" element={<ProtectedRoute><ReporterLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<ReporterDashboard />} />
+                    <Route path="drafts" element={<ReporterDrafts />} />
                     <Route path="incidents" element={<ReporterIncidents />} />
                     <Route path="incidents/new" element={<NewIncident />} />
                     <Route path="incidents/:id" element={<IncidentDetails />} />
@@ -120,7 +122,7 @@ const App = () => (
                     <Route path="incidents" element={<LicenseeAdminIncidents />} />
                     <Route path="incidents/:id" element={<LicenseeAdminIncidentDetails />} />
                     <Route path="users" element={<LicenseeAdminUsers />} />
-                    <Route path="profile" element={<LicenseeAdminProfile />} />
+
                     <Route path="analytics" element={<LicenseeAdminAnalytics />} />
                     <Route path="notifications" element={<LicenseeAdminNotifications />} />
                     <Route path="security" element={<LicenseeAdminSecuritySettings />} />

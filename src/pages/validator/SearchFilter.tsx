@@ -9,12 +9,12 @@ import { Search, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const allCases = [
-  { id: 'PSIRP-2025-0063', title: 'Tampering at sorting centre', organisation: 'Express Courier', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-06-09' },
+  { id: 'PSIRP-2025-0063', title: 'Tampering at sorting centre', organisation: 'Global Express Logistics', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-06-09' },
   { id: 'PSIRP-2025-0060', title: 'Cross-border contraband attempt', organisation: 'Pos Malaysia', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', submitted: '2025-06-10' },
   { id: 'PSIRP-2025-0058', title: 'Suspicious parcel pattern', organisation: 'J&T Express', severity: 'High', status: 'Escalation Pending', escalation: 'Pending', submitted: '2025-06-08' },
   { id: 'PSIRP-2025-0055', title: 'Dangerous goods interception', organisation: 'DHL eCommerce', severity: 'High', status: 'Under Review', escalation: 'None', submitted: '2025-06-06' },
   { id: 'PSIRP-2025-0052', title: 'Missing parcel investigation', organisation: 'Ninja Van', severity: 'High', status: 'Escalation Pending', escalation: 'Pending', submitted: '2025-06-10' },
-  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', organisation: 'Express Courier', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', submitted: '2025-06-09' },
+  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', organisation: 'Global Express Logistics', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', submitted: '2025-06-09' },
   { id: 'PSIRP-2025-0030', title: 'Minor packaging damage', organisation: 'Pos Malaysia', severity: 'Medium', status: 'Closed', escalation: 'None', submitted: '2025-05-28' },
   { id: 'PSIRP-2025-0025', title: 'Contraband detection – Penang', organisation: 'DHL eCommerce', severity: 'High', status: 'Escalated', escalation: 'Approved', submitted: '2025-05-22' },
 ];

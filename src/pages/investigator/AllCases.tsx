@@ -9,10 +9,10 @@ import { Search, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const casesData = [
-  { id: 'PSIRP-2025-0063', org: 'Express Courier', reporter: 'Ali Hassan', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-06-10', closed: '-' },
+  { id: 'PSIRP-2025-0063', org: 'Global Express Logistics', reporter: 'Ali Hassan', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-06-10', closed: '-' },
   { id: 'PSIRP-2025-0060', org: 'Pos Malaysia', reporter: 'Siti Aisyah', officer: 'Farah Amin', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', submitted: '2025-06-08', closed: '-' },
   { id: 'PSIRP-2025-0058', org: 'J&T Express', reporter: 'Lim Wei Jie', officer: 'Lee Wei', severity: 'High', status: 'Under Review', escalation: 'None', submitted: '2025-06-07', closed: '-' },
-  { id: 'PSIRP-2025-0055', org: 'Express Courier', reporter: 'Ahmad Zulkifli', officer: 'Ahmad Razif', severity: 'Medium', status: 'Closed', escalation: 'None', submitted: '2025-06-05', closed: '2025-06-09' },
+  { id: 'PSIRP-2025-0055', org: 'Global Express Logistics', reporter: 'Ahmad Zulkifli', officer: 'Ahmad Razif', severity: 'Medium', status: 'Closed', escalation: 'None', submitted: '2025-06-05', closed: '2025-06-09' },
   { id: 'PSIRP-2025-0052', org: 'J&T Express', reporter: 'Tan Mei Ling', officer: 'Nurul Hana', severity: 'High', status: 'Escalated', escalation: 'PDRM', submitted: '2025-06-03', closed: '-' },
   { id: 'PSIRP-2025-0049', org: 'CityLink', reporter: 'Kumar Raj', officer: 'Ahmad Razif', severity: 'Low', status: 'Closed', escalation: 'None', submitted: '2025-06-01', closed: '2025-06-06' },
   { id: 'PSIRP-2025-0045', org: 'DHL eCommerce', reporter: 'Wong Kai Wen', officer: 'Farah Amin', severity: 'Critical', status: 'Escalated', escalation: 'Customs', submitted: '2025-05-28', closed: '-' },
