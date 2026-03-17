@@ -14,7 +14,7 @@ const officerData = [
 const officerChartData = officerData.map((o) => ({ name: o.name, cases: o.cases, avgDays: o.avgDays }));
 
 const orgRisk = [
-  { org: 'Express Courier', escalationFreq: '14%', highSeverity: '22%', repeatTypes: 'Theft, Damage', reportDelay: '1.8d' },
+  { org: 'Global Express Logistics', escalationFreq: '14%', highSeverity: '22%', repeatTypes: 'Theft, Damage', reportDelay: '1.8d' },
   { org: 'Pos Malaysia', escalationFreq: '19%', highSeverity: '28%', repeatTypes: 'Theft', reportDelay: '2.5d' },
   { org: 'J&T Express', escalationFreq: '11%', highSeverity: '15%', repeatTypes: 'Damage', reportDelay: '1.2d' },
   { org: 'CityLink', escalationFreq: '8%', highSeverity: '10%', repeatTypes: 'Tampering', reportDelay: '1.5d' },

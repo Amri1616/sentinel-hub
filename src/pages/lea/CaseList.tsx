@@ -9,14 +9,14 @@ import { Search, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const cases = [
-  { id: 'ESC-2025-001', escalationDate: '2025-06-10', org: 'Express Courier', severity: 'High', status: 'Under Investigation' },
+  { id: 'ESC-2025-001', escalationDate: '2025-06-10', org: 'Global Express Logistics', severity: 'High', status: 'Under Investigation' },
   { id: 'ESC-2025-002', escalationDate: '2025-06-12', org: 'Pos Malaysia', severity: 'Critical', status: 'Evidence Seized' },
   { id: 'ESC-2025-003', escalationDate: '2025-06-13', org: 'J&T Express', severity: 'High', status: 'Pending Further Information' },
   { id: 'ESC-2025-004', escalationDate: '2025-06-14', org: 'Pos Malaysia', severity: 'High', status: 'Pending Acknowledgement' },
   { id: 'ESC-2025-005', escalationDate: '2025-06-15', org: 'J&T Express', severity: 'Critical', status: 'Pending Acknowledgement' },
   { id: 'ESC-2025-006', escalationDate: '2025-05-20', org: 'CityLink', severity: 'Medium', status: 'Prosecution Recommended' },
   { id: 'ESC-2025-007', escalationDate: '2025-05-15', org: 'DHL eCommerce', severity: 'High', status: 'No Further Action' },
-  { id: 'ESC-2025-008', escalationDate: '2025-05-10', org: 'Express Courier', severity: 'Medium', status: 'Outcome Submitted' },
+  { id: 'ESC-2025-008', escalationDate: '2025-05-10', org: 'Global Express Logistics', severity: 'Medium', status: 'Outcome Submitted' },
 ];
 
 const statusColors: Record<string, string> = {

@@ -52,7 +52,7 @@ export default function CaseReview() {
     address: 'Lot 12, Jalan Perusahaan, Shah Alam',
     state: 'Selangor',
     postalCode: '40150',
-    companyName: 'Express Courier Sdn Bhd',
+    companyName: 'Global Express Logistics Sdn Bhd',
     reporterName: 'Ahmad bin Abdullah',
     reporterDesignation: 'Security Manager',
     leaEscalation: 'No',

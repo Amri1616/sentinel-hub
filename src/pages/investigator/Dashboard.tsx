@@ -28,7 +28,7 @@ import {
 } from 'recharts';
 
 const orgData = [
-  { name: 'Express Courier', cases: 28, escalated: 5 },
+  { name: 'Global Express Logistics', cases: 28, escalated: 5 },
   { name: 'Pos Malaysia', cases: 42, escalated: 8 },
   { name: 'J&T Express', cases: 19, escalated: 3 },
   { name: 'CityLink', cases: 15, escalated: 2 },
@@ -44,7 +44,7 @@ const severityData = [
 
 const recentClosed = [
   { id: 'PSIRP-2025-0059', org: 'Pos Malaysia', outcome: 'Action Taken', date: '2025-06-10' },
-  { id: 'PSIRP-2025-0055', org: 'Express Courier', outcome: 'No Further Action', date: '2025-06-09' },
+  { id: 'PSIRP-2025-0055', org: 'Global Express Logistics', outcome: 'No Further Action', date: '2025-06-09' },
   { id: 'PSIRP-2025-0052', org: 'J&T Express', outcome: 'Referred to LEA', date: '2025-06-08' },
   { id: 'PSIRP-2025-0049', org: 'CityLink', outcome: 'Action Taken', date: '2025-06-06' },
 ];

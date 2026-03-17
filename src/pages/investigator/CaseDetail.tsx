@@ -40,7 +40,7 @@ export default function InvestigatorCaseDetail() {
     address: 'Jalan Kuching, 51200 KL',
     state: 'W.P. Kuala Lumpur',
     postalCode: '51200',
-    companyName: 'Express Courier Sdn Bhd',
+    companyName: 'Global Express Logistics Sdn Bhd',
     reporterName: 'Ali Hassan',
     reporterDesignation: 'Hub Manager',
     status: 'Under Review',

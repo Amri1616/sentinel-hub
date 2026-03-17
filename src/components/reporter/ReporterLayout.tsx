@@ -45,8 +45,8 @@ export default function ReporterLayout() {
                 <Building2 className="h-5 w-5 text-role-reporter" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">Express Courier Sdn Bhd</p>
-                <p className="text-xs text-muted-foreground truncate">PL-2024-001234</p>
+                <p className="text-sm font-semibold truncate">Global Express Logistics Sdn Bhd</p>
+                <p className="text-xs text-muted-foreground truncate">Mastura Salleh</p>
               </div>
             </div>
           ) : (

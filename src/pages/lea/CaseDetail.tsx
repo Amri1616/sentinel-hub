@@ -50,7 +50,7 @@ export default function LEACaseDetail() {
     address: 'Jalan Kuching, 51200 Kuala Lumpur',
     state: 'W.P. Kuala Lumpur',
     postalCode: '51200',
-    companyName: 'Express Courier Sdn Bhd',
+    companyName: 'Global Express Logistics Sdn Bhd',
     reporterName: 'Ali Hassan',
     reporterDesignation: 'Facility Manager',
     status: investigationStatus,

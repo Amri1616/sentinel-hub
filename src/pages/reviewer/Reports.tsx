@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Download, FileBarChart, TrendingUp, AlertTriangle, CheckCircle2, Clock, FileSpreadsheet } from 'lucide-react';
+import { Download, FileBarChart, TrendingUp, AlertTriangle, CheckCircle2, Clock, FileSpreadsheet, Shield } from 'lucide-react';
+import MalaysiaIncidentMap from '@/components/MalaysiaIncidentMap';
 import { useToast } from '@/hooks/use-toast';
 import {
   PieChart, Pie, Cell, BarChart, Bar, LineChart, Line,
@@ -15,11 +16,11 @@ import {
 const tooltipStyle = { backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' };
 
 const caseSummary = [
-  { id: 'PSIRP-2025-0028', status: 'Under Review', severity: 'Critical', organisation: 'Express Courier Sdn Bhd', officer: 'CO-2024-015' },
+  { id: 'PSIRP-2025-0028', status: 'Under Review', severity: 'Critical', organisation: 'Global Express Logistics Sdn Bhd', officer: 'CO-2024-015' },
   { id: 'PSIRP-2025-0027', status: 'Pending Review', severity: 'High', organisation: 'Swift Logistics Sdn Bhd', officer: 'CO-2024-015' },
-  { id: 'PSIRP-2025-0026', status: 'Clarification Requested', severity: 'High', organisation: 'Express Courier Sdn Bhd', officer: 'CO-2024-015' },
+  { id: 'PSIRP-2025-0026', status: 'Clarification Requested', severity: 'High', organisation: 'Global Express Logistics Sdn Bhd', officer: 'CO-2024-015' },
   { id: 'PSIRP-2025-0025', status: 'Under Review', severity: 'Medium', organisation: 'Fast Delivery Enterprise', officer: 'CO-2024-015' },
-  { id: 'PSIRP-2025-0022', status: 'Escalated', severity: 'Critical', organisation: 'Express Courier Sdn Bhd', officer: 'CO-2024-015' },
+  { id: 'PSIRP-2025-0022', status: 'Escalated', severity: 'Critical', organisation: 'Global Express Logistics Sdn Bhd', officer: 'CO-2024-015' },
   { id: 'PSIRP-2025-0019', status: 'Closed', severity: 'High', organisation: 'Pos Malaysia Berhad', officer: 'CO-2024-015' },
 ];
 
@@ -48,11 +49,13 @@ const monthlyTrend = [
 ];
 
 const orgBreakdown = [
-  { org: 'Express Courier', cases: 8, escalated: 3 },
+  { org: 'Global Express Logistics', cases: 8, escalated: 3 },
   { org: 'Swift Logistics', cases: 5, escalated: 1 },
   { org: 'Fast Delivery', cases: 3, escalated: 0 },
   { org: 'Pos Malaysia', cases: 4, escalated: 1 },
 ];
+
+
 
 export default function CaseOfficerReports() {
   const { toast } = useToast();
@@ -140,6 +143,19 @@ export default function CaseOfficerReports() {
             </Card>
           </div>
 
+          {/* Incident Geo-Density Heat Map */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Shield className="h-4 w-4 text-role-reviewer" />
+                Incident Density Heat Map
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MalaysiaIncidentMap />
+            </CardContent>
+          </Card>
+
           <div className="grid gap-6 lg:grid-cols-3">
             <Card className="lg:col-span-2">
               <CardHeader><CardTitle>Monthly Case Trend</CardTitle></CardHeader>
@@ -214,6 +230,8 @@ export default function CaseOfficerReports() {
               </CardContent>
             </Card>
           </div>
+
+
         </TabsContent>
 
         {/* ===== REPORTS TAB ===== */}

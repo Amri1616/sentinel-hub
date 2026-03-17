@@ -19,13 +19,13 @@ export default function CaseOfficerInbox() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const incidents = [
-    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Express Courier Sdn Bhd', severity: 'Critical', status: 'Pending Review', escalation: 'None', submitted: '2025-01-16' },
+    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', severity: 'Critical', status: 'Pending Review', escalation: 'None', submitted: '2025-01-16' },
     { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', organisation: 'Swift Logistics Sdn Bhd', severity: 'High', status: 'Pending Review', escalation: 'None', submitted: '2025-01-16' },
-    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Express Courier Sdn Bhd', severity: 'High', status: 'RFI Sent', escalation: 'None', submitted: '2025-01-15' },
+    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'RFI Sent', escalation: 'None', submitted: '2025-01-15' },
     { id: 'PSIRP-2025-0025', title: 'Lost Consignment Claim', organisation: 'Fast Delivery Enterprise', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-01-15' },
-    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', organisation: 'Express Courier Sdn Bhd', severity: 'High', status: 'RFI Sent', escalation: 'None', submitted: '2025-01-15' },
+    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', organisation: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'RFI Sent', escalation: 'None', submitted: '2025-01-15' },
     { id: 'PSIRP-2025-0023', title: 'Damaged Goods Report', organisation: 'Swift Logistics Sdn Bhd', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-01-14' },
-    { id: 'PSIRP-2025-0022', title: 'Suspicious Package Alert', organisation: 'Express Courier Sdn Bhd', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending Approval', submitted: '2025-01-14' },
+    { id: 'PSIRP-2025-0022', title: 'Suspicious Package Alert', organisation: 'Global Express Logistics Sdn Bhd', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending Approval', submitted: '2025-01-14' },
     { id: 'PSIRP-2025-0021', title: 'Delayed Goods — Route 7', organisation: 'Pos Malaysia Berhad', severity: 'Low', status: 'Under Review', escalation: 'None', submitted: '2025-01-13' },
   ];
 

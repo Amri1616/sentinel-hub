@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { getCurrentUser, logout } from '@/lib/auth';
 import { RoleChip } from './RoleChip';
 import { getRoleConfig } from '@/lib/roleConfig';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import mcmcLogo from '@/assets/mcmc-logo.png';
@@ -55,9 +55,15 @@ const recentNotifications = [
 export const Header = () => {
   const user = getCurrentUser();
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState<'EN' | 'BM'>('EN');
   const [notifOpen, setNotifOpen] = useState(false);
+
+  const authRoutes = ['/', '/login', '/choose-role', '/otp', '/forgot-password'];
+  if (authRoutes.includes(location.pathname)) {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();
@@ -192,7 +198,7 @@ export const Header = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`${getRoleConfig(user.role).basePath}/profile`)}>
+                  <DropdownMenuItem onClick={() => navigate(`${getRoleConfig(user.role).basePath}/${user.role === 'reporter' ? 'profile' : 'security'}`)}>
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>

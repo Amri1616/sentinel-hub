@@ -34,28 +34,7 @@ const recentClosed = [
   { id: 'PSIRP-2025-0025', outcome: 'Closed – Referred to LEA', date: '2025-06-05' },
 ];
 
-const statusDistribution = [
-  { name: 'Under Review', value: 14, color: 'hsl(var(--primary))' },
-  { name: 'Escalation Pending', value: 5, color: 'hsl(var(--destructive))' },
-  { name: 'Escalated', value: 8, color: 'hsl(var(--role-reviewer))' },
-  { name: 'Closed', value: 12, color: 'hsl(var(--status-closed))' },
-];
 
-const monthlyTrend = [
-  { month: 'Oct', submitted: 18, closed: 14, escalated: 4 },
-  { month: 'Nov', submitted: 15, closed: 12, escalated: 2 },
-  { month: 'Dec', submitted: 20, closed: 16, escalated: 5 },
-  { month: 'Jan', submitted: 22, closed: 18, escalated: 6 },
-  { month: 'Feb', submitted: 17, closed: 13, escalated: 4 },
-  { month: 'Mar', submitted: 19, closed: 15, escalated: 3 },
-];
-
-const chartTooltipStyle = {
-  backgroundColor: 'hsl(var(--card))',
-  border: '1px solid hsl(var(--border))',
-  borderRadius: '8px',
-  color: 'hsl(var(--foreground))',
-};
 
 export default function SupervisorDashboard() {
   const navigate = useNavigate();
@@ -102,56 +81,39 @@ export default function SupervisorDashboard() {
         ))}
       </div>
 
-      {/* Case Summary at a Glance */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-role-validator" /> Monthly Case Trend
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={monthlyTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <Tooltip contentStyle={chartTooltipStyle} />
-                <Legend />
-                <Line type="monotone" dataKey="submitted" stroke="hsl(var(--primary))" strokeWidth={2} name="Submitted" />
-                <Line type="monotone" dataKey="closed" stroke="hsl(var(--status-closed))" strokeWidth={2} name="Closed" />
-                <Line type="monotone" dataKey="escalated" stroke="hsl(var(--destructive))" strokeWidth={2} name="Escalated" />
-              </LineChart>
-            </ResponsiveContainer>
+      {/* Priority Alerts */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/validator/escalations')}>
+          <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 shrink-0 rounded-full bg-destructive/20 flex items-center justify-center">
+                <Shield className="h-5 w-5 text-destructive" />
+              </div>
+              <div>
+                <p className="font-semibold text-destructive">Critical Incident Alert</p>
+                <p className="text-sm text-muted-foreground">Critical Cases: 3 — Immediate review required.</p>
+              </div>
+            </div>
+            <Button variant="outline" className="shrink-0 border-destructive/30 text-destructive hover:bg-destructive/10 w-full sm:w-auto">
+              View Cases
+            </Button>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Case Status Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center">
-              <ResponsiveContainer width="55%" height={240}>
-                <PieChart>
-                  <Pie data={statusDistribution} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={3} dataKey="value">
-                    {statusDistribution.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={chartTooltipStyle} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="w-[45%] space-y-2">
-                {statusDistribution.map((s) => (
-                  <div key={s.name} className="flex items-center gap-2 text-sm">
-                    <span className="h-3 w-3 rounded-sm shrink-0" style={{ backgroundColor: s.color }} />
-                    <span className="text-muted-foreground text-xs">{s.name}</span>
-                    <span className="ml-auto font-medium">{s.value}</span>
-                  </div>
-                ))}
+        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/validator/escalations')}>
+          <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 shrink-0 rounded-full bg-amber-500/20 flex items-center justify-center">
+                <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div>
+                <p className="font-semibold text-amber-600 dark:text-amber-400">Escalation Approval Alert</p>
+                <p className="text-sm text-muted-foreground">Escalation Requests Pending — Supervisor endorsement needed.</p>
               </div>
             </div>
+            <Button variant="outline" className="shrink-0 border-amber-500/30 text-amber-600 hover:bg-amber-500/10 dark:text-amber-400 w-full sm:w-auto">
+              Review Queue
+            </Button>
           </CardContent>
         </Card>
       </div>

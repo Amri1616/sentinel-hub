@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Download, FileBarChart, TrendingUp, BarChart3 as BarIcon, PieChart as PieIcon } from 'lucide-react';
+import { Download, FileBarChart, TrendingUp, BarChart3 as BarIcon, PieChart as PieIcon, Shield, AlertTriangle } from 'lucide-react';
+import MalaysiaIncidentMap from '@/components/MalaysiaIncidentMap';
 import { useToast } from '@/hooks/use-toast';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -45,7 +46,7 @@ const casesByOrg = [
   { org: 'J&T Express', cases: 22 },
   { org: 'DHL eCommerce', cases: 18 },
   { org: 'CityLink', cases: 14 },
-  { org: 'Express Courier', cases: 12 },
+  { org: 'Global Express Logistics', cases: 12 },
 ];
 
 const resolutionTime = [
@@ -55,6 +56,22 @@ const resolutionTime = [
   { month: 'Apr', avgDays: 6.3 },
   { month: 'May', avgDays: 7.0 },
   { month: 'Jun', avgDays: 5.8 },
+];
+
+const escalationTrendData = [
+  { month: 'Jan', escalated: 5 },
+  { month: 'Feb', escalated: 8 },
+  { month: 'Mar', escalated: 4 },
+  { month: 'Apr', escalated: 12 },
+  { month: 'May', escalated: 7 },
+  { month: 'Jun', escalated: 9 },
+];
+
+const highRiskData = [
+  { type: 'Narcotics', cases: 14 },
+  { type: 'Weapons', cases: 8 },
+  { type: 'Smuggling', cases: 11 },
+  { type: 'Fraud', cases: 6 },
 ];
 
 const reports = [
@@ -114,6 +131,18 @@ export default function LEAAnalytics() {
 
         {/* Summary Analytics */}
         <TabsContent value="summary" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Shield className="h-4 w-4 text-role-investigator" />
+                Geographic Incident Distribution
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MalaysiaIncidentMap />
+            </CardContent>
+          </Card>
+
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader><CardTitle>Case Volume Trend</CardTitle></CardHeader>
@@ -135,7 +164,7 @@ export default function LEAAnalytics() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle>Cases by Organisation</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Cases by Courier Company</CardTitle></CardHeader>
               <CardContent>
                 <div className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -207,6 +236,42 @@ export default function LEAAnalytics() {
               </div>
             </CardContent>
           </Card>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-4 w-4 text-destructive" /> Escalation Trend</CardTitle></CardHeader>
+              <CardContent>
+                <div className="h-[280px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={escalationTrendData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip contentStyle={tooltipStyle} />
+                      <Line type="monotone" dataKey="escalated" stroke="hsl(var(--destructive))" strokeWidth={2} name="Escalated Cases" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-destructive" /> High-Risk Incident Distribution</CardTitle></CardHeader>
+              <CardContent>
+                <div className="h-[280px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={highRiskData} layout="vertical" margin={{ left: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="type" type="category" width={80} tick={{ fontSize: 12 }} />
+                      <Tooltip contentStyle={tooltipStyle} />
+                      <Bar dataKey="cases" fill="hsl(var(--destructive))" radius={[0, 4, 4, 0]} name="Critical Cases" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Resolution Time */}

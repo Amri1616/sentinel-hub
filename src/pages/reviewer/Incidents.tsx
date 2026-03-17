@@ -9,13 +9,13 @@ export default function ReviewerIncidents() {
   const navigate = useNavigate();
 
   const incidents = [
-    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', licensee: 'Express Courier Sdn Bhd', reporter: 'Ahmad bin Abdullah', status: 'Pending Review', severity: 'Critical', submitted: '2025-01-16', sla: '2h remaining' },
-    { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', licensee: 'Swift Logistics Sdn Bhd', reporter: 'Siti Nurhaliza', status: 'Pending Review', severity: 'High', submitted: '2025-01-16', sla: '5h remaining' },
-    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', licensee: 'Express Courier Sdn Bhd', reporter: 'Kamal Hassan', status: 'RFI Sent', severity: 'High', submitted: '2025-01-15', sla: '8h remaining' },
+    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', licensee: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', status: 'Pending Review', severity: 'Critical', submitted: '2025-01-16', sla: '2h remaining' },
+    { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', licensee: 'Swift Logistics Sdn Bhd', reporter: 'Mastura Salleh', status: 'Pending Review', severity: 'High', submitted: '2025-01-16', sla: '5h remaining' },
+    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', licensee: 'Global Express Logistics Sdn Bhd', reporter: 'Kamal Hassan', status: 'RFI Sent', severity: 'High', submitted: '2025-01-15', sla: '8h remaining' },
     { id: 'PSIRP-2025-0025', title: 'Lost Consignment Claim', licensee: 'Fast Delivery Enterprise', reporter: 'Fatimah Zahra', status: 'Pending Review', severity: 'Medium', submitted: '2025-01-15', sla: '12h remaining' },
-    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', licensee: 'Express Courier Sdn Bhd', reporter: 'Azman Ali', status: 'RFI Sent', severity: 'High', submitted: '2025-01-15', sla: '3h remaining' },
+    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', licensee: 'Global Express Logistics Sdn Bhd', reporter: 'Azman Ali', status: 'RFI Sent', severity: 'High', submitted: '2025-01-15', sla: '3h remaining' },
     { id: 'PSIRP-2025-0023', title: 'Damaged Goods Report', licensee: 'Swift Logistics Sdn Bhd', reporter: 'Nurul Aisyah', status: 'Under Investigation', severity: 'Medium', submitted: '2025-01-14', sla: '24h remaining' },
-    { id: 'PSIRP-2025-0022', title: 'Delayed Shipment Complaint', licensee: 'Express Courier Sdn Bhd', reporter: 'Hafiz Rahman', status: 'In Review', severity: 'Low', submitted: '2025-01-14', sla: '36h remaining' },
+    { id: 'PSIRP-2025-0022', title: 'Delayed Shipment Complaint', licensee: 'Global Express Logistics Sdn Bhd', reporter: 'Hafiz Rahman', status: 'In Review', severity: 'Low', submitted: '2025-01-14', sla: '36h remaining' },
   ];
 
   const getStatusColor = (status: string) => {

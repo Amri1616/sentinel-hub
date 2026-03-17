@@ -9,11 +9,11 @@ import { Search, Download, Eye, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const allCases = [
-  { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Express Courier Sdn Bhd', severity: 'Critical', status: 'Under Review', escalation: 'None', submitted: '2025-01-16' },
+  { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', severity: 'Critical', status: 'Under Review', escalation: 'None', submitted: '2025-01-16' },
   { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', organisation: 'Swift Logistics Sdn Bhd', severity: 'High', status: 'Pending Review', escalation: 'None', submitted: '2025-01-16' },
-  { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Express Courier Sdn Bhd', severity: 'High', status: 'Clarification Requested', escalation: 'None', submitted: '2025-01-15' },
+  { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'Clarification Requested', escalation: 'None', submitted: '2025-01-15' },
   { id: 'PSIRP-2025-0025', title: 'Lost Consignment Claim', organisation: 'Fast Delivery Enterprise', severity: 'Medium', status: 'Under Review', escalation: 'None', submitted: '2025-01-15' },
-  { id: 'PSIRP-2025-0022', title: 'Suspicious Package Alert', organisation: 'Express Courier Sdn Bhd', severity: 'Critical', status: 'Escalated', escalation: 'Approved', submitted: '2025-01-14' },
+  { id: 'PSIRP-2025-0022', title: 'Suspicious Package Alert', organisation: 'Global Express Logistics Sdn Bhd', severity: 'Critical', status: 'Escalated', escalation: 'Approved', submitted: '2025-01-14' },
   { id: 'PSIRP-2025-0019', title: 'Dangerous Goods Mishandling', organisation: 'Pos Malaysia Berhad', severity: 'High', status: 'Closed', escalation: 'None', submitted: '2025-01-10' },
 ];
 

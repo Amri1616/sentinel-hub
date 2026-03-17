@@ -46,7 +46,7 @@ const casesByOrg = [
   { org: 'J&T Express', cases: 22 },
   { org: 'DHL eCommerce', cases: 18 },
   { org: 'CityLink', cases: 14 },
-  { org: 'Express Courier', cases: 12 },
+  { org: 'Global Express Logistics', cases: 12 },
 ];
 
 const resolutionTime = [

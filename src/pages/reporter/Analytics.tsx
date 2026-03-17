@@ -118,6 +118,18 @@ export default function ReporterAnalytics() {
             <div className="text-2xl font-bold">11</div>
           </CardContent>
         </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Escalation Rate</span>
+              <AlertTriangle className="h-4 w-4 text-warning" />
+            </div>
+            <div className="text-2xl font-bold text-destructive">
+              22.2<span className="text-sm font-medium ml-1">%</span>
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-1 text-right">Escalated / Total Cases</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* ====== Charts: Category & Severity ====== */}

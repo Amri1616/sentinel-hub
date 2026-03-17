@@ -12,7 +12,7 @@ const notifications = [
   { id: 5, type: 'status', icon: CheckCircle2, title: 'Case Closed', description: 'Case PSIRP-2025-0021 has been marked as Closed after investigation.', time: '3 days ago', read: true },
   { id: 6, type: 'draft', icon: Clock, title: 'Draft Reminder', description: 'Kamal Hassan has 1 incident draft pending submission.', time: '3 days ago', read: true },
   { id: 7, type: 'escalation', icon: AlertTriangle, title: 'RFI Sent', description: 'Case PSIRP-2025-0023 has an RFI from Officer Lim requiring response.', time: '4 days ago', read: true },
-  { id: 8, type: 'status', icon: FileText, title: 'New Submission', description: 'Siti Nurhaliza submitted a new incident PSIRP-2025-0024.', time: '5 days ago', read: true },
+  { id: 8, type: 'status', icon: FileText, title: 'New Submission', description: 'Mastura Salleh submitted a new incident PSIRP-2025-0024.', time: '5 days ago', read: true },
 ];
 
 const typeColors: Record<string, string> = {

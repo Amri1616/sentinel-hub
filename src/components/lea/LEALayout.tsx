@@ -42,7 +42,7 @@ export default function LEALayout() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">Agency</p>
-                <p className="text-xs text-muted-foreground truncate">PDRM — Cybercrime Unit</p>
+                <p className="text-xs text-muted-foreground truncate">Ahmad Faizal</p>
               </div>
             </div>
           ) : (

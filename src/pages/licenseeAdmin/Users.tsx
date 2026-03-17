@@ -1,14 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Edit, Ban, CheckCircle, Search, Users, FileSearch, Clock, AlertTriangle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Search } from 'lucide-react';
 
 const usersData = [
   { id: 1, name: 'Ahmad bin Abdullah', email: 'ahmad.abdullah@expresscourier.com', phone: '+60 12-345 6789', role: 'Reporter', status: 'Active', submissions: 14, draftDate: '2025-02-18', hasDraft: true },
@@ -18,56 +11,12 @@ const usersData = [
   { id: 5, name: 'Azman Ali', email: 'azman.ali@expresscourier.com', phone: '+60 16-789 0123', role: 'Reporter', status: 'Inactive', submissions: 5, draftDate: null, hasDraft: false },
 ];
 
-function getDraftDaysRemaining(draftDate: string | null): number | null {
-  if (!draftDate) return null;
-  const draft = new Date(draftDate);
-  const now = new Date('2026-02-22');
-  const diffMs = 7 * 24 * 60 * 60 * 1000 - (now.getTime() - draft.getTime());
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-}
-
-function getDraftBadge(daysRemaining: number | null) {
-  if (daysRemaining === null) return null;
-  if (daysRemaining <= 0) return <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 text-xs">Overdue</Badge>;
-  if (daysRemaining <= 2) return <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 text-xs"><Clock className="h-3 w-3 mr-1" />{daysRemaining}d left</Badge>;
-  if (daysRemaining <= 4) return <Badge variant="outline" className="bg-status-rfi/20 text-status-rfi border-status-rfi/30 text-xs"><Clock className="h-3 w-3 mr-1" />{daysRemaining}d left</Badge>;
-  return <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30 text-xs"><Clock className="h-3 w-3 mr-1" />{daysRemaining}d left</Badge>;
-}
-
 export default function LicenseeAdminUsers() {
-  const { toast } = useToast();
-  const [deactivateOpen, setDeactivateOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<typeof usersData[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-
-  const activeCount = usersData.filter(u => u.status === 'Active').length;
-  const inactiveCount = usersData.filter(u => u.status === 'Inactive').length;
-  const overdueCount = usersData.filter(u => {
-    const days = getDraftDaysRemaining(u.draftDate);
-    return days !== null && days <= 0;
-  }).length;
 
   const filtered = usersData.filter(u => {
-    const matchesSearch = u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || u.status.toLowerCase() === statusFilter;
-    return matchesSearch && matchesStatus;
+    return u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.email.toLowerCase().includes(searchQuery.toLowerCase());
   });
-
-  const handleDeactivate = () => {
-    toast({ title: "Deactivation Requested", description: `Deactivation request for ${selectedUser?.name} has been submitted.` });
-    setDeactivateOpen(false);
-    setSelectedUser(null);
-  };
-
-  const handleToggleStatus = (user: typeof usersData[0]) => {
-    if (user.status === 'Active') {
-      setSelectedUser(user);
-      setDeactivateOpen(true);
-    } else {
-      toast({ title: "User Activated", description: `${user.name} has been activated.` });
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -76,44 +25,7 @@ export default function LicenseeAdminUsers() {
         <p className="text-muted-foreground">Manage reporters in your organisation</p>
       </div>
 
-      {/* Analytics Panel */}
-      <div className="grid gap-4 grid-cols-3">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-status-closed/15 flex items-center justify-center">
-              <Users className="h-5 w-5 text-status-closed" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Active / Inactive</p>
-              <p className="text-lg font-bold">{activeCount} / {inactiveCount}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary/15 flex items-center justify-center">
-              <FileSearch className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Total Reporters</p>
-              <p className="text-lg font-bold">{usersData.length}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-destructive/15 flex items-center justify-center">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Overdue Drafts</p>
-              <p className="text-lg font-bold">{overdueCount}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search & Filter Bar */}
+      {/* Search Bar */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -121,16 +33,6 @@ export default function LicenseeAdminUsers() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search by name or email..." className="pl-10" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Filter status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </CardContent>
       </Card>
@@ -145,75 +47,25 @@ export default function LicenseeAdminUsers() {
                   <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">Email</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">Phone Number</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">Submissions</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Draft Deadline</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((user) => {
-                  const daysRemaining = getDraftDaysRemaining(user.draftDate);
-                  return (
-                    <tr key={user.id} className="border-b hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-4">
-                        <div>
-                          <span className="font-medium">{user.name}</span>
-                          <Badge variant="outline" className="ml-2 text-xs">{user.role}</Badge>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-muted-foreground">{user.email}</td>
-                      <td className="px-4 py-4 text-sm text-muted-foreground">{user.phone}</td>
-                      <td className="px-4 py-4">
-                        <Badge variant="outline" className={user.status === 'Active' ? 'bg-status-closed/20 text-status-closed border-status-closed/30' : 'bg-destructive/20 text-destructive border-destructive/30'}>
-                          {user.status}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-4 text-sm font-medium">{user.submissions}</td>
-                      <td className="px-4 py-4">
-                        {user.hasDraft ? getDraftBadge(daysRemaining) : <span className="text-xs text-muted-foreground">No draft</span>}
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="ghost" title="Edit">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost" title={user.status === 'Active' ? 'Deactivate' : 'Activate'} onClick={() => handleToggleStatus(user)}>
-                            {user.status === 'Active' ? <Ban className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {filtered.map((user) => (
+                  <tr key={user.id} className="border-b hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-4">
+                      <span className="font-medium">{user.name}</span>
+                    </td>
+                    <td className="px-4 py-4 text-sm text-muted-foreground">{user.email}</td>
+                    <td className="px-4 py-4 text-sm text-muted-foreground">{user.phone}</td>
+                    <td className="px-4 py-4 text-sm font-medium">{user.submissions}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </CardContent>
       </Card>
-
-      {/* Deactivation Modal */}
-      <Dialog open={deactivateOpen} onOpenChange={setDeactivateOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Request Deactivation</DialogTitle>
-            <DialogDescription>Submit a deactivation request for {selectedUser?.name}.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-              <p className="text-sm text-destructive font-medium">This will disable the user's access to the system.</p>
-            </div>
-            <div className="space-y-2">
-              <Label>Reason for deactivation *</Label>
-              <Textarea placeholder="Provide reason for deactivation..." rows={3} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeactivateOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDeactivate}>Submit Request</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

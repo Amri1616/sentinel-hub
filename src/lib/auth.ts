@@ -39,7 +39,7 @@ export const login = (email: string, password: string, role: Role): User => {
     email,
     role,
     organisationId: role === 'reporter' || role === 'licensee-admin' ? 'org-001' : undefined,
-    organisationName: role === 'reporter' || role === 'licensee-admin' ? 'Express Courier Sdn Bhd' : undefined,
+    organisationName: role === 'reporter' || role === 'licensee-admin' ? 'Global Express Logistics Sdn Bhd' : undefined,
   };
 
   currentUser = user;
