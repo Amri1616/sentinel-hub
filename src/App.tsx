@@ -35,6 +35,10 @@ import LicenseeAdminLayout from "./components/licenseeAdmin/LicenseeAdminLayout"
 import LicenseeAdminDashboard from "./pages/licenseeAdmin/Dashboard";
 import LicenseeAdminIncidents from "./pages/licenseeAdmin/Incidents";
 import LicenseeAdminIncidentDetails from "./pages/licenseeAdmin/IncidentDetails";
+import LicenseeAdminDrafts from "./pages/licenseeAdmin/Drafts";
+import LicenseeAdminUnderReview from "./pages/licenseeAdmin/UnderReview";
+import LicenseeAdminEscalated from "./pages/licenseeAdmin/Escalated";
+import LicenseeAdminClosed from "./pages/licenseeAdmin/Closed";
 import LicenseeAdminUsers from "./pages/licenseeAdmin/Users";
 
 import LicenseeAdminAnalytics from "./pages/licenseeAdmin/Analytics";
@@ -119,6 +123,10 @@ const App = () => (
                   {/* Licensee Admin Routes - with sidebar layout */}
                   <Route path="/licensee-admin" element={<ProtectedRoute><LicenseeAdminLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<LicenseeAdminDashboard />} />
+                    <Route path="drafts" element={<LicenseeAdminDrafts />} />
+                    <Route path="under-review" element={<LicenseeAdminUnderReview />} />
+                    <Route path="escalated" element={<LicenseeAdminEscalated />} />
+                    <Route path="closed" element={<LicenseeAdminClosed />} />
                     <Route path="incidents" element={<LicenseeAdminIncidents />} />
                     <Route path="incidents/:id" element={<LicenseeAdminIncidentDetails />} />
                     <Route path="users" element={<LicenseeAdminUsers />} />

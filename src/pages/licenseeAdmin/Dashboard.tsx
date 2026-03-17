@@ -14,17 +14,18 @@ import {
 import {
   FileText, AlertTriangle, CheckCircle2, Clock, Megaphone,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   PieChart, Pie, Cell,
 } from 'recharts';
 
 const kpiCards = [
-  { label: 'Total Incidents', value: 47, icon: FileText, color: 'text-primary' },
-  { label: 'Draft Reports', value: 3, icon: FileText, color: 'text-muted-foreground' },
-  { label: 'Under Review', value: 8, icon: Clock, color: 'text-status-in-review' },
-  { label: 'Escalated Cases', value: 5, icon: AlertTriangle, color: 'text-destructive' },
-  { label: 'Closed Cases', value: 30, icon: CheckCircle2, color: 'text-status-closed' },
+  { label: 'Total Incidents', value: 47, icon: FileText, color: 'text-primary', path: '/licensee-admin/incidents' },
+  { label: 'Draft Reports', value: 3, icon: FileText, color: 'text-muted-foreground', path: '/licensee-admin/drafts' },
+  { label: 'Under Review', value: 8, icon: Clock, color: 'text-status-in-review', path: '/licensee-admin/under-review' },
+  { label: 'Escalated Cases', value: 5, icon: AlertTriangle, color: 'text-destructive', path: '/licensee-admin/escalated' },
+  { label: 'Closed Cases', value: 30, icon: CheckCircle2, color: 'text-status-closed', path: '/licensee-admin/closed' },
 ];
 
 
@@ -56,6 +57,7 @@ const chartTooltipStyle = {
 };
 
 export default function LicenseeAdminDashboard() {
+  const navigate = useNavigate();
   const announcements = [
     { id: '1', title: 'System Maintenance Scheduled', message: 'The system will undergo scheduled maintenance this Saturday from 2:00 AM to 6:00 AM (MYT). During this window, the platform will be temporarily unavailable. Please ensure all pending incident reports and submissions are saved before the maintenance period begins.', from: 'System Admin', time: '2 hours ago', date: '8 Mar 2025', priority: 'high' as const },
     { id: '2', title: 'New Reporting Guidelines', message: 'Please review the updated incident reporting guidelines effective next month. The revised guidelines cover new submission requirements, updated classification criteria, and mandatory documentation standards. All reporters and administrators are expected to familiarise themselves with the changes.', from: 'MCMC', time: '1 day ago', date: '7 Mar 2025', priority: 'normal' as const },
@@ -74,7 +76,7 @@ export default function LicenseeAdminDashboard() {
       {/* KPI Cards — no trend indicators */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
         {kpiCards.map((kpi) => (
-          <Card key={kpi.label} className="hover:shadow-lg transition-shadow duration-200">
+          <Card key={kpi.label} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={() => navigate(kpi.path)}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
