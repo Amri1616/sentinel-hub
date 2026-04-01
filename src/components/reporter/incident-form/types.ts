@@ -7,8 +7,12 @@ export interface StaffDetected {
 
 export interface SenderRecipientInfo {
   name: string;
-  address: string;
-  stateCountry: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
   contact: string;
 }
 
@@ -29,7 +33,7 @@ export interface IncidentFormData {
   description: string;
   incidentDate: string;
   incidentTime: string;
-  incidentLocation: string;
+  incidentLocation: SenderRecipientInfo;
   staffDetected: StaffDetected;
   systemServiceAffected: string;
   observedImpact: string;
@@ -161,5 +165,12 @@ export const parcelRelatedTypes = new Set([
 ]);
 
 export const emptySenderRecipient: SenderRecipientInfo = {
-  name: '', address: '', stateCountry: '', contact: '',
+  name: '',
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  state: '',
+  zipCode: '',
+  country: 'Malaysia',
+  contact: '',
 };

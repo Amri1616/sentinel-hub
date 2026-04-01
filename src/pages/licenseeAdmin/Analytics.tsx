@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Download, MapPin, TrendingUp, ShieldAlert } from 'lucide-react';
 import {
@@ -59,10 +60,18 @@ export default function LicenseeAdminAnalytics() {
           <h1 className="text-3xl font-bold mb-1">Analytics & Report</h1>
           <p className="text-muted-foreground">Case Type Analytics</p>
         </div>
-        <Button variant="outline">
-          <Download className="mr-2 h-4 w-4" />
-          Export Report
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              Export Report
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>CSV File</DropdownMenuItem>
+            <DropdownMenuItem>PDF Screen Capture</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* ====== Filters ====== */}

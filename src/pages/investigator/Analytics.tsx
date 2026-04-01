@@ -58,11 +58,6 @@ const resolutionTime = [
   { month: 'Jun', avgDays: 5.8 },
 ];
 
-const reports = [
-  { title: 'Case Volume Report', desc: 'Total cases by organisation, severity, and period' },
-  { title: 'Incident Type Analysis', desc: 'Category distribution, trends, and anomaly detection' },
-  { title: 'Organisation Comparison', desc: 'Cross-organisation risk profiles and benchmarks' },
-];
 
 const tooltipStyle = {
   backgroundColor: 'hsl(var(--background))',
@@ -110,7 +105,6 @@ export default function InvestigatorAnalytics() {
           <TabsTrigger value="summary">Summary Analytics</TabsTrigger>
           <TabsTrigger value="trends">Incident Trends</TabsTrigger>
           <TabsTrigger value="resolution">Resolution</TabsTrigger>
-          <TabsTrigger value="reports">Generate Reports</TabsTrigger>
         </TabsList>
 
         {/* Summary Analytics */}
@@ -240,29 +234,6 @@ export default function InvestigatorAnalytics() {
           </Card>
         </TabsContent>
 
-        {/* Generate Reports */}
-        <TabsContent value="reports">
-          <div className="grid gap-4 md:grid-cols-2">
-            {reports.map((r) => (
-              <Card key={r.title}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg"><FileBarChart className="h-4 w-4" /> {r.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">{r.desc}</p>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleExport(r.title, 'PDF')}>
-                      <Download className="h-4 w-4 mr-1" /> PDF
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleExport(r.title, 'Excel')}>
-                      <Download className="h-4 w-4 mr-1" /> Excel
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   );

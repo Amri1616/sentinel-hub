@@ -92,7 +92,7 @@ export const Header = () => {
             alt="MCMC Logo"
             className="h-12 w-auto object-contain"
           />
-          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block tracking-wide">POSTAL & COURIER INCIDENT REPORTING</h1>
+          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block">Postal Security Incident Reporting Platform</h1>
         </div>
 
         <div className="flex items-center gap-4">

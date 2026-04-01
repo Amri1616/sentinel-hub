@@ -95,10 +95,6 @@ export default function ReporterIncidents() {
           <h1 className="text-3xl font-bold mb-2">My Submissions</h1>
           <p className="text-muted-foreground">Track and manage your incident reports</p>
         </div>
-        <Button onClick={() => navigate('/reporter/incidents/new')} className="glow-cyan">
-          <Plus className="mr-2 h-4 w-4" />
-          New Incident
-        </Button>
       </div>
 
       {/* Metrics */}

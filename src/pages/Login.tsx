@@ -50,7 +50,7 @@ export default function Login() {
       <div className="w-full max-w-md flex flex-col items-center mb-8">
         <img src={mcmcLogo} alt="MCMC Logo" className="h-20 w-auto mb-4" />
         <h1 className="text-[28px] font-bold font-poppins text-white text-center tracking-wide uppercase">
-          POSTAL & COURIER INCIDENT REPORTING
+          Postal Security Incident Reporting Platform
         </h1>
       </div>
 

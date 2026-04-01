@@ -1,16 +1,6 @@
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from '@/components/ui/dialog';
-import { FileText, Plus, MessageSquare, Clock, CheckCircle2, Trash2, ArrowUpRight, ShieldCheck, Megaphone, Activity } from 'lucide-react';
+import { FileText, Plus, MessageSquare, Clock, CheckCircle2, Trash2, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -39,6 +29,8 @@ const monthlySubmissions = [
   { month: 'Jan', count: 7 },
 ];
 
+const pendingClarificationCount = 2;
+
 export default function ReporterDashboard() {
   const navigate = useNavigate();
 
@@ -48,23 +40,31 @@ export default function ReporterDashboard() {
     { id: 'draft-3', title: 'Lost Consignment', updated: '3 days ago', daysLeft: 1 },
   ];
 
-  const announcements = [
-    { id: '1', title: 'System Maintenance Scheduled', message: 'The system will undergo scheduled maintenance this Saturday from 2:00 AM to 6:00 AM (MYT). During this window, the platform will be temporarily unavailable. Please ensure all pending drafts are saved before the maintenance period begins. We apologise for any inconvenience and appreciate your understanding.', from: 'System Admin', time: '2 hours ago', date: '8 Mar 2026', priority: 'high' as const },
-    { id: '2', title: 'New Reporting Guidelines', message: 'Please review the updated incident reporting guidelines effective next month. Key changes include revised classification categories for postal security incidents, updated evidence requirements for escalation cases, and new mandatory fields in the incident submission form. A detailed document has been shared via email. All reporters must acknowledge receipt by 15 March 2026.', from: 'Licensee Admin', time: '1 day ago', date: '7 Mar 2026', priority: 'normal' as const },
-    { id: '3', title: 'Training Session Available', message: 'Join our monthly training session on best practices for incident documentation. This session will cover: proper evidence attachment guidelines, how to write effective incident descriptions, common mistakes to avoid, and a live Q&A with the MCMC review team. Register through the Learning portal by 10 March 2026.', from: 'Licensee Admin', time: '3 days ago', date: '5 Mar 2026', priority: 'normal' as const },
-    { id: '4', title: 'Holiday Closure Notice', message: 'Please note that the support helpdesk will be closed on 12 March 2026 in observance of a public holiday. Any urgent incidents should be submitted through the platform as usual — they will be reviewed on the next business day. For critical security matters, please contact the emergency hotline.', from: 'System Admin', time: '5 days ago', date: '3 Mar 2026', priority: 'normal' as const },
-    { id: '5', title: 'Platform Update v2.4 Released', message: 'We are pleased to announce the release of Platform Update v2.4. This update includes performance improvements to the dashboard, enhanced search filters on the incidents page, and a new bulk-export feature for analytics reports. Please clear your browser cache if you experience any display issues after the update.', from: 'System Admin', time: '1 week ago', date: '1 Mar 2026', priority: 'normal' as const },
-  ];
-
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState<(typeof announcements)[number] | null>(null);
-
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back, Licensee Reporter</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back, Licensee Reporter</p>
+        </div>
+        {pendingClarificationCount > 0 && (
+          <Button
+            variant="outline"
+            onClick={() => navigate('/reporter/incidents?filter=rfi')}
+            className="border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:border-destructive/60 transition-all gap-2 shrink-0"
+          >
+            <MessageSquare className="h-4 w-4" />
+            Pending Action
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive" />
+            </span>
+            <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
+              {pendingClarificationCount}
+            </span>
+          </Button>
+        )}
       </div>
-
 
       {/* Create New Incident */}
       <Button
@@ -78,52 +78,52 @@ export default function ReporterDashboard() {
 
       {/* KPI Cards - 5 cards */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => navigate('/reporter/drafts')}>
+        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/drafts')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">My Drafts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-primary">3</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-submitted/20 hover:border-status-submitted/40 transition-all cursor-pointer" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-submitted/20 hover:border-status-submitted/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Submitted</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-submitted">12</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Under Review</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-in-review">4</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Escalated</CardTitle>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-investigation">2</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Closed</CardTitle>
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-closed">8</div>
           </CardContent>
         </Card>
@@ -172,161 +172,48 @@ export default function ReporterDashboard() {
         </Card>
       </div>
 
-      {/* Pending Clarification Alert */}
-      <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/reporter/incidents?filter=rfi')}>
-        <CardContent className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-destructive/20 flex items-center justify-center">
-              <MessageSquare className="h-5 w-5 text-destructive" />
-            </div>
-            <div>
-              <p className="font-semibold text-destructive">2 Pending Clarification Responses</p>
-              <p className="text-sm text-muted-foreground">You have clarification requests awaiting your response</p>
-            </div>
-          </div>
-          <Button variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10">
-            View & Respond
+      {/* My Drafts */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle>My Drafts</CardTitle>
+          <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => navigate('/reporter/drafts')}>
+            View All Drafts
           </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {drafts.map((draft) => (
+              <div
+                key={draft.id}
+                className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary/40 transition-all"
+              >
+                <div className="flex-1">
+                  <p className="font-medium">{draft.title}</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="text-sm text-muted-foreground">Last updated: {draft.updated}</p>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${draft.daysLeft <= 2
+                      ? 'bg-destructive/15 text-destructive'
+                      : draft.daysLeft <= 4
+                        ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                        : 'bg-primary/15 text-primary'
+                      }`}>
+                      {draft.daysLeft} {draft.daysLeft === 1 ? 'day' : 'days'} left
+                    </span>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => navigate('/reporter/incidents/new')}>
+                    Continue
+                  </Button>
+                  <Button size="sm" variant="ghost" className="text-destructive">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
-
-
-      <div className="flex flex-col gap-6">
-        {/* My Drafts */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle>My Drafts</CardTitle>
-            <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => navigate('/reporter/drafts')}>
-              View All Drafts
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {drafts.map((draft) => (
-                <div
-                  key={draft.id}
-                  className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary/40 transition-all"
-                >
-                  <div className="flex-1">
-                    <p className="font-medium">{draft.title}</p>
-                    <div className="flex items-center gap-3 mt-1">
-                      <p className="text-sm text-muted-foreground">Last updated: {draft.updated}</p>
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${draft.daysLeft <= 2
-                        ? 'bg-destructive/15 text-destructive'
-                        : draft.daysLeft <= 4
-                          ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                          : 'bg-primary/15 text-primary'
-                        }`}>
-                        {draft.daysLeft} {draft.daysLeft === 1 ? 'day' : 'days'} left
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => navigate('/reporter/incidents/new')}>
-                      Continue
-                    </Button>
-                    <Button size="sm" variant="ghost" className="text-destructive">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-
-        {/* Recent Activity Widget */}
-        <Card className="border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-primary" />
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
-                <div className="h-2 w-2 rounded-full bg-status-in-review mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-sm font-medium">Case PSIR-2026-004 moved to <span className="text-status-in-review">Under Review</span></p>
-                  <p className="text-xs text-muted-foreground">2 hours ago</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
-                <div className="h-2 w-2 rounded-full bg-status-rfi mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-sm font-medium">Clarification requested for Case PSIR-2026-002</p>
-                  <p className="text-xs text-muted-foreground">5 hours ago</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
-                <div className="h-2 w-2 rounded-full bg-status-closed mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-sm font-medium">Case PSIR-2026-001 <span className="text-status-closed">Closed</span></p>
-                  <p className="text-xs text-muted-foreground">1 day ago</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Announcements */}
-        <Card className="border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <Megaphone className="h-4 w-4" />
-              Announcements
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3 max-h-[340px] overflow-y-auto pr-1">
-              {announcements.map((announcement) => (
-                <button
-                  key={announcement.id}
-                  type="button"
-                  onClick={() => setSelectedAnnouncement(announcement)}
-                  className={`w-full text-left p-3 rounded-lg border transition-all cursor-pointer hover:ring-1 hover:ring-primary/30 hover:shadow-sm ${announcement.priority === 'high'
-                    ? 'border-destructive/40 bg-destructive/5 hover:bg-destructive/10'
-                    : 'border-border bg-secondary/30 hover:bg-secondary/60'
-                    }`}
-                >
-                  <p className="text-sm font-medium mb-1">{announcement.title}</p>
-                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{announcement.message}</p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>From: {announcement.from}</span>
-                    <span>{announcement.time}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Announcement Detail Modal */}
-        <Dialog open={!!selectedAnnouncement} onOpenChange={(open) => { if (!open) setSelectedAnnouncement(null); }}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>{selectedAnnouncement?.title}</DialogTitle>
-              <DialogDescription asChild>
-                <div className="flex items-center gap-3 pt-1">
-                  <span>From: {selectedAnnouncement?.from}</span>
-                  <span className="text-muted-foreground/50">•</span>
-                  <span>{selectedAnnouncement?.date}</span>
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-            <div className="text-sm leading-relaxed text-foreground/90 py-2 whitespace-pre-line">
-              {selectedAnnouncement?.message}
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" className="w-full sm:w-auto">Close</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
     </div>
   );
 }

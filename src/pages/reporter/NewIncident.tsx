@@ -28,7 +28,7 @@ const initialFormData: IncidentFormData = {
   description: '',
   incidentDate: '',
   incidentTime: '',
-  incidentLocation: '',
+  incidentLocation: { ...emptySenderRecipient },
   staffDetected: { name: '', designation: '', contactNumber: '', email: '' },
   systemServiceAffected: '',
   observedImpact: '',
