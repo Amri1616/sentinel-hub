@@ -36,7 +36,6 @@ export default function LEADashboard() {
     { label: 'Open Cases', value: '47', icon: Clock, color: 'hsl(var(--status-in-review))' },
     { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'hsl(var(--destructive))' },
     { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'hsl(var(--status-closed))' },
-    { label: 'High Severity', value: '38', icon: ShieldAlert, color: 'hsl(var(--role-investigator))' },
   ];
 
   return (
@@ -47,7 +46,7 @@ export default function LEADashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => (
           <Card key={k.label} className="min-h-[120px] flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -60,24 +59,6 @@ export default function LEADashboard() {
           </Card>
         ))}
       </div>
-
-      {/* Pending Acknowledgement */}
-      <Card className="border-destructive/30">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Bell className="h-4 w-4 text-destructive" /> Cases Pending Acknowledgement</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {pendingAck.map((c) => (
-            <div key={c.id} className="flex items-center justify-between p-3 border border-border/40 rounded-lg bg-destructive/5">
-              <div className="space-y-1">
-                <p className="text-sm font-medium">{c.id} — {c.title}</p>
-                <p className="text-xs text-muted-foreground">{c.org} · Severity: {c.severity} · Escalated: {c.escalatedDate}</p>
-              </div>
-              <Button size="sm" onClick={() => navigate(`/lea/cases/${c.id}`)}>Acknowledge</Button>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
 
       {/* High Risk Alert Widget */}
       <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/lea/cases')}>
@@ -94,6 +75,24 @@ export default function LEADashboard() {
           <Button variant="outline" className="shrink-0 border-destructive/30 text-destructive hover:bg-destructive/10 w-full sm:w-auto">
             View Critical Cases
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Pending Acknowledgement */}
+      <Card className="border-destructive/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Bell className="h-4 w-4 text-destructive" /> Cases Pending Acknowledgement</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {pendingAck.map((c) => (
+            <div key={c.id} className="flex items-center justify-between p-3 border border-border/40 rounded-lg bg-destructive/5">
+              <div className="space-y-1">
+                <p className="text-sm font-medium">{c.id} — {c.title}</p>
+                <p className="text-xs text-muted-foreground">{c.org} · Severity: {c.severity} · Escalated: {c.escalatedDate}</p>
+              </div>
+              <Button size="sm" onClick={() => navigate(`/lea/cases/${c.id}`)}>Acknowledge</Button>
+            </div>
+          ))}
         </CardContent>
       </Card>
 
