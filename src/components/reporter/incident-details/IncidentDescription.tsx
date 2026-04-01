@@ -54,35 +54,33 @@ export default function IncidentDescription({ incident }: Props) {
         )}
 
         {/* Staff Detected */}
-        {incident.staffDetected && incident.staffDetected.name && (
-          <div className="p-4 border border-border rounded-lg bg-muted/30 space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground">Details of Officer/Staff Who Detected the Incident</p>
-            <div className="grid md:grid-cols-2 gap-3">
-              <Field label="Name" value={incident.staffDetected.name} />
-              <Field label="Position" value={incident.staffDetected.designation} />
-              <Field label="Phone No." value={incident.staffDetected.contactNumber} />
-              <Field label="Email" value={incident.staffDetected.email} />
-            </div>
+        <div className="p-4 border border-border rounded-lg bg-muted/30 space-y-3">
+          <p className="text-xs font-semibold text-muted-foreground">Officer/Staff Who Detected the Incident</p>
+          <div className="grid md:grid-cols-2 gap-3">
+            <Field label="Name" value={incident.staffDetected?.name || '—'} />
+            <Field label="Position" value={incident.staffDetected?.designation || '—'} />
+            <Field label="Phone No." value={incident.staffDetected?.contactNumber || '—'} />
+            <Field label="Email" value={incident.staffDetected?.email || '—'} />
           </div>
-        )}
+        </div>
 
-        {/* Affected System */}
-        {incident.systemServiceAffected && (
-          <Field label="Affected Systems/Services" value={incident.systemServiceAffected} />
-        )}
-
-        {/* Estimated Impact */}
-        {impact && (
+        {/* Affected Systems & Estimated Impact */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <Field label="Affected Systems/Services" value={incident.systemServiceAffected || '—'} />
           <div>
             <p className="text-xs text-muted-foreground mb-1">Estimated Impact</p>
-            <Badge variant="outline" className={`text-xs ${
-              impact === 'High' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
-              impact === 'Medium' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
-              impact === 'Low' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-              ''
-            }`}>{impact}</Badge>
+            {impact ? (
+              <Badge variant="outline" className={`text-xs ${
+                impact === 'High' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
+                impact === 'Medium' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                impact === 'Low' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                ''
+              }`}>{impact}</Badge>
+            ) : (
+              <span className="text-sm font-medium">—</span>
+            )}
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );

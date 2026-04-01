@@ -13,7 +13,7 @@ const notifications = [
     time: '30 minutes ago',
     read: false,
     icon: Clock,
-    action: '/reporter/incidents/new',
+    action: '/licensee-reporter/incidents/new',
     actionLabel: 'Continue Draft',
   },
   {
@@ -24,7 +24,7 @@ const notifications = [
     time: '1 hour ago',
     read: false,
     icon: MessageSquare,
-    action: '/reporter/incidents/PSIRP-2025-0025',
+    action: '/licensee-reporter/incidents/PSIRP-2025-0025',
     actionLabel: 'Respond',
   },
   {
@@ -35,7 +35,7 @@ const notifications = [
     time: '3 hours ago',
     read: false,
     icon: FileText,
-    action: '/reporter/incidents/PSIRP-2025-0020',
+    action: '/licensee-reporter/incidents/PSIRP-2025-0020',
     actionLabel: 'View',
   },
   {
@@ -46,7 +46,7 @@ const notifications = [
     time: '1 day ago',
     read: true,
     icon: ArrowUpRight,
-    action: '/reporter/incidents/PSIRP-2025-0019',
+    action: '/licensee-reporter/incidents/PSIRP-2025-0019',
     actionLabel: 'View',
   },
   {
@@ -57,7 +57,7 @@ const notifications = [
     time: '2 days ago',
     read: true,
     icon: CheckCircle2,
-    action: '/reporter/incidents/PSIRP-2025-0015',
+    action: '/licensee-reporter/incidents/PSIRP-2025-0015',
     actionLabel: 'View',
   },
   {
@@ -68,7 +68,7 @@ const notifications = [
     time: '3 days ago',
     read: true,
     icon: Clock,
-    action: '/reporter/incidents/new',
+    action: '/licensee-reporter/incidents/new',
     actionLabel: 'Continue Draft',
   },
 ];

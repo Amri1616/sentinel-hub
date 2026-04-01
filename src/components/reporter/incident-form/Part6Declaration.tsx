@@ -20,6 +20,20 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function formatAddress(address: any) {
+  if (!address || typeof address === 'string') return address || '—';
+  // If it's the SenderRecipientInfo object
+  const parts = [
+    address.addressLine1,
+    address.addressLine2,
+    address.city,
+    address.zipCode,
+    address.state,
+    address.country
+  ].filter(Boolean);
+  return parts.length > 0 ? parts.join(', ') : '—';
+}
+
 export default function Part6Declaration({ data, declaration, onDeclarationChange, onDateChange }: Props) {
   return (
     <div className="space-y-6">
@@ -59,7 +73,7 @@ export default function Part6Declaration({ data, declaration, onDeclarationChang
           <SummaryRow label="Description" value={data.description} />
           <SummaryRow label="Date" value={data.incidentDate} />
           <SummaryRow label="Time" value={data.incidentTime} />
-          <SummaryRow label="Location" value={data.incidentLocation} />
+          <SummaryRow label="Location" value={formatAddress(data.incidentLocation)} />
           <SummaryRow label="Staff Detected" value={data.staffDetected.name} />
           <SummaryRow label="Tracking No." value={data.trackingNumber} />
           <SummaryRow label="Sender" value={data.senderInfo.name} />

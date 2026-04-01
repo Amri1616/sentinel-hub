@@ -50,7 +50,7 @@ export default function ReporterDashboard() {
         {pendingClarificationCount > 0 && (
           <Button
             variant="outline"
-            onClick={() => navigate('/reporter/incidents?filter=rfi')}
+            onClick={() => navigate('/licensee-reporter/incidents?filter=rfi')}
             className="border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:border-destructive/60 transition-all gap-2 shrink-0"
           >
             <MessageSquare className="h-4 w-4" />
@@ -68,7 +68,7 @@ export default function ReporterDashboard() {
 
       {/* Create New Incident */}
       <Button
-        onClick={() => navigate('/reporter/incidents/new')}
+        onClick={() => navigate('/licensee-reporter/incidents/new')}
         size="lg"
         className="w-full h-auto py-5 text-lg glow-cyan"
       >
@@ -78,7 +78,7 @@ export default function ReporterDashboard() {
 
       {/* KPI Cards - 5 cards */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/drafts')}>
+        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/drafts')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">My Drafts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -88,7 +88,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-submitted/20 hover:border-status-submitted/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-submitted/20 hover:border-status-submitted/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Submitted</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
@@ -98,7 +98,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Under Review</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -108,7 +108,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Escalated</CardTitle>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -118,7 +118,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reporter/incidents')}>
+        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Closed</CardTitle>
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
@@ -176,7 +176,7 @@ export default function ReporterDashboard() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle>My Drafts</CardTitle>
-          <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => navigate('/reporter/drafts')}>
+          <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => navigate('/licensee-reporter/drafts')}>
             View All Drafts
           </Button>
         </CardHeader>
@@ -202,7 +202,7 @@ export default function ReporterDashboard() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => navigate('/reporter/incidents/new')}>
+                  <Button size="sm" variant="outline" onClick={() => navigate('/licensee-reporter/incidents/new')}>
                     Continue
                   </Button>
                   <Button size="sm" variant="ghost" className="text-destructive">

@@ -9,7 +9,20 @@ import CaseClarificationThread, { type ClarificationMessage } from '@/components
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
 import { IncidentFormData } from '@/components/reporter/incident-form/types';
 
-function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: string }): CaseData {
+function formatAddress(address: any) {
+  if (!address || typeof address === 'string') return address || '';
+  const parts = [
+    address.addressLine1,
+    address.addressLine2,
+    address.city,
+    address.zipCode,
+    address.state,
+    address.country
+  ].filter(Boolean);
+  return parts.join(', ');
+}
+
+function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: string, linkDescription?: string }): CaseData {
   const submittedAt = form.submittedAt ? new Date(form.submittedAt) : new Date();
   const dateReported = `${submittedAt.toISOString().split('T')[0]} ${submittedAt.toTimeString().slice(0, 5)}`;
 
@@ -21,31 +34,44 @@ function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: 
     description: form.description,
     incidentDate: form.incidentDate,
     incidentTime: form.incidentTime,
-    incidentLocation: form.incidentLocation,
+    incidentLocation: formatAddress(form.incidentLocation),
     dateReported,
     branchName: '',
-    address: form.incidentLocation,
-    state: '',
-    postalCode: '',
+    address: formatAddress(form.incidentLocation),
+    state: form.incidentLocation?.state || '',
+    postalCode: form.incidentLocation?.zipCode || '',
     companyName: form.companyName,
     registeredAddress: form.registeredAddress,
     reporterName: form.reporterName,
     reporterDesignation: form.position,
     reporterEmail: form.officialEmail,
+    alternativeEmail: form.alternativeEmail || undefined,
     reporterPhone: form.contactNumber,
+    additionalPhone: form.additionalPhone || undefined,
     faxNumber: form.faxNumber || undefined,
     leaEscalation: form.reportedToAuthorities === 'Yes' ? 'Yes' : 'No',
     systemServiceAffected: form.systemServiceAffected || undefined,
     observedImpact: form.observedImpact || undefined,
     primaryIncidentType: form.primaryIncidentType,
     staffDetected: form.staffDetected?.name ? form.staffDetected : undefined,
-    senderInfo: form.senderInfo?.name ? form.senderInfo : undefined,
-    recipientInfo: form.recipientInfo?.name ? form.recipientInfo : undefined,
+    senderInfo: form.senderInfo?.name ? {
+      name: form.senderInfo.name,
+      address: `${form.senderInfo.addressLine1}${form.senderInfo.addressLine2 ? ', ' + form.senderInfo.addressLine2 : ''}`,
+      stateCountry: `${form.senderInfo.city}, ${form.senderInfo.state}, ${form.senderInfo.zipCode}, ${form.senderInfo.country}`,
+      contact: form.senderInfo.contact
+    } : undefined,
+    recipientInfo: form.recipientInfo?.name ? {
+      name: form.recipientInfo.name,
+      address: `${form.recipientInfo.addressLine1}${form.recipientInfo.addressLine2 ? ', ' + form.recipientInfo.addressLine2 : ''}`,
+      stateCountry: `${form.recipientInfo.city}, ${form.recipientInfo.state}, ${form.recipientInfo.zipCode}, ${form.recipientInfo.country}`,
+      contact: form.recipientInfo.contact
+    } : undefined,
     trackingNumber: form.trackingNumber || undefined,
     packageDeclaration: form.packageDeclaration || undefined,
     packageWeight: form.packageWeight || undefined,
     prohibitedItemType: form.prohibitedItemType || undefined,
     otherRelatedInfo: form.otherRelatedInfo || undefined,
+    linkDescription: form.linkDescription || undefined,
     immediateActions: form.immediateActions,
     incidentContained: form.incidentContained || undefined,
     incidentControlStatus: form.incidentContained || '',
@@ -84,7 +110,10 @@ const fallbackIncident = (id: string): CaseData => ({
   reporterName: 'Ahmad bin Ibrahim',
   reporterDesignation: 'Security Manager',
   reporterEmail: 'ahmad.ibrahim@posmalaysia.com.my',
+  alternativeEmail: 'ahmad.sec@gmail.com',
   reporterPhone: '+60 12-345 6789',
+  additionalPhone: '+60 17-888 9999',
+  faxNumber: '+60 3-2222 3333',
   leaEscalation: 'No',
   systemServiceAffected: 'Parcel Tracking System',
   observedImpact: 'Financial Impact',
@@ -93,19 +122,22 @@ const fallbackIncident = (id: string): CaseData => ({
   senderInfo: { name: 'TechCo Sdn Bhd', address: '12 Jalan Tech, KL', stateCountry: 'Kuala Lumpur, Malaysia', contact: '+60123456789' },
   recipientInfo: { name: 'Ahmad bin Ibrahim', address: '45 Jalan Mawar, Shah Alam', stateCountry: 'Selangor, Malaysia', contact: '+60198765432' },
   trackingNumber: 'EC20250115-12345',
-  packageDeclaration: 'Electronic goods - Laptop',
-  packageWeight: '2.5',
-  prohibitedItemType: '',
-  otherRelatedInfo: '',
-  immediateActions: 'Area secured, CCTV footage preserved, internal investigation initiated. All staff on shift have been interviewed.',
-  incidentContained: 'Ongoing',
-  incidentControlStatus: 'Under Monitoring',
+  packageDeclaration: 'Sample Electronic Device - Prohibited Lithium Battery',
+  packageWeight: '1.2',
+  prohibitedItemType: 'Lithium Batteries',
+  otherRelatedInfo: 'The item was flagged during x-ray screening at the departure gate.',
+  linkDescription: 'Detailed screening report and x-ray images: https://storage.pos.my/evidence/ABXX0020-xray',
+  immediateActions: 'Parcel isolated in a secure cabinet, local authorities notified, and sender is being contacted for clarification.',
+  incidentContained: 'Yes',
+  incidentControlStatus: 'Contained',
   reportedToAuthority: 'Yes',
+  authorityAgency: 'PDRM',
+  authorityReference: 'RPT-2025-KL-0045',
   authorityDetails: 'PDRM — RPT-2025-KL-0045',
-  parcelHandedOver: 'No',
-  assistanceRequested: ['Investigation Support', 'Legal Advice'],
+  parcelHandedOver: 'Yes',
+  assistanceRequested: ['Investigation Support', 'Security Audit'],
   documents: [
-    { name: 'CCTV_Footage_Screenshot.png', size: '2.4 MB', uploadedBy: 'Ahmad bin Ibrahim', uploadDate: '2025-01-15 10:25' },
+    { name: 'X-Ray_Screening_B102.png', size: '1.8 MB', uploadedBy: 'Ahmad bin Ibrahim', uploadDate: '2025-01-15 10:25' },
     { name: 'Incident_Report_Internal.pdf', size: '1.1 MB', uploadedBy: 'Ahmad bin Ibrahim', uploadDate: '2025-01-15 10:28' },
   ],
   declarationAgreed: true,
@@ -147,7 +179,7 @@ export default function IncidentDetails() {
     const stored = localStorage.getItem(`incident_${id}`);
     if (stored) {
       try {
-        const formData = JSON.parse(stored) as IncidentFormData & { submittedAt?: string };
+        const formData = JSON.parse(stored) as IncidentFormData & { submittedAt?: string, linkDescription?: string };
         return mapFormToCaseData(id || 'ABXX0020', formData);
       } catch {
         // Fall through to default
@@ -168,7 +200,7 @@ export default function IncidentDetails() {
     <div className="space-y-6">
       {/* Back link — just the back button, no extra badges */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/reporter/incidents')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/licensee-reporter/incidents')}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Back to Submissions
         </Button>
       </div>

@@ -213,7 +213,7 @@ export default function ReporterIncidents() {
                       if (exportMode) {
                         toggleSelectOne(incident.id);
                       } else {
-                        navigate(`/reporter/incidents/${incident.id}`);
+                        navigate(`/licensee-reporter/incidents/${incident.id}`);
                       }
                     }}
                   >

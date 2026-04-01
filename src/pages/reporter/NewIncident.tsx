@@ -65,6 +65,10 @@ export default function NewIncident() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
+
   const steps = [
     { number: 1 as Step, title: 'Reporter Information', short: 'Reporter' },
     { number: 2 as Step, title: 'Incident Type', short: 'Type' },
@@ -91,7 +95,7 @@ export default function NewIncident() {
 
   const handleSaveDraft = () => {
     toast({ title: 'Draft Saved', description: 'Your incident report has been saved as a draft.' });
-    navigate('/reporter/incidents');
+    navigate('/licensee-reporter/incidents');
   };
 
   const handleSubmit = () => {
@@ -104,7 +108,7 @@ export default function NewIncident() {
     // Persist form data so IncidentDetails can display it
     localStorage.setItem(`incident_${reportId}`, JSON.stringify({ ...formData, linkDescription, submittedAt }));
     toast({ title: 'Incident Submitted', description: `Reference: ${reportId}. Submission timestamp recorded.` });
-    navigate(`/reporter/incidents/${reportId}`);
+    navigate(`/licensee-reporter/incidents/${reportId}`);
   };
 
   const currentStepInfo = steps[currentIdx];
@@ -112,7 +116,7 @@ export default function NewIncident() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/reporter/incidents')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/licensee-reporter/incidents')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>

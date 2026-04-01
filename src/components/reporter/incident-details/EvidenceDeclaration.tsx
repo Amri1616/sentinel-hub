@@ -15,6 +15,7 @@ interface Props {
     documents: Doc[];
     declarationAgreed?: boolean;
     declarationDate?: string;
+    linkDescription?: string;
   };
 }
 
@@ -68,6 +69,13 @@ export default function EvidenceDeclaration({ incident }: Props) {
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">No supporting documents uploaded.</p>
+        )}
+        
+        {incident.linkDescription && (
+          <div className="p-4 border border-border rounded-lg bg-muted/30">
+            <p className="text-xs font-semibold text-muted-foreground mb-1">External Evidence Link / Description</p>
+            <p className="text-sm leading-relaxed">{incident.linkDescription}</p>
+          </div>
         )}
 
         {/* Declaration */}

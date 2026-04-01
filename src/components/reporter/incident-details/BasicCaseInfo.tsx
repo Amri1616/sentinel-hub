@@ -11,7 +11,9 @@ interface Props {
     reporterName: string;
     reporterDesignation: string;
     reporterEmail?: string;
+    alternativeEmail?: string;
     reporterPhone?: string;
+    additionalPhone?: string;
     faxNumber?: string;
     status: string;
     severity: string;
@@ -48,8 +50,10 @@ export default function BasicCaseInfo({ incident, getStatusColor, getSeverityCol
           <InfoField label="Reporter Name" value={incident.reporterName} />
           <InfoField label="Position" value={incident.reporterDesignation} />
           <InfoField label="Email Address" value={incident.reporterEmail || '—'} />
+          <InfoField label="Alternative Email" value={incident.alternativeEmail || '—'} />
           <InfoField label="Phone Number" value={incident.reporterPhone || '—'} />
-          {incident.faxNumber && <InfoField label="Fax Number" value={incident.faxNumber} />}
+          <InfoField label="Additional Phone No." value={incident.additionalPhone || '—'} />
+          <InfoField label="Fax Number" value={incident.faxNumber || '—'} />
           <div>
             <p className="text-xs text-muted-foreground">Current Case Status</p>
             <Badge variant="outline" className={`mt-0.5 text-xs ${getStatusColor(incident.status)}`}>{incident.status}</Badge>

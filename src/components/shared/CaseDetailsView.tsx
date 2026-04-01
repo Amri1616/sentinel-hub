@@ -22,7 +22,9 @@ export interface CaseData {
   reporterName: string;
   reporterDesignation: string;
   reporterEmail?: string;
+  alternativeEmail?: string;
   reporterPhone?: string;
+  additionalPhone?: string;
   faxNumber?: string;
   status: string;
   severity: string;
@@ -41,6 +43,7 @@ export interface CaseData {
   packageWeight?: string;
   prohibitedItemType?: string;
   otherRelatedInfo?: string;
+  linkDescription?: string;
   // Legacy parcel items support
   items?: {
     tracking: string;

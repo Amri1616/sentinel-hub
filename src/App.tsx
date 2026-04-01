@@ -137,9 +137,8 @@ const App = () => (
                     <Route path="testing" element={<LicenseeAdminTesting />} />
                   </Route>
 
-                  {/* Case Officer Routes - with sidebar layout */}
-                  {/* Case Officer Routes - with sidebar layout */}
-                  <Route path="/case-officer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
+                  {/* Reviewer / Case Officer Routes - with sidebar layout */}
+                  <Route path="/reviewer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<ReviewerDashboard />} />
                     <Route path="inbox" element={<CaseOfficerInbox />} />
                     <Route path="all-cases" element={<ReviewerAllCases />} />
