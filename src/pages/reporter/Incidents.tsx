@@ -18,12 +18,19 @@ export default function ReporterIncidents() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const incidents = [
-    { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', category: 'Theft', status: 'In Review', submitted: '2025-01-15', lastUpdated: '2 hours ago' },
-    { id: 'PSIRP-2025-0023', title: 'Tampered Shipment Detected', category: 'Tampering', status: 'RFI Sent', submitted: '2025-01-14', lastUpdated: '1 hour ago' },
-    { id: 'PSIRP-2025-0020', title: 'Lost Consignment Investigation', category: 'Loss', status: 'Under Investigation', submitted: '2025-01-12', lastUpdated: '5 hours ago' },
-    { id: 'PSIRP-2025-0019', title: 'Dangerous Goods Mishandling', category: 'Dangerous Goods', status: 'Closed', submitted: '2025-01-10', lastUpdated: '1 day ago' },
-    { id: 'PSIRP-2025-0018', title: 'Fraud Attempt Reported', category: 'Fraud', status: 'Submitted', submitted: '2025-01-09', lastUpdated: '3 days ago' },
+    { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', category: 'Theft', status: 'In Review', submitted: '2025-01-15', lastUpdated: '2 hours ago', severity: 'High', escalated: false },
+    { id: 'PSIRP-2025-0023', title: 'Tampered Shipment Detected', category: 'Tampering', status: 'RFI Sent', submitted: '2025-01-14', lastUpdated: '1 hour ago', severity: 'Medium', escalated: false },
+    { id: 'PSIRP-2025-0020', title: 'Lost Consignment Investigation', category: 'Loss', status: 'Under Investigation', submitted: '2025-01-12', lastUpdated: '5 hours ago', severity: 'Critical', escalated: true },
+    { id: 'PSIRP-2025-0019', title: 'Dangerous Goods Mishandling', category: 'Dangerous Goods', status: 'Closed', submitted: '2025-01-10', lastUpdated: '1 day ago', severity: 'High', escalated: false },
+    { id: 'PSIRP-2025-0018', title: 'Fraud Attempt Reported', category: 'Fraud', status: 'Submitted', submitted: '2025-01-09', lastUpdated: '3 days ago', severity: 'Low', escalated: false },
   ];
+
+  const severityColors: Record<string, string> = {
+    'Low': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
+    'Medium': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
+    'High': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
+    'Critical': 'bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full',
+  };
 
   const filtered = incidents.filter((i) => {
     if (statusFilter !== 'all' && i.status !== statusFilter) return false;
@@ -33,14 +40,14 @@ export default function ReporterIncidents() {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      'Draft': 'bg-status-draft/20 text-status-draft border-status-draft/30',
-      'Submitted': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30',
-      'In Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30',
-      'RFI Sent': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30',
-      'Under Investigation': 'bg-status-investigation/20 text-status-investigation border-status-investigation/30',
-      'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30',
+      'Draft': 'bg-status-draft/20 text-status-draft border-status-draft/30 px-2.5 py-0.5 rounded-full',
+      'Submitted': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30 px-2.5 py-0.5 rounded-full',
+      'In Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
+      'RFI Sent': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
+      'Under Investigation': 'bg-status-investigation/20 text-status-investigation border-status-investigation/30 px-2.5 py-0.5 rounded-full',
+      'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
     };
-    return colors[status] || 'bg-secondary';
+    return colors[status] || 'bg-secondary px-2.5 py-0.5 rounded-full';
   };
 
   /* ── Export mode helpers ── */
@@ -171,7 +178,7 @@ export default function ReporterIncidents() {
             Select the reports you want to export, then click <strong className="text-foreground">Download</strong>.
           </span>
           {selectedIds.size > 0 && (
-            <Badge variant="outline" className="ml-auto border-primary/30 text-primary">
+            <Badge variant="outline" className="ml-auto border-primary/30 text-primary px-2.5 py-0.5 rounded-full">
               {selectedIds.size} selected
             </Badge>
           )}
@@ -179,14 +186,15 @@ export default function ReporterIncidents() {
       )}
 
       {/* Table */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left">
+      <Card className="w-full overflow-hidden border">
+        <CardContent className="p-0">
+          <div className="relative group w-full overflow-hidden">
+            <div className="overflow-x-auto w-full">
+              <table className="table-auto w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
                   {exportMode && (
-                    <th className="pb-3 pr-3 w-10">
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold w-10">
                       <Checkbox
                         checked={allSelected}
                         ref={undefined}
@@ -196,12 +204,14 @@ export default function ReporterIncidents() {
                       />
                     </th>
                   )}
-                  <th className="pb-3 font-medium text-muted-foreground">Reference</th>
-                  <th className="pb-3 font-medium text-muted-foreground">Title</th>
-                  <th className="pb-3 font-medium text-muted-foreground">Category</th>
-                  <th className="pb-3 font-medium text-muted-foreground">Status</th>
-                  <th className="pb-3 font-medium text-muted-foreground">Last Updated</th>
-                  <th className="pb-3 font-medium text-muted-foreground">Submitted</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Reference</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[200px] text-foreground">Title</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Case Type</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[120px] text-foreground">Severity</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Status</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Last Updated</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalation Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -218,7 +228,7 @@ export default function ReporterIncidents() {
                     }}
                   >
                     {exportMode && (
-                      <td className="py-3 pr-3" onClick={(e) => e.stopPropagation()}>
+                      <td className="px-3 py-4 text-center align-middle" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selectedIds.has(incident.id)}
                           onCheckedChange={() => toggleSelectOne(incident.id)}
@@ -226,23 +236,46 @@ export default function ReporterIncidents() {
                         />
                       </td>
                     )}
-                    <td className="py-3 font-mono text-primary">{incident.id}</td>
-                    <td className="py-3 font-medium">{incident.title}</td>
-                    <td className="py-3 text-muted-foreground">{incident.category}</td>
-                    <td className="py-3">
-                      <Badge variant="outline" className={getStatusColor(incident.status)}>
-                        {incident.status}
-                      </Badge>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <span className="font-mono font-bold text-primary hover:underline cursor-pointer text-sm">{incident.id}</span>
                     </td>
-                    <td className="py-3 text-muted-foreground">{incident.lastUpdated}</td>
-                    <td className="py-3 text-muted-foreground">{incident.submitted}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm font-medium whitespace-normal">{incident.title}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground whitespace-normal">{incident.category}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        <Badge variant="outline" className={`${severityColors[incident.severity]} text-[11px]`}>
+                          {incident.severity}
+                        </Badge>
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        <Badge variant="outline" className={`${getStatusColor(incident.status)} text-[11px]`}>
+                          {incident.status}
+                        </Badge>
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{incident.lastUpdated}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{incident.submitted}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        {incident.escalated ? (
+                          <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">Yes</Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">No</span>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+          {/* Scroll Hint Shadow */}
+          <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
+        </div>
+      </CardContent>
+    </Card>
     </div>
   );
 }

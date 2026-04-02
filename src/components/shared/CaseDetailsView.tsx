@@ -1,3 +1,6 @@
+import { differenceInDays, parseISO, isValid } from 'date-fns';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import BasicCaseInfo from '@/components/reporter/incident-details/BasicCaseInfo';
 import IncidentClassification from '@/components/reporter/incident-details/IncidentClassification';
 import IncidentDescription from '@/components/reporter/incident-details/IncidentDescription';
@@ -102,6 +105,29 @@ interface Props {
 }
 
 export default function CaseDetailsView({ incident, children }: Props) {
+  // Timeline Validation Logic
+  const calculateTimeline = () => {
+    if (!incident.incidentDate) return null;
+    
+    try {
+      const incDate = parseISO(incident.incidentDate);
+      // Use dateReported if available, otherwise current date
+      const repDateString = incident.dateReported?.split(' ')[0];
+      const repDate = repDateString ? parseISO(repDateString) : new Date();
+      
+      if (!isValid(incDate) || !isValid(repDate)) return null;
+      
+      const diffDays = differenceInDays(repDate, incDate);
+      const isOverdue = diffDays > 8;
+      
+      return { diffDays, isOverdue };
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const timeline = calculateTimeline();
+
   return (
     <div className="space-y-6">
       {/* Section 1: Reporter Information (Step 1) */}
@@ -120,7 +146,35 @@ export default function CaseDetailsView({ incident, children }: Props) {
       <ActionsTaken incident={incident} />
 
       {/* Section 6: Evidence & Declaration (Steps 5 & 6) */}
-      <EvidenceDeclaration incident={incident} />
+      <div className="space-y-4">
+        <EvidenceDeclaration incident={incident} />
+        
+        {/* Timeline Validation Notification */}
+        {timeline && (
+          <div className={cn(
+            "flex items-center gap-3 p-4 rounded-lg border shadow-sm transition-all animate-in fade-in slide-in-from-top-1",
+            timeline.isOverdue 
+              ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400" 
+              : "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+          )}>
+            {timeline.isOverdue ? (
+              <>
+                <AlertCircle className="h-5 w-5 shrink-0" />
+                <div className="text-sm font-bold">
+                  This report is {Math.abs(timeline.diffDays)} days overdue based on the incident date.
+                </div>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="h-5 w-5 shrink-0" />
+                <div className="text-sm font-bold">
+                  Submitted within the 8-day reporting window.
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
 
       {children}
     </div>

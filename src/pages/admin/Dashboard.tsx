@@ -62,7 +62,7 @@ export default function SystemAdminDashboard() {
 
         <Card 
           className="border-role-reviewer/20 cursor-pointer hover:border-role-reviewer/40 transition-colors"
-          onClick={() => handleNavigation('/reviewer/incidents')}
+          onClick={() => handleNavigation('/case-officer/incidents')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Incidents</CardTitle>

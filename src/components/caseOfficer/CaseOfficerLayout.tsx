@@ -29,12 +29,12 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 const navItems = [
-  { title: 'Dashboard', path: '/reviewer/dashboard', icon: LayoutDashboard },
-  { title: 'Notifications', path: '/reviewer/notifications', icon: Bell, badge: 4 },
-  { title: 'Case Monitoring', path: '/reviewer/all-cases', icon: Users },
-  { title: 'Analytics & Report', path: '/reviewer/reports', icon: FileBarChart },
-  { title: 'Post Announcement', path: '/reviewer/announcements', icon: Megaphone },
-  { title: 'Profile', path: '/reviewer/security', icon: Shield },
+  { title: 'Dashboard', path: '/case-officer/dashboard', icon: LayoutDashboard },
+  { title: 'Notifications', path: '/case-officer/notifications', icon: Bell, badge: 4 },
+  { title: 'Case Monitoring', path: '/case-officer/all-cases', icon: Users },
+  { title: 'Analytics & Report', path: '/case-officer/reports', icon: FileBarChart },
+  { title: 'Post Announcement', path: '/case-officer/announcements', icon: Megaphone },
+  { title: 'Profile', path: '/case-officer/security', icon: Shield },
 ];
 
 const recentActivity = [
@@ -92,10 +92,10 @@ export default function CaseOfficerLayout() {
         <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive =
-              item.path === '/reviewer/inbox'
-                ? location.pathname === '/reviewer/inbox' || location.pathname === '/reviewer/incidents'
-                : item.path === '/reviewer/dashboard'
-                  ? location.pathname === '/reviewer/dashboard'
+              item.path === '/case-officer/inbox'
+                ? location.pathname === '/case-officer/inbox' || location.pathname === '/case-officer/incidents'
+                : item.path === '/case-officer/dashboard'
+                  ? location.pathname === '/case-officer/dashboard'
                   : location.pathname.startsWith(item.path);
             return (
               <button
@@ -227,7 +227,7 @@ export default function CaseOfficerLayout() {
 
       </aside>
 
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-6 min-h-screen min-w-0 overflow-hidden">
         <Outlet />
       </main>
     </div>

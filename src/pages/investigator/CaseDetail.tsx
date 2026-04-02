@@ -7,6 +7,8 @@ import { ArrowLeft, Lock } from 'lucide-react';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
+import { fallbackIncident } from '@/lib/mock-data';
+import CaseHeader from '@/components/shared/CaseHeader';
 
 const timelineEvents: TimelineEvent[] = [
   { event: 'Case assigned to Raj Kumar', actor: 'System', time: '2025-06-10 14:30', type: 'system' },
@@ -30,77 +32,41 @@ export default function InvestigatorCaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const incident: CaseData = {
-    id: id || 'PSIRP-2025-0063',
-    title: 'Missing parcel from sorting hub',
-    dateReported: '2025-06-10 09:15',
-    incidentDate: '2025-06-08',
-    incidentTime: '14:22',
-    branchName: 'KL Central Sorting Hub',
-    address: 'Jalan Kuching, 51200 KL',
-    state: 'W.P. Kuala Lumpur',
-    postalCode: '51200',
-    companyName: 'Global Express Logistics Sdn Bhd',
-    reporterName: 'Ali Hassan',
-    reporterDesignation: 'Hub Manager',
-    status: 'Under Review',
-    severity: 'Medium',
-    leaEscalation: 'Yes',
-    description: 'A parcel containing electronic goods went missing during the sorting process at KL Hub. CCTV footage shows the parcel entering the sorting lane but not arriving at the dispatch area.',
-    primaryIncidentType: 'Theft or loss of postal items',
-    observedImpact: 'Medium',
-    systemServiceAffected: 'Sorting & Dispatch System',
-    items: [
-      { tracking: 'EC-2025-KL-89012', type: 'Standard Parcel', declaration: 'Wireless headphones (RM 450 declared value)', weight: '0.8 kg', detectedItemType: 'Consumer Electronics', sender: { name: 'TechStore Online', address: 'Penang', stateCountry: 'Penang, Malaysia', contact: '+60124567890' }, receiver: { name: 'Ahmad bin Ismail', address: 'Kuala Lumpur', stateCountry: 'KL, Malaysia', contact: '+60198765432' } },
-    ],
-    immediateActions: 'CCTV footage preserved, hub supervisor interviewed, sorting lane access restricted.',
-    incidentControlStatus: 'Under Monitoring',
-    reportedToAuthority: 'Yes',
-    authorityAgency: 'PDRM',
-    authorityReference: 'RPT-2025-KL-0063',
-    parcelHandedOver: 'No',
-    assistanceRequested: ['Investigation Support'],
-    documents: [
-      { name: 'CCTV_Screenshot_Hub3.png', size: '1.8 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-10 09:10' },
-      { name: 'Sorting_Log_20250608.pdf', size: '0.6 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-10 09:12' },
-      { name: 'Dispatch_Record.xlsx', size: '0.4 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-10 09:14' },
-    ],
-    declarationAgreed: true,
-    declarationDate: '2025-06-10',
-  };
+  const incident = fallbackIncident(id || 'PSIRP-2025-0063');
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/investigator/cases')}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to All Cases
-        </Button>
-        <Badge variant="outline" className="bg-role-investigator/10 text-role-investigator border-role-investigator/30 gap-1">
-          <Lock className="h-3 w-3" /> Read-Only
-        </Badge>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+      <CaseHeader
+        id={incident.id}
+        title={incident.title}
+        companyName={incident.companyName}
+        status={incident.status}
+        statusColor={getStatusColor(incident.status)}
+        severity={incident.severity}
+        severityColor={getSeverityColor(incident.severity)}
+        submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
+        backLabel="Back to All Cases"
+        onBack={() => navigate('/internal/cases')}
+        topBadges={
+          <Badge variant="outline" className="bg-role-investigator/10 text-role-investigator border-role-investigator/30 gap-1 opacity-70">
+            <Lock className="h-3 w-3" /> Strategic Oversight — Read-Only
+          </Badge>
+        }
+      />
 
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{incident.id}</h1>
-          <p className="text-muted-foreground">Oversight view — no editing permitted</p>
-        </div>
-        <Badge variant="outline" className={`text-sm px-3 py-1 ${getStatusColor(incident.status)}`}>{incident.status}</Badge>
-      </div>
-
-      <Tabs defaultValue="details" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="details">Case Details</TabsTrigger>
-          <TabsTrigger value="assessment">Officer Assessment</TabsTrigger>
-          <TabsTrigger value="clarification" className="flex items-center gap-2">
+      <Tabs defaultValue="details" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
+          <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
+          <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Officer Assessment</TabsTrigger>
+          <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all flex items-center gap-2">
             Clarification
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
             </span>
           </TabsTrigger>
-          <TabsTrigger value="escalation">Escalation History</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          <TabsTrigger value="escalation" className="px-6 h-full font-medium transition-all">Escalation History</TabsTrigger>
+          <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details">
@@ -139,7 +105,7 @@ export default function InvestigatorCaseDetail() {
         </TabsContent>
 
         <TabsContent value="clarification">
-          <CaseClarificationThread messages={clarificationMessages} />
+          <CaseClarificationThread messages={[]} isReadOnly={true} />
         </TabsContent>
 
         <TabsContent value="escalation">

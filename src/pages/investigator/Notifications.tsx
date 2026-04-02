@@ -5,11 +5,11 @@ import { AlertTriangle, CheckCircle, FileBarChart, TrendingUp } from 'lucide-rea
 import { useNavigate } from 'react-router-dom';
 
 const initialNotifications = [
-  { id: 1, type: 'escalation', title: 'Escalation Approved', message: 'New escalation approved for PSIRP-2025-0063 — referred to PDRM.', time: '2 hours ago', read: false, icon: AlertTriangle, action: '/investigator/cases/PSIRP-2025-0063', actionLabel: 'View' },
-  { id: 2, type: 'trend', title: 'Trend Alert', message: 'Spike in postal theft incidents detected in Selangor region.', time: '5 hours ago', read: false, icon: TrendingUp, action: '/investigator/analytics', actionLabel: 'View' },
-  { id: 3, type: 'closure', title: 'Case Closed', message: 'Case PSIRP-2025-0055 closed by Supervisor Ahmad — Action Taken.', time: '1 day ago', read: true, icon: CheckCircle, action: '/investigator/cases/PSIRP-2025-0055', actionLabel: 'View' },
-  { id: 4, type: 'report', title: 'Report Available', message: 'Monthly Compliance Report is now available for review.', time: '2 days ago', read: true, icon: FileBarChart, action: '/investigator/analytics', actionLabel: 'View' },
-  { id: 5, type: 'escalation', title: 'Escalation Rejected', message: 'Escalation rejected for PSIRP-2025-0058 — returned to Case Officer.', time: '3 days ago', read: true, icon: AlertTriangle, action: '/investigator/cases/PSIRP-2025-0058', actionLabel: 'View' },
+  { id: 1, type: 'escalation', title: 'Escalation Approved', message: 'New escalation approved for PSIRP-2025-0063 — referred to PDRM.', time: '2 hours ago', read: false, icon: AlertTriangle, action: '/internal/cases/PSIRP-2025-0063', actionLabel: 'View' },
+  { id: 2, type: 'trend', title: 'Trend Alert', message: 'Spike in postal theft incidents detected in Selangor region.', time: '5 hours ago', read: false, icon: TrendingUp, action: '/internal/analytics', actionLabel: 'View' },
+  { id: 3, type: 'closure', title: 'Case Closed', message: 'Case PSIRP-2025-0055 closed by Supervisor Ahmad — Action Taken.', time: '1 day ago', read: true, icon: CheckCircle, action: '/internal/cases/PSIRP-2025-0055', actionLabel: 'View' },
+  { id: 4, type: 'report', title: 'Report Available', message: 'Monthly Compliance Report is now available for review.', time: '2 days ago', read: true, icon: FileBarChart, action: '/internal/analytics', actionLabel: 'View' },
+  { id: 5, type: 'escalation', title: 'Escalation Rejected', message: 'Escalation rejected for PSIRP-2025-0058 — returned to Case Officer.', time: '3 days ago', read: true, icon: AlertTriangle, action: '/internal/cases/PSIRP-2025-0058', actionLabel: 'View' },
 ];
 
 const typeColors: Record<string, string> = {

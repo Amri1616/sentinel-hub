@@ -137,8 +137,8 @@ const App = () => (
                     <Route path="testing" element={<LicenseeAdminTesting />} />
                   </Route>
 
-                  {/* Reviewer / Case Officer Routes - with sidebar layout */}
-                  <Route path="/reviewer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
+                  {/* Case Officer Routes - with sidebar layout */}
+                  <Route path="/case-officer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<ReviewerDashboard />} />
                     <Route path="inbox" element={<CaseOfficerInbox />} />
                     <Route path="all-cases" element={<ReviewerAllCases />} />
@@ -151,7 +151,6 @@ const App = () => (
                     <Route path="security" element={<CaseOfficerSecurity />} />
                   </Route>
 
-                  {/* Validator Routes */}
                   {/* Supervisor Routes - with sidebar layout */}
                   <Route path="/supervisor" element={<ProtectedRoute><SupervisorLayout /></ProtectedRoute>}>
                     <Route path="search" element={<SupervisorSearchFilter />} />

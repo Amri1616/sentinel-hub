@@ -13,15 +13,15 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const allCases = [
-  { id: 'PSIRP-2025-0063', org: 'Global Express Logistics', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', escalation: 'None', date: '2025-06-09' },
-  { id: 'PSIRP-2025-0060', org: 'Pos Malaysia', officer: 'Farah Amin', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-10' },
-  { id: 'PSIRP-2025-0058', org: 'J&T Express', officer: 'Lee Wei', severity: 'High', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-08' },
-  { id: 'PSIRP-2025-0055', org: 'DHL eCommerce', officer: 'Ahmad Razif', severity: 'High', status: 'Under Review', escalation: 'None', date: '2025-06-06' },
-  { id: 'PSIRP-2025-0052', org: 'Ninja Van', officer: 'Nurul Hana', severity: 'High', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-10' },
-  { id: 'PSIRP-2025-0048', org: 'CityLink', officer: 'Lee Wei', severity: 'Low', status: 'Clarification Requested', escalation: 'None', date: '2025-06-03' },
-  { id: 'PSIRP-2025-0045', org: 'Global Express Logistics', officer: 'Ahmad Razif', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-09' },
-  { id: 'PSIRP-2025-0030', org: 'Pos Malaysia', officer: 'Nurul Hana', severity: 'Medium', status: 'Closed', escalation: 'None', date: '2025-05-28' },
-  { id: 'PSIRP-2025-0025', org: 'DHL eCommerce', officer: 'Farah Amin', severity: 'High', status: 'Escalated', escalation: 'Approved', date: '2025-05-22' },
+  { id: 'PSIRP-2025-0063', org: 'Global Express Logistics', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', escalation: 'None', date: '2025-06-09', lastUpdated: '2025-06-11' },
+  { id: 'PSIRP-2025-0060', org: 'Pos Malaysia', officer: 'Farah Amin', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-10', lastUpdated: '2025-06-12' },
+  { id: 'PSIRP-2025-0058', org: 'J&T Express', officer: 'Lee Wei', severity: 'High', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-08', lastUpdated: '2025-06-10' },
+  { id: 'PSIRP-2025-0055', org: 'DHL eCommerce', officer: 'Ahmad Razif', severity: 'High', status: 'Under Review', escalation: 'None', date: '2025-06-06', lastUpdated: '2025-06-07' },
+  { id: 'PSIRP-2025-0052', org: 'Ninja Van', officer: 'Nurul Hana', severity: 'High', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-10', lastUpdated: '2025-06-12' },
+  { id: 'PSIRP-2025-0048', org: 'CityLink', officer: 'Lee Wei', severity: 'Low', status: 'Clarification Requested', escalation: 'None', date: '2025-06-03', lastUpdated: '2025-06-05' },
+  { id: 'PSIRP-2025-0045', org: 'Global Express Logistics', officer: 'Ahmad Razif', severity: 'Critical', status: 'Escalation Pending', escalation: 'Pending', date: '2025-06-09', lastUpdated: '2025-06-11' },
+  { id: 'PSIRP-2025-0030', org: 'Pos Malaysia', officer: 'Nurul Hana', severity: 'Medium', status: 'Closed', escalation: 'None', date: '2025-05-28', lastUpdated: '2025-06-05' },
+  { id: 'PSIRP-2025-0025', org: 'DHL eCommerce', officer: 'Farah Amin', severity: 'High', status: 'Escalated', escalation: 'Approved', date: '2025-05-22', lastUpdated: '2025-05-28' },
 ];
 
 const closableCases = [
@@ -32,13 +32,13 @@ const closableCases = [
 ];
 
 const statusColors: Record<string, string> = {
-  'Under Review': 'border-status-in-review/50 text-status-in-review',
-  'Escalation Pending': 'border-destructive/50 text-destructive',
-  'Clarification Requested': 'border-status-rfi/50 text-status-rfi',
-  'Closed': 'border-status-closed/50 text-status-closed',
-  'Escalated': 'border-role-reviewer/50 text-role-reviewer',
-  'Submitted': 'border-status-submitted/50 text-status-submitted',
-  'Recommendation for Closure': 'border-status-closed/50 text-status-closed',
+  'Under Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
+  'Escalation Pending': 'bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full',
+  'Clarification Requested': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
+  'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
+  'Escalated': 'bg-role-reviewer/20 text-role-reviewer border-role-reviewer/30 px-2.5 py-0.5 rounded-full',
+  'Submitted': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30 px-2.5 py-0.5 rounded-full',
+  'Recommendation for Closure': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
 };
 
 export default function CaseMonitoring() {
@@ -121,92 +121,120 @@ export default function CaseMonitoring() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="w-full overflow-hidden border">
             <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Reference</TableHead>
-                    <TableHead>Organisation</TableHead>
-                    <TableHead>Officer</TableHead>
-                    <TableHead>Severity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Escalation</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <div className="relative group w-full overflow-hidden">
+                <div className="overflow-x-auto w-full">
+                  <Table className="table-auto w-full text-sm">
+                    <TableHeader className="bg-muted/50 border-b border-border">
+                      <TableRow>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Reference</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[180px]">Organisation</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[150px]">Assigned Officer</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[120px]">Severity</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Status</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[150px]">Escalation Status</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[160px]">Last Updated Date</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Submitted</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[50px] text-foreground"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                   {filtered.map((c) => (
-                    <TableRow key={c.id}>
-                      <TableCell className="font-medium">{c.id}</TableCell>
-                      <TableCell>{c.org}</TableCell>
-                      <TableCell>{c.officer}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={c.severity === 'Critical' ? 'border-destructive/50 text-destructive' : c.severity === 'High' ? 'border-status-in-review/50 text-status-in-review' : 'border-muted-foreground/50 text-muted-foreground'}>
-                          {c.severity}
-                        </Badge>
+                    <TableRow key={c.id} className="hover:bg-muted/30 cursor-pointer transition-colors border-b" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>
+                      <TableCell className="px-3 py-4 text-center align-middle font-mono font-bold text-primary hover:underline cursor-pointer text-sm" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>{c.id}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle whitespace-normal text-sm">{c.org}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">{c.officer}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Badge variant="outline" className={`${c.severity === 'Critical' ? 'bg-destructive/20 text-destructive border-destructive/30' : c.severity === 'High' ? 'bg-status-in-review/20 text-status-in-review border-status-in-review/30' : 'bg-muted-foreground/10 text-muted-foreground border-muted-foreground/30'} px-2.5 py-0.5 rounded-full text-[11px]`}>
+                            {c.severity}
+                          </Badge>
+                        </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={statusColors[c.status] || ''}>{c.status}</Badge>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Badge variant="outline" className={`${statusColors[c.status] || ''} text-[11px]`}>{c.status}</Badge>
+                        </div>
                       </TableCell>
-                      <TableCell>{c.escalation}</TableCell>
-                      <TableCell className="text-muted-foreground">{c.date}</TableCell>
-                      <TableCell>
-                        <Button size="sm" variant="ghost" onClick={() => navigate(`/validator/cases/${c.id}`)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">{c.escalation}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.date}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Button size="sm" variant="ghost" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
-                </TableBody>
-              </Table>
+                    </TableBody>
+                  </Table>
+                </div>
+                {/* Scroll Hint Shadow */}
+                <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="closure" className="space-y-4">
-          <Card>
+          <Card className="w-full overflow-hidden border">
             <CardHeader>
               <CardTitle>Case Closure – Supervisor Authority</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Reference</TableHead>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Officer</TableHead>
-                    <TableHead>Severity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Days Open</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <div className="relative group w-full overflow-hidden">
+                <div className="overflow-x-auto w-full">
+                  <Table className="table-auto w-full text-sm">
+                    <TableHeader className="bg-muted/50 border-b border-border">
+                      <TableRow>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Reference</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[200px]">Title</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[150px]">Assigned Officer</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[120px]">Severity</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Status</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[160px]">Last Updated Date</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[120px]">Days Open</TableHead>
+                        <TableHead className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[100px] text-foreground"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                   {closableCases.map((c) => (
-                    <TableRow key={c.id}>
-                      <TableCell className="font-medium">{c.id}</TableCell>
-                      <TableCell>{c.title}</TableCell>
-                      <TableCell>{c.officer}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={c.severity === 'High' ? 'border-status-in-review/50 text-status-in-review' : 'border-muted-foreground/50 text-muted-foreground'}>
-                          {c.severity}
-                        </Badge>
+                    <TableRow key={c.id} className="hover:bg-muted/30 cursor-pointer transition-colors border-b" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>
+                      <TableCell className="px-3 py-4 text-center align-middle font-mono font-bold text-primary hover:underline cursor-pointer text-sm" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>{c.id}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle whitespace-normal text-sm">{c.title}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">{c.officer}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Badge variant="outline" className={`${c.severity === 'High' ? 'bg-status-in-review/20 text-status-in-review border-status-in-review/30' : 'bg-muted-foreground/10 text-muted-foreground border-muted-foreground/30'} px-2.5 py-0.5 rounded-full text-[11px]`}>
+                            {c.severity}
+                          </Badge>
+                        </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={statusColors[c.status] || ''}>{c.status}</Badge>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Badge variant="outline" className={`${statusColors[c.status] || ''} text-[11px]`}>{c.status}</Badge>
+                        </div>
                       </TableCell>
-                      <TableCell>{c.days}</TableCell>
-                      <TableCell>
-                        <Button size="sm" onClick={() => setCloseDialog(c.id)}>
-                          <Lock className="h-4 w-4 mr-1" /> Close
-                        </Button>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">2025-06-12</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">{c.days}</TableCell>
+                      <TableCell className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Button size="sm" onClick={() => setCloseDialog(c.id)}>
+                            <Lock className="h-4 w-4 mr-1" /> Close
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
-                </TableBody>
-              </Table>
+                    </TableBody>
+                  </Table>
+                </div>
+                {/* Scroll Hint Shadow */}
+                <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

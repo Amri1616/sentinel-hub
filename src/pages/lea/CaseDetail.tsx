@@ -11,9 +11,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Lock, CheckCircle, Send, Share2, Copy, CheckCircle2, Mail, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import CaseDetailsView, { getStatusColor, type CaseData } from '@/components/shared/CaseDetailsView';
+import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
+import { fallbackIncident } from '@/lib/mock-data';
+import CaseHeader from '@/components/shared/CaseHeader';
 
 const timelineEvents: TimelineEvent[] = [
   { event: 'Case escalated to PDRM', actor: 'System', time: '2025-06-15 08:00', type: 'escalation' },
@@ -40,44 +42,7 @@ export default function LEACaseDetail() {
   const [internalNotes, setInternalNotes] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const incident: CaseData = {
-    id: id || 'ESC-2025-001',
-    title: 'Theft of High-Value Consignment',
-    dateReported: '2025-06-08 14:00',
-    incidentDate: '2025-06-08',
-    incidentTime: '14:22',
-    branchName: 'KL Central Sorting Hub',
-    address: 'Jalan Kuching, 51200 Kuala Lumpur',
-    state: 'W.P. Kuala Lumpur',
-    postalCode: '51200',
-    companyName: 'Global Express Logistics Sdn Bhd',
-    reporterName: 'Ali Hassan',
-    reporterDesignation: 'Facility Manager',
-    status: investigationStatus,
-    severity: 'High',
-    leaEscalation: 'Yes',
-    description: 'A high-value consignment containing electronic goods went missing during transit. CCTV footage confirms the parcel entered sorting lane but did not reach dispatch area. Evidence suggests possible internal theft.',
-    primaryIncidentType: 'Theft or loss of postal items',
-    observedImpact: 'High',
-    systemServiceAffected: 'Sorting & Dispatch System',
-    items: [
-      { tracking: 'EC-2025-KL-89012', type: 'Standard Parcel', declaration: 'Wireless headphones (RM 450 declared value)', weight: '0.8 kg', detectedItemType: 'Consumer Electronics', sender: { name: 'TechStore Online', address: 'Penang', stateCountry: 'Penang, Malaysia', contact: '+60124567890' }, receiver: { name: 'Ahmad bin Ismail', address: 'Kuala Lumpur', stateCountry: 'KL, Malaysia', contact: '+60198765432' } },
-    ],
-    immediateActions: 'Facility secured, CCTV preserved, staff interviewed.',
-    incidentControlStatus: 'Under Monitoring',
-    reportedToAuthority: 'Yes',
-    authorityAgency: 'PDRM',
-    authorityReference: 'RPT-2025-KL-ESC001',
-    parcelHandedOver: 'No',
-    assistanceRequested: ['Investigation Support'],
-    documents: [
-      { name: 'CCTV_Screenshot_Hub3.png', size: '1.8 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-08 14:30' },
-      { name: 'Sorting_Log_20250608.pdf', size: '0.6 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-08 14:32' },
-      { name: 'Escalation_Justification.pdf', size: '0.4 MB', uploadedBy: 'Ahmad Razif', uploadDate: '2025-06-15 08:00' },
-    ],
-    declarationAgreed: true,
-    declarationDate: '2025-06-08',
-  };
+  const incident = fallbackIncident(id || 'ESC-2025-001');
 
   const handleAcknowledge = () => {
     setAcknowledged(true);
@@ -116,105 +81,108 @@ export default function LEACaseDetail() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/lea/cases')}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Cases
-        </Button>
-        <Badge variant="outline" className="gap-1" style={{ backgroundColor: 'hsl(220 70% 50% / 0.1)', color: 'hsl(220 70% 50%)', borderColor: 'hsl(220 70% 50% / 0.3)' }}>
-          <Lock className="h-3 w-3" /> LEA Access — Read-Only Incident Data
-        </Badge>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{incident.id}</h1>
-          <p className="text-muted-foreground">{incident.title} — {incident.companyName}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="border-primary/50 text-primary text-sm px-3 py-1">{investigationStatus}</Badge>
-          {!acknowledged && (
-            <Button onClick={handleAcknowledge}>
-              <CheckCircle className="h-4 w-4 mr-2" /> Acknowledge Receipt
-            </Button>
-          )}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Share2 className="h-4 w-4 mr-2" /> Share Report
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+      <CaseHeader
+        id={incident.id}
+        title={incident.title}
+        companyName={incident.companyName}
+        status={investigationStatus}
+        statusColor={getStatusColor(investigationStatus)}
+        severity={incident.severity}
+        severityColor={getSeverityColor(incident.severity)}
+        submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
+        backLabel="Back to Cases"
+        onBack={() => navigate('/lea/cases')}
+        topBadges={
+          <Badge variant="outline" className="gap-1 opacity-70" style={{ backgroundColor: 'hsl(220 70% 50% / 0.1)', color: 'hsl(220 70% 50%)', borderColor: 'hsl(220 70% 50% / 0.3)' }}>
+            <Lock className="h-3 w-3" /> LEA Access — Read-Only Incident Data
+          </Badge>
+        }
+        actions={
+          <div className="flex items-center gap-2">
+            {!acknowledged && (
+              <Button onClick={handleAcknowledge} size="sm">
+                <CheckCircle className="h-4 w-4 mr-2" /> Acknowledge Receipt
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader><DialogTitle>Share Report</DialogTitle></DialogHeader>
-              <div className="space-y-5 py-4">
-                {/* Share buttons row */}
-                <div>
-                  <p className="text-sm font-medium mb-3">Share via</p>
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={handleShareWhatsApp}
-                      className="flex-1 gap-2 text-white"
-                      style={{ backgroundColor: '#25D366' }}
-                    >
-                      <MessageSquare className="h-4 w-4" /> WhatsApp
-                    </Button>
-                    <Button
-                      onClick={handleShareEmail}
-                      variant="outline"
-                      className="flex-1 gap-2"
-                    >
-                      <Mail className="h-4 w-4" /> Email
-                    </Button>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Share2 className="h-4 w-4 mr-2" /> Share Report
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader><DialogTitle>Share Report</DialogTitle></DialogHeader>
+                <div className="space-y-5 py-4">
+                  {/* Share buttons row */}
+                  <div>
+                    <p className="text-sm font-medium mb-3">Share via</p>
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={handleShareWhatsApp}
+                        className="flex-1 gap-2 text-white"
+                        style={{ backgroundColor: '#25D366' }}
+                      >
+                        <MessageSquare className="h-4 w-4" /> WhatsApp
+                      </Button>
+                      <Button
+                        onClick={handleShareEmail}
+                        variant="outline"
+                        className="flex-1 gap-2"
+                      >
+                        <Mail className="h-4 w-4" /> Email
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+                    <div className="relative flex justify-center text-xs"><span className="bg-background px-2 text-muted-foreground">or copy link</span></div>
+                  </div>
+
+                  {/* Copy link section */}
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Page Link</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        readOnly
+                        value={caseUrl}
+                        className="text-sm bg-muted/40 cursor-default"
+                        onClick={(e) => (e.target as HTMLInputElement).select()}
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={`shrink-0 transition-colors ${copied ? 'border-status-closed/50 text-status-closed' : ''}`}
+                        onClick={handleCopyLink}
+                      >
+                        {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    {copied && (
+                      <p className="text-xs text-status-closed mt-1.5 animate-in fade-in">Link copied to clipboard!</p>
+                    )}
                   </div>
                 </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        }
+      />
 
-                {/* Divider */}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
-                  <div className="relative flex justify-center text-xs"><span className="bg-background px-2 text-muted-foreground">or copy link</span></div>
-                </div>
-
-                {/* Copy link section */}
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">Page Link</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      readOnly
-                      value={caseUrl}
-                      className="text-sm bg-muted/40 cursor-default"
-                      onClick={(e) => (e.target as HTMLInputElement).select()}
-                    />
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className={`shrink-0 transition-colors ${copied ? 'border-status-closed/50 text-status-closed' : ''}`}
-                      onClick={handleCopyLink}
-                    >
-                      {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                  {copied && (
-                    <p className="text-xs text-status-closed mt-1.5 animate-in fade-in">Link copied to clipboard!</p>
-                  )}
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-
-      <Tabs defaultValue="details" className="space-y-4">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="details">Case Details</TabsTrigger>
-          <TabsTrigger value="investigation">Case Update</TabsTrigger>
-          <TabsTrigger value="clarification" className="flex items-center gap-2">
+      <Tabs defaultValue="details" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
+          <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
+          <TabsTrigger value="investigation" className="px-6 h-full font-medium transition-all">Case Update</TabsTrigger>
+          <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all flex items-center gap-2">
             Clarification
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
             </span>
           </TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details">
@@ -283,7 +251,8 @@ export default function LEACaseDetail() {
 
         <TabsContent value="clarification">
           <CaseClarificationThread
-            messages={clarificationMessages}
+            messages={[]}
+            currentRole="lea"
             replyPlaceholder="Enter your clarification request to MCMC or Licensee..."
           />
         </TabsContent>

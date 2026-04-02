@@ -41,7 +41,7 @@ export default function ReviewerDashboard() {
 
       {/* KPI Cards Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card className="border-role-reviewer/20 hover:border-role-reviewer/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reviewer/all-cases')}>
+        <Card className="border-role-reviewer/20 hover:border-role-reviewer/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Assigned Cases</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -51,7 +51,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 hover:border-destructive/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reviewer/all-cases')}>
+        <Card className="border-destructive/20 hover:border-destructive/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">High Severity</CardTitle>
             <ShieldAlert className="h-4 w-4 text-muted-foreground" />
@@ -61,7 +61,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-rfi/20 hover:border-status-rfi/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reviewer/all-cases')}>
+        <Card className="border-status-rfi/20 hover:border-status-rfi/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Escalation Pending</CardTitle>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -71,7 +71,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/reviewer/all-cases')}>
+        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Clarification Pending</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
@@ -82,7 +82,7 @@ export default function ReviewerDashboard() {
         </Card>
 
         {/* Priority Alerts Stat Card */}
-        <Card className="border-destructive/40 bg-destructive/5 hover:border-destructive/60 transition-all cursor-pointer group min-h-[120px] flex flex-col" onClick={() => navigate('/reviewer/all-cases')}>
+        <Card className="border-destructive/40 bg-destructive/5 hover:border-destructive/60 transition-all cursor-pointer group min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-destructive">Priority Alerts</CardTitle>
             <ShieldAlert className="h-4 w-4 text-destructive" />
@@ -94,7 +94,7 @@ export default function ReviewerDashboard() {
       </div>
 
       {/* Go to Case Monitoring */}
-      <Button onClick={() => navigate('/reviewer/all-cases')} size="lg" className="w-full h-auto py-5 text-lg glow-blue">
+      <Button onClick={() => navigate('/case-officer/all-cases')} size="lg" className="w-full h-auto py-5 text-lg glow-blue">
         <Users className="mr-3 h-6 w-6" />
         Go to Case Monitoring
       </Button>
@@ -109,7 +109,7 @@ export default function ReviewerDashboard() {
                 <div
                   key={incident.id}
                   className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-role-reviewer/40 transition-all cursor-pointer"
-                  onClick={() => navigate(`/reviewer/cases/${incident.id}`)}
+                  onClick={() => navigate(`/case-officer/cases/${incident.id}`)}
                 >
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">

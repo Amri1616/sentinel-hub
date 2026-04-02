@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
+import { fallbackIncident } from '@/lib/mock-data';
+import CaseHeader from '@/components/shared/CaseHeader';
 
 const timelineEvents: TimelineEvent[] = [
   { event: 'Incident submitted by Licensee Reporter', actor: 'System', time: '2025-06-09 09:15', type: 'submission' },
@@ -29,65 +31,36 @@ export default function CaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const incident: CaseData = {
-    id: id || 'PSIRP-2025-0042',
-    title: 'High-value theft at KL Central Hub',
-    dateReported: '2025-06-09 09:15',
-    incidentDate: '2025-06-08',
-    incidentTime: '02:15',
-    branchName: 'KL Central Hub',
-    address: 'Jalan Tun Razak, 50400 Kuala Lumpur',
-    state: 'W.P. Kuala Lumpur',
-    postalCode: '50400',
-    companyName: 'Global Express Logistics Sdn Bhd',
-    reporterName: 'Ali Hassan',
-    reporterDesignation: 'Facility Manager',
-    status: 'Escalation Pending',
-    severity: 'Critical',
-    leaEscalation: 'Yes',
-    description: 'Multiple high-value parcels reported missing from sorting facility during overnight shift. Security footage shows unauthorized access to restricted zone.',
-    primaryIncidentType: 'Theft or loss of postal items',
-    observedImpact: 'High',
-    systemServiceAffected: 'Sorting Facility Security System',
-    impactIndicators: ['Operational Disruption', 'Financial Impact', 'Safety Risk'],
-    items: [
-      { tracking: 'EC-2025-87654', type: 'Registered Parcel', declaration: 'Electronics – Laptop', weight: '3.2 kg', detectedItemType: 'Consumer Electronics', sender: { name: 'TechStore Online', address: 'Penang', stateCountry: 'Penang, Malaysia', contact: '+60124567890' }, receiver: { name: 'Ahmad Ismail', address: 'KL', stateCountry: 'KL, Malaysia', contact: '+60198765432' } },
-      { tracking: 'EC-2025-87655', type: 'Insured Parcel', declaration: 'Jewelry – Gold necklace set', weight: '0.5 kg', detectedItemType: 'Precious Items', sender: { name: 'Jewel House', address: 'JB', stateCountry: 'Johor, Malaysia', contact: '+60127654321' }, receiver: { name: 'Siti Aminah', address: 'Shah Alam', stateCountry: 'Selangor, Malaysia', contact: '+60191234567' } },
-    ],
-    immediateActions: 'Secured facility, preserved CCTV footage, interviewed night shift staff.',
-    incidentControlStatus: 'Under Monitoring',
-    reportedToAuthority: 'No',
-    parcelHandedOver: 'No',
-    assistanceRequested: ['Investigation Support'],
-    documents: [
-      { name: 'CCTV_Footage_Screenshot.jpg', size: '2.1 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-09 09:10' },
-      { name: 'Security_Log_20250608.pdf', size: '0.9 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-09 09:12' },
-      { name: 'Missing_Parcel_List.xlsx', size: '0.3 MB', uploadedBy: 'Ali Hassan', uploadDate: '2025-06-09 09:14' },
-    ],
-    declarationAgreed: true,
-    declarationDate: '2025-06-09',
-  };
+  const incident = fallbackIncident(id || 'PSIRP-2025-0042');
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold">{incident.id}</h1>
-          <p className="text-muted-foreground">Case Detail – Supervisor View</p>
-        </div>
-        <Badge variant="outline" className={`ml-auto text-sm px-3 py-1 ${getStatusColor(incident.status)}`}>{incident.status}</Badge>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+      <CaseHeader
+        id={incident.id}
+        title={incident.title}
+        companyName={incident.companyName}
+        status={incident.status}
+        statusColor={getStatusColor(incident.status)}
+        severity={incident.severity}
+        severityColor={getSeverityColor(incident.severity)}
+        submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
+        backLabel="Back to Queue"
+        onBack={() => navigate('/supervisor/escalations')}
+      />
 
-      <Tabs defaultValue="details" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="details">Case Details</TabsTrigger>
-          <TabsTrigger value="assessment">Officer Assessment</TabsTrigger>
-          <TabsTrigger value="rfis">Clarification</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
-          <TabsTrigger value="escalation">Escalation Info</TabsTrigger>
+      <Tabs defaultValue="details" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
+          <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
+          <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Officer Assessment</TabsTrigger>
+          <TabsTrigger value="rfis" className="px-6 h-full font-medium transition-all flex items-center gap-2">
+            Clarification
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
+          <TabsTrigger value="escalation" className="px-6 h-full font-medium transition-all">Escalation Info</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details">
@@ -126,7 +99,8 @@ export default function CaseDetail() {
 
         <TabsContent value="rfis">
           <CaseClarificationThread
-            messages={clarificationMessages}
+            messages={[]}
+            currentRole="supervisor"
             replyPlaceholder="Send a message as MCMC Supervisor..."
           />
         </TabsContent>

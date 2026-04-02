@@ -182,7 +182,7 @@ export default function SupervisorLayout() {
 
       </aside>
 
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-6 min-h-screen min-w-0 overflow-hidden">
         <Outlet />
       </main>
     </div>

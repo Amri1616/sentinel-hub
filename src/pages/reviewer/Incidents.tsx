@@ -46,7 +46,7 @@ export default function ReviewerIncidents() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/reviewer/dashboard')}
+          onClick={() => navigate('/case-officer/dashboard')}
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />

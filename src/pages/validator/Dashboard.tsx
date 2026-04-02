@@ -32,7 +32,7 @@ export default function SupervisorDashboard() {
           <h1 className="text-3xl font-bold">Supervisor Dashboard</h1>
           <p className="text-muted-foreground">Governance overview & escalation management</p>
         </div>
-        <Button onClick={() => navigate('/validator/escalations')} className="bg-role-validator text-primary-foreground hover:bg-role-validator/90">
+        <Button onClick={() => navigate('/supervisor/escalations')} className="bg-role-validator text-primary-foreground hover:bg-role-validator/90">
           <Inbox className="mr-2 h-4 w-4" /> Pending Tasks
         </Button>
       </div>
@@ -54,7 +54,7 @@ export default function SupervisorDashboard() {
 
       {/* Priority Alerts */}
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/validator/escalations')}>
+        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/supervisor/escalations')}>
           <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-destructive/20 flex items-center justify-center">
@@ -71,7 +71,7 @@ export default function SupervisorDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/validator/escalations')}>
+        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/supervisor/escalations')}>
           <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-amber-500/20 flex items-center justify-center">
@@ -107,7 +107,7 @@ export default function SupervisorDashboard() {
                 <Badge variant="outline" className={item.severity === 'Critical' ? 'border-destructive/50 text-destructive' : 'border-status-in-review/50 text-status-in-review'}>
                   {item.severity}
                 </Badge>
-                <Button size="sm" variant="outline" onClick={() => navigate(`/validator/escalations/${item.id}`)}>Review</Button>
+                <Button size="sm" variant="outline" onClick={() => navigate(`/supervisor/escalations/${item.id}`)}>Review</Button>
               </div>
             </div>
           ))}

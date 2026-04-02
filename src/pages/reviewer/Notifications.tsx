@@ -5,12 +5,12 @@ import { Clock, MessageSquare, ArrowUpRight, CheckCircle2, FileText, AlertCircle
 import { useNavigate } from 'react-router-dom';
 
 const notifications = [
-  { id: 1, type: 'assignment', title: 'New Case Assigned', message: 'Case #PSIRP-2025-0028 (Critical Security Breach) has been assigned to you.', time: '1 hour ago', read: false, icon: FileText, action: '/reviewer/cases/PSIRP-2025-0028', actionLabel: 'Review' },
+  { id: 1, type: 'assignment', title: 'New Case Assigned', message: 'Case #PSIRP-2025-0028 (Critical Security Breach) has been assigned to you.', time: '1 hour ago', read: false, icon: FileText, action: '/case-officer/cases/PSIRP-2025-0028', actionLabel: 'Review' },
   
-  { id: 3, type: 'clarification', title: 'Clarification Response', message: 'Reporter has responded to your clarification request for #PSIRP-2025-0026.', time: '3 hours ago', read: false, icon: MessageSquare, action: '/reviewer/cases/PSIRP-2025-0026', actionLabel: 'Review' },
-  { id: 4, type: 'escalation', title: 'Escalation Approved', message: 'Supervisor approved escalation for case #PSIRP-2025-0022. Case forwarded to PDRM.', time: '5 hours ago', read: false, icon: ArrowUpRight, action: '/reviewer/cases/PSIRP-2025-0022', actionLabel: 'View' },
-  { id: 5, type: 'escalation_rejected', title: 'Escalation Rejected', message: 'Supervisor rejected escalation for case #PSIRP-2025-0020. Case returned to Under Review.', time: '1 day ago', read: true, icon: AlertCircle, action: '/reviewer/cases/PSIRP-2025-0020', actionLabel: 'View' },
-  { id: 6, type: 'status', title: 'Case Closed', message: 'Supervisor has closed case #PSIRP-2025-0019 — No Further Action.', time: '2 days ago', read: true, icon: CheckCircle2, action: '/reviewer/cases/PSIRP-2025-0019', actionLabel: 'View' },
+  { id: 3, type: 'clarification', title: 'Clarification Response', message: 'Reporter has responded to your clarification request for #PSIRP-2025-0026.', time: '3 hours ago', read: false, icon: MessageSquare, action: '/case-officer/cases/PSIRP-2025-0026', actionLabel: 'Review' },
+  { id: 4, type: 'escalation', title: 'Escalation Approved', message: 'Supervisor approved escalation for case #PSIRP-2025-0022. Case forwarded to PDRM.', time: '5 hours ago', read: false, icon: ArrowUpRight, action: '/case-officer/cases/PSIRP-2025-0022', actionLabel: 'View' },
+  { id: 5, type: 'escalation_rejected', title: 'Escalation Rejected', message: 'Supervisor rejected escalation for case #PSIRP-2025-0020. Case returned to Under Review.', time: '1 day ago', read: true, icon: AlertCircle, action: '/case-officer/cases/PSIRP-2025-0020', actionLabel: 'View' },
+  { id: 6, type: 'status', title: 'Case Closed', message: 'Supervisor has closed case #PSIRP-2025-0019 — No Further Action.', time: '2 days ago', read: true, icon: CheckCircle2, action: '/case-officer/cases/PSIRP-2025-0019', actionLabel: 'View' },
 ];
 
 const typeColors: Record<string, string> = {
