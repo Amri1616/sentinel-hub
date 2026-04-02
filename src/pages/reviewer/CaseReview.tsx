@@ -17,6 +17,8 @@ import { useToast } from '@/hooks/use-toast';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
+import { fallbackIncident } from '@/lib/mock-data';
+import CaseHeader from '@/components/shared/CaseHeader';
 
 export default function CaseReview() {
   const navigate = useNavigate();
@@ -37,43 +39,7 @@ export default function CaseReview() {
     { author: 'Lee Wei (CO-2024-022)', comment: 'Confirmed pattern matches with Warehouse Break-in case from last week.', date: '2025-01-16 14:30' },
   ];
 
-  const incident: CaseData = {
-    id: id || 'PSIRP-2025-0028',
-    title: 'Critical Security Breach',
-    status: 'Under Review',
-    severity: 'Critical',
-    description: 'A critical security breach was detected at the main sorting facility. Unauthorized access to restricted areas was recorded by security systems during the early morning hours of January 16th.',
-    primaryIncidentType: 'Criminal activities within postal hubs',
-    observedImpact: 'High',
-    incidentDate: '2025-01-16',
-    incidentTime: '03:15',
-    dateReported: '2025-01-16 06:30',
-    branchName: 'KL Main Sorting Facility',
-    address: 'Lot 12, Jalan Perusahaan, Shah Alam',
-    state: 'Selangor',
-    postalCode: '40150',
-    companyName: 'Global Express Logistics Sdn Bhd',
-    reporterName: 'Ahmad bin Abdullah',
-    reporterDesignation: 'Security Manager',
-    leaEscalation: 'No',
-    systemServiceAffected: 'Access Control System',
-    impactIndicators: ['Safety Risk', 'Operational Disruption'],
-    items: [
-      { tracking: 'EC20250116-99001', type: 'Bulk Shipment', declaration: 'Multiple high-value consignments in restricted zone', weight: 'N/A', detectedItemType: 'Mixed consignments', sender: { name: 'Various', address: 'Various', stateCountry: 'Malaysia', contact: 'N/A' }, receiver: { name: 'Various', address: 'Various', stateCountry: 'Malaysia', contact: 'N/A' } },
-    ],
-    immediateActions: 'Facility locked down, security protocols activated, CCTV footage secured.',
-    incidentControlStatus: 'Contained',
-    reportedToAuthority: 'No',
-    parcelHandedOver: 'No',
-    assistanceRequested: ['Investigation Support', 'Legal Advice'],
-    documents: [
-      { name: 'Security_Camera_Log.pdf', size: '3.2 MB', uploadedBy: 'Ahmad bin Abdullah', uploadDate: '2025-01-16 06:25' },
-      { name: 'Access_Control_Report.xlsx', size: '0.8 MB', uploadedBy: 'Ahmad bin Abdullah', uploadDate: '2025-01-16 06:27' },
-      { name: 'Incident_Photo_01.jpg', size: '2.1 MB', uploadedBy: 'Ahmad bin Abdullah', uploadDate: '2025-01-16 06:29' },
-    ],
-    declarationAgreed: true,
-    declarationDate: '2025-01-16',
-  };
+  const incident = fallbackIncident(id || 'PSIRP-2025-0028');
 
   const timeline: TimelineEvent[] = [
     { event: 'Incident Submitted', actor: 'Licensee Reporter', time: '2025-01-16 06:30', type: 'submission' },
@@ -107,38 +73,32 @@ export default function CaseReview() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Back link */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/reviewer/inbox')}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Inbox
-        </Button>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+      <CaseHeader
+        id={incident.id}
+        title={incident.title}
+        companyName={incident.companyName}
+        status={incident.status}
+        statusColor={getStatusColor(incident.status)}
+        severity={incident.severity}
+        severityColor={getSeverityColor(incident.severity)}
+        submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
+        backLabel="Back to Inbox"
+        onBack={() => navigate('/case-officer/inbox')}
+      />
 
-      {/* Header — matching Agency page typography */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{incident.id}</h1>
-          <p className="text-muted-foreground">{incident.title} — {incident.companyName}</p>
-        </div>
-        <div className="flex flex-col items-end gap-1.5">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className={`text-sm px-3 py-1 ${getStatusColor(incident.status)}`}>{incident.status}</Badge>
-            <Badge variant="outline" className={`text-sm px-3 py-1 ${getSeverityColor(incident.severity)}`}>{incident.severity}</Badge>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Submitted on: {incident.dateReported?.split(' ')[0] || incident.incidentDate}
-          </p>
-        </div>
-      </div>
-
-      {/* Tabbed Navigation — matching Agency page */}
-      <Tabs defaultValue="details" className="space-y-4">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="details">Case Details</TabsTrigger>
-          <TabsTrigger value="clarification">Clarification</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
-          <TabsTrigger value="assessment">Assessment & Actions</TabsTrigger>
+      <Tabs defaultValue="details" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
+          <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
+          <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all flex items-center gap-2">
+            Clarification
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
+          <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Assessment & Actions</TabsTrigger>
         </TabsList>
 
         {/* Tab 1: Case Details */}
@@ -319,7 +279,8 @@ export default function CaseReview() {
         {/* Tab 3: Clarification */}
         <TabsContent value="clarification">
           <CaseClarificationThread
-            messages={communications}
+            messages={[]}
+            currentRole="officer"
             replyPlaceholder="Enter your clarification request to the reporter..."
             glowClass="glow-blue"
           />

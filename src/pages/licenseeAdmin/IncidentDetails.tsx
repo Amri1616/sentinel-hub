@@ -6,49 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
-
-/* ── Incident lookup data ── */
-const incidents = [
-  { id: 'PSIRP-2025-0025', reporter: 'Ahmad bin Abdullah', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', escalated: true, description: 'High-value package theft at sorting facility', attachments: ['evidence-photo.jpg', 'cctv-footage.mp4'] },
-  { id: 'PSIRP-2025-0024', reporter: 'Mohd Zaki', type: 'Suspicious Parcel', severity: 'Medium', status: 'Submitted', submitted: '2025-01-14', escalated: false, description: 'Suspicious parcel detected during scanning', attachments: ['scan-report.pdf'] },
-  { id: 'PSIRP-2025-0023', reporter: 'Kamal Hassan', type: 'Prohibited Items', severity: 'Low', status: 'Draft', submitted: '2025-01-13', escalated: false, description: 'Prohibited items found in shipment', attachments: [] },
-  { id: 'PSIRP-2025-0022', reporter: 'Fatimah Zahra', type: 'Security Breach', severity: 'High', status: 'Escalated', submitted: '2025-01-12', escalated: true, description: 'Unauthorized access to secure area', attachments: ['access-log.csv', 'photo1.jpg'] },
-  { id: 'PSIRP-2025-0021', reporter: 'Azman Ali', type: 'Theft', severity: 'Critical', status: 'Closed', submitted: '2025-01-11', escalated: true, description: 'Serial theft case across multiple branches', attachments: ['police-report.pdf'] },
-  { id: 'PSIRP-2025-0020', reporter: 'Ahmad bin Abdullah', type: 'Others', severity: 'Low', status: 'Under Review', submitted: '2025-01-10', escalated: false, description: 'Equipment tampering report', attachments: [] },
-];
-
-const mapToCaseData = (inc: typeof incidents[0]): CaseData => ({
-  id: inc.id,
-  title: inc.description,
-  dateReported: inc.submitted,
-  incidentDate: inc.submitted,
-  incidentTime: '—',
-  branchName: '—',
-  address: '—',
-  state: '—',
-  postalCode: '—',
-  companyName: 'Global Express Logistics Sdn Bhd',
-  reporterName: inc.reporter,
-  reporterDesignation: 'Reporter',
-  status: inc.status,
-  severity: inc.severity,
-  leaEscalation: inc.escalated ? 'Yes' : 'No',
-  description: inc.description,
-  primaryIncidentType: inc.type,
-  immediateActions: '—',
-  incidentControlStatus: '—',
-  reportedToAuthority: inc.escalated ? 'Yes' : 'No',
-  parcelHandedOver: '—',
-  assistanceRequested: [],
-  documents: inc.attachments.map(f => ({ name: f, size: '—', uploadedBy: inc.reporter, uploadDate: inc.submitted })),
-  items: ['Theft', 'Suspicious Parcel', 'Prohibited Items'].includes(inc.type) ? [{
-    tracking: '—', type: 'Standard', declaration: '—', weight: '—', detectedItemType: inc.type,
-    sender: { name: '—', address: '—', stateCountry: '—', contact: '—' },
-    receiver: { name: '—', address: '—', stateCountry: '—', contact: '—' },
-  }] : undefined,
-  declarationAgreed: true,
-  declarationDate: inc.submitted,
-});
+import { fallbackIncident } from '@/lib/mock-data';
+import CaseHeader from '@/components/shared/CaseHeader';
 
 /* ── Clarification thread ── */
 const mockClarifications: ClarificationMessage[] = [
@@ -63,61 +22,43 @@ export default function LicenseeAdminIncidentDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const incident = incidents.find(i => i.id === id);
-
-  if (!incident) {
-    return (
-      <div className="space-y-6">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/licensee-admin/incidents')}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Incidents
-        </Button>
-        <p className="text-muted-foreground">Incident not found.</p>
-      </div>
-    );
-  }
-
-  const caseData = mapToCaseData(incident);
+  const incident = fallbackIncident(id || 'PSIRP-2025-0025');
+  const caseData = incident;
 
   const timeline: TimelineEvent[] = [
-    { event: 'Incident Submitted', actor: 'Licensee Reporter', time: incident.submitted + ' 14:30', type: 'submission' },
-    { event: 'Assigned to Case Officer', actor: 'System', time: incident.submitted + ' 16:00', type: 'system' },
+    { event: 'Incident Submitted', actor: 'Licensee Reporter', time: incident.dateReported, type: 'submission' },
+    { event: 'Assigned to Case Officer', actor: 'System', time: incident.dateReported, type: 'system' },
     { event: 'Under Review', actor: 'Officer Lim', time: '2025-01-16 09:15', type: 'update' },
     { event: 'RFI Sent to Reporter', actor: 'Officer Lim', time: '2025-01-17 11:00', type: 'rfi' },
-    ...(incident.escalated ? [{ event: 'Escalated to LEA', actor: 'Supervisor Wong', time: '2025-01-18 14:30', type: 'escalation' as const }] : []),
+    ...(incident.leaEscalation === 'Yes' ? [{ event: 'Escalated to LEA', actor: 'Supervisor Wong', time: '2025-01-18 14:30', type: 'escalation' as const }] : []),
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Back link */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/licensee-admin/incidents')}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Incidents
-        </Button>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+      <CaseHeader
+        id={incident.id}
+        title={incident.title}
+        companyName={incident.companyName}
+        status={incident.status}
+        statusColor={getStatusColor(incident.status)}
+        severity={incident.severity}
+        severityColor={getSeverityColor(incident.severity)}
+        submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
+        backLabel="Back to Incidents"
+        onBack={() => navigate('/licensee-admin/incidents')}
+      />
 
-      {/* Header — matching Reporter page typography */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{incident.id}</h1>
-          <p className="text-muted-foreground">{incident.description} — Global Express Logistics Sdn Bhd</p>
-        </div>
-        <div className="flex flex-col items-end gap-1.5">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className={`text-sm px-3 py-1 ${getStatusColor(incident.status)}`}>{incident.status}</Badge>
-            <Badge variant="outline" className={`text-sm px-3 py-1 ${getSeverityColor(incident.severity)}`}>{incident.severity}</Badge>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Submitted on: {incident.submitted}
-          </p>
-        </div>
-      </div>
-
-      {/* Tabbed Navigation — matching Reporter page */}
-      <Tabs defaultValue="details" className="space-y-4">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="details">Case Details</TabsTrigger>
-          <TabsTrigger value="clarification">Clarification</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+      <Tabs defaultValue="details" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
+          <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
+          <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all flex items-center gap-2">
+            Clarification
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
         </TabsList>
 
         {/* Tab 1: Case Details */}
@@ -127,7 +68,7 @@ export default function LicenseeAdminIncidentDetails() {
 
         {/* Tab 2: Clarification */}
         <TabsContent value="clarification">
-          <CaseClarificationThread messages={mockClarifications} glowClass="glow-cyan" />
+          <CaseClarificationThread messages={[]} currentRole="admin" />
         </TabsContent>
 
         {/* Tab 3: Timeline */}

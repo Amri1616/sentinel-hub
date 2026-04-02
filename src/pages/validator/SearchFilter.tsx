@@ -133,7 +133,7 @@ export default function SupervisorSearchFilter() {
                   <TableCell>{c.escalation}</TableCell>
                   <TableCell className="text-muted-foreground">{c.submitted}</TableCell>
                   <TableCell>
-                    <Button size="sm" variant="ghost" onClick={() => navigate(`/validator/cases/${c.id}`)}>
+                    <Button size="sm" variant="ghost" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>
                       <Eye className="h-4 w-4" />
                     </Button>
                   </TableCell>

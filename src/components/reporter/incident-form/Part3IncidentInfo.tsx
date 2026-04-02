@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { IncidentFormData, StaffDetected, SenderRecipientInfo } from './types';
+import { SelectCountry } from './SelectCountry';
 
 interface Props {
   data: IncidentFormData;
@@ -20,6 +21,10 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
 
   const updateRecipient = (field: keyof SenderRecipientInfo, value: string) => {
     onChange('recipientInfo', { ...data.recipientInfo, [field]: value });
+  };
+
+  const updateLocation = (field: keyof SenderRecipientInfo, value: string) => {
+    onChange('incidentLocation', { ...data.incidentLocation, [field]: value });
   };
 
   return (
@@ -43,9 +48,66 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
       </div>
 
       {/* Location Address */}
-      <div className="space-y-2">
-        <Label>Location Address *</Label>
-        <Textarea value={data.incidentLocation} onChange={(e) => onChange('incidentLocation', e.target.value)} placeholder="Full address of the incident location" rows={3} />
+      <div className="space-y-3 p-4 border border-border rounded-lg bg-muted/30">
+        <h4 className="text-sm font-semibold flex items-center gap-2">
+          Location Address (Location where the incident occurred) *
+        </h4>
+        
+        <div className="space-y-4 pt-2">
+          <div className="space-y-2">
+            <Label>Address Line 1 (Required) *</Label>
+            <Input 
+              value={data.incidentLocation.addressLine1} 
+              onChange={(e) => updateLocation('addressLine1', e.target.value)} 
+              placeholder="House number, street name, and suffix (e.g., '123 Main St')"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Address Line 2 (Optional)</Label>
+            <Input 
+              value={data.incidentLocation.addressLine2} 
+              onChange={(e) => updateLocation('addressLine2', e.target.value)} 
+              placeholder="Apartment, suite, unit, floor, or PO Box"
+            />
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>City / Municipality</Label>
+              <Input 
+                value={data.incidentLocation.city} 
+                onChange={(e) => updateLocation('city', e.target.value)} 
+                placeholder="The town or city name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>State</Label>
+              <Input 
+                value={data.incidentLocation.state} 
+                onChange={(e) => updateLocation('state', e.target.value)} 
+                placeholder="The state or equivalent region"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>ZIP / Postal Code</Label>
+              <Input 
+                value={data.incidentLocation.zipCode} 
+                onChange={(e) => updateLocation('zipCode', e.target.value)} 
+                placeholder="Numerical or alphanumeric code"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Country</Label>
+              <SelectCountry 
+                value={data.incidentLocation.country} 
+                onValueChange={(val) => updateLocation('country', val)} 
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Staff Details */}
@@ -139,13 +201,62 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
             <Input value={data.senderInfo.contact} onChange={(e) => updateSender('contact', e.target.value)} />
           </div>
         </div>
-        <div className="space-y-2">
-          <Label>Address</Label>
-          <Textarea value={data.senderInfo.address} onChange={(e) => updateSender('address', e.target.value)} rows={2} />
-        </div>
-        <div className="space-y-2">
-          <Label>State / Country</Label>
-          <Input value={data.senderInfo.stateCountry} onChange={(e) => updateSender('stateCountry', e.target.value)} />
+        
+        {/* Granular Address Section */}
+        <div className="space-y-4 pt-2 border-t border-border/50">
+          <div className="space-y-2">
+            <Label>Address Line 1 (Required) *</Label>
+            <Input 
+              value={data.senderInfo.addressLine1} 
+              onChange={(e) => updateSender('addressLine1', e.target.value)} 
+              placeholder="House number, street name, and suffix (e.g., '123 Main St')"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Address Line 2 (Optional)</Label>
+            <Input 
+              value={data.senderInfo.addressLine2} 
+              onChange={(e) => updateSender('addressLine2', e.target.value)} 
+              placeholder="Apartment, suite, unit, floor, or PO Box"
+            />
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>City / Municipality</Label>
+              <Input 
+                value={data.senderInfo.city} 
+                onChange={(e) => updateSender('city', e.target.value)} 
+                placeholder="The town or city name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>State</Label>
+              <Input 
+                value={data.senderInfo.state} 
+                onChange={(e) => updateSender('state', e.target.value)} 
+                placeholder="The state or equivalent region"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>ZIP / Postal Code</Label>
+              <Input 
+                value={data.senderInfo.zipCode} 
+                onChange={(e) => updateSender('zipCode', e.target.value)} 
+                placeholder="Numerical or alphanumeric code"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Country</Label>
+              <SelectCountry 
+                value={data.senderInfo.country} 
+                onValueChange={(val) => updateSender('country', val)} 
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -162,13 +273,62 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
             <Input value={data.recipientInfo.contact} onChange={(e) => updateRecipient('contact', e.target.value)} />
           </div>
         </div>
-        <div className="space-y-2">
-          <Label>Address</Label>
-          <Textarea value={data.recipientInfo.address} onChange={(e) => updateRecipient('address', e.target.value)} rows={2} />
-        </div>
-        <div className="space-y-2">
-          <Label>State / Country</Label>
-          <Input value={data.recipientInfo.stateCountry} onChange={(e) => updateRecipient('stateCountry', e.target.value)} />
+        
+        {/* Granular Address Section */}
+        <div className="space-y-4 pt-2 border-t border-border/50">
+          <div className="space-y-2">
+            <Label>Address Line 1 (Required) *</Label>
+            <Input 
+              value={data.recipientInfo.addressLine1} 
+              onChange={(e) => updateRecipient('addressLine1', e.target.value)} 
+              placeholder="House number, street name, and suffix (e.g., '123 Main St')"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Address Line 2 (Optional)</Label>
+            <Input 
+              value={data.recipientInfo.addressLine2} 
+              onChange={(e) => updateRecipient('addressLine2', e.target.value)} 
+              placeholder="Apartment, suite, unit, floor, or PO Box"
+            />
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>City / Municipality</Label>
+              <Input 
+                value={data.recipientInfo.city} 
+                onChange={(e) => updateRecipient('city', e.target.value)} 
+                placeholder="The town or city name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>State</Label>
+              <Input 
+                value={data.recipientInfo.state} 
+                onChange={(e) => updateRecipient('state', e.target.value)} 
+                placeholder="The state or equivalent region"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>ZIP / Postal Code</Label>
+              <Input 
+                value={data.recipientInfo.zipCode} 
+                onChange={(e) => updateRecipient('zipCode', e.target.value)} 
+                placeholder="Numerical or alphanumeric code"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Country</Label>
+              <SelectCountry 
+                value={data.recipientInfo.country} 
+                onValueChange={(val) => updateRecipient('country', val)} 
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

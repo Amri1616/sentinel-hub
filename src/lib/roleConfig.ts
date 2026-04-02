@@ -18,7 +18,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     description: 'Submit and track incidents for your organisation.',
     color: 'hsl(191 100% 50%)',
     glowClass: 'glow-cyan',
-    basePath: '/reporter',
+    basePath: '/licensee-reporter',
     icon: FileText,
   },
   'licensee-admin': {
@@ -36,7 +36,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     description: 'Review and process incident submissions.',
     color: 'hsl(203 89% 53%)',
     glowClass: 'glow-blue',
-    basePath: '/reviewer',
+    basePath: '/case-officer',
     icon: ClipboardCheck,
   },
   'validator': {
@@ -45,7 +45,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     description: 'Approve and finalize incident decisions.',
     color: 'hsl(38 92% 50%)',
     glowClass: 'glow-amber',
-    basePath: '/validator',
+    basePath: '/supervisor',
     icon: BadgeCheck,
   },
   'investigator': {
@@ -54,7 +54,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     description: 'Strategic oversight and governance analytics.',
     color: 'hsl(0 78% 62%)',
     glowClass: 'glow-red',
-    basePath: '/investigator',
+    basePath: '/internal',
     icon: Search,
   },
   'system-admin': {

@@ -5,12 +5,12 @@ import { AlertTriangle, CheckCircle, XCircle, Shield, Clock } from 'lucide-react
 import { useNavigate } from 'react-router-dom';
 
 const initialNotifications = [
-  { id: 1, type: 'escalation', title: 'New Escalation Request', message: 'Ahmad Razif submitted escalation for PSIRP-2025-0045 – High-value theft case.', time: '2 hours ago', read: false, icon: AlertTriangle, action: '/validator/cases/PSIRP-2025-0045', actionLabel: 'Review' },
-  { id: 2, type: 'escalation', title: 'New Escalation Request', message: 'Farah Amin submitted escalation for PSIRP-2025-0060 – Cross-border contraband.', time: '4 hours ago', read: false, icon: AlertTriangle, action: '/validator/cases/PSIRP-2025-0060', actionLabel: 'Review' },
-  { id: 3, type: 'pending', title: 'Pending Closure Approval', message: 'PSIRP-2025-0031 awaiting your closure approval – submitted by Officer Lim.', time: '6 hours ago', read: false, icon: Clock, action: '/validator/cases/PSIRP-2025-0031', actionLabel: 'Review' },
-  { id: 4, type: 'closure', title: 'Case Closure Confirmed', message: 'PSIRP-2025-0028 closed successfully – No Further Action.', time: '1 day ago', read: true, icon: CheckCircle, action: '/validator/cases/PSIRP-2025-0028', actionLabel: 'View' },
-  { id: 5, type: 'approved', title: 'Escalation Approved', message: 'Your approval of PSIRP-2025-0042 has been processed. LEA notified.', time: '1 day ago', read: true, icon: Shield, action: '/validator/cases/PSIRP-2025-0042', actionLabel: 'View' },
-  { id: 6, type: 'rejection', title: 'Escalation Rejected', message: 'PSIRP-2025-0037 escalation was rejected and returned to Case Officer.', time: '2 days ago', read: true, icon: XCircle, action: '/validator/cases/PSIRP-2025-0037', actionLabel: 'View' },
+  { id: 1, type: 'escalation', title: 'New Escalation Request', message: 'Ahmad Razif submitted escalation for PSIRP-2025-0045 – High-value theft case.', time: '2 hours ago', read: false, icon: AlertTriangle, action: '/supervisor/cases/PSIRP-2025-0045', actionLabel: 'Review' },
+  { id: 2, type: 'escalation', title: 'New Escalation Request', message: 'Farah Amin submitted escalation for PSIRP-2025-0060 – Cross-border contraband.', time: '4 hours ago', read: false, icon: AlertTriangle, action: '/supervisor/cases/PSIRP-2025-0060', actionLabel: 'Review' },
+  { id: 3, type: 'pending', title: 'Pending Closure Approval', message: 'PSIRP-2025-0031 awaiting your closure approval – submitted by Officer Lim.', time: '6 hours ago', read: false, icon: Clock, action: '/supervisor/cases/PSIRP-2025-0031', actionLabel: 'Review' },
+  { id: 4, type: 'closure', title: 'Case Closure Confirmed', message: 'PSIRP-2025-0028 closed successfully – No Further Action.', time: '1 day ago', read: true, icon: CheckCircle, action: '/supervisor/cases/PSIRP-2025-0028', actionLabel: 'View' },
+  { id: 5, type: 'approved', title: 'Escalation Approved', message: 'Your approval of PSIRP-2025-0042 has been processed. LEA notified.', time: '1 day ago', read: true, icon: Shield, action: '/supervisor/cases/PSIRP-2025-0042', actionLabel: 'View' },
+  { id: 6, type: 'rejection', title: 'Escalation Rejected', message: 'PSIRP-2025-0037 escalation was rejected and returned to Case Officer.', time: '2 days ago', read: true, icon: XCircle, action: '/supervisor/cases/PSIRP-2025-0037', actionLabel: 'View' },
 ];
 
 const typeColors: Record<string, string> = {

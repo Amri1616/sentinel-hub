@@ -53,14 +53,14 @@ export default function ActionsTaken({ incident }: Props) {
             </p>
           </div>
           {incident.authorityAgency && <Field label="Authority/Agency" value={incident.authorityAgency} />}
-          {incident.authorityReference && <Field label="Authority Reference No." value={incident.authorityReference} />}
-          <Field label="Handover of Package to Authorities" value={incident.parcelHandedOver} />
-          <div>
+          <Field label="Authority Reference No." value={incident.authorityReference || '—'} />
+          <Field label="Handover of Package to Authorities" value={incident.parcelHandedOver || '—'} />
+          <div className="md:col-span-2">
             <p className="text-xs text-muted-foreground mb-1">Assistance Required from Authorities</p>
             <div className="flex flex-wrap gap-1.5">
-              {incident.assistanceRequested.length > 0 ? incident.assistanceRequested.map((a) => (
+              {incident.assistanceRequested && incident.assistanceRequested.length > 0 ? incident.assistanceRequested.map((a) => (
                 <Badge key={a} variant="outline" className="text-xs">{a}</Badge>
-              )) : <span className="text-sm text-muted-foreground">—</span>}
+              )) : <span className="text-sm font-medium">—</span>}
             </div>
           </div>
         </div>

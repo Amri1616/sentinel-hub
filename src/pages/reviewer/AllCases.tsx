@@ -14,13 +14,13 @@ export default function ReviewerAllCases() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const allCases = [
-    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', isOwn: true },
-    { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', organisation: 'Swift Logistics Sdn Bhd', officer: 'You', severity: 'High', status: 'Pending Review', submitted: '2025-01-16', isOwn: true },
-    { id: 'PSIRP-2025-0030', title: 'Warehouse Break-in', organisation: 'Pos Malaysia Berhad', officer: 'Nurul Hana', severity: 'High', status: 'Under Review', submitted: '2025-01-17', isOwn: false },
-    { id: 'PSIRP-2025-0031', title: 'Package Diversion Scheme', organisation: 'Global Express Logistics Sdn Bhd', officer: 'Lee Wei', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-01-17', isOwn: false },
-    { id: 'PSIRP-2025-0029', title: 'Missing Registered Mail', organisation: 'Fast Delivery Enterprise', officer: 'Farah Amin', severity: 'Medium', status: 'RFI Sent', submitted: '2025-01-16', isOwn: false },
-    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', isOwn: true },
-    { id: 'PSIRP-2025-0032', title: 'Delayed Goods Complaint', organisation: 'Swift Logistics Sdn Bhd', officer: 'Ahmad Razif', severity: 'Low', status: 'Under Review', submitted: '2025-01-18', isOwn: false },
+    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', lastUpdated: '2025-01-18', escalation: 'Yes', isOwn: true },
+    { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', organisation: 'Swift Logistics Sdn Bhd', officer: 'You', severity: 'High', status: 'Pending Review', submitted: '2025-01-16', lastUpdated: '2025-01-17', escalation: 'No', isOwn: true },
+    { id: 'PSIRP-2025-0030', title: 'Warehouse Break-in', organisation: 'Pos Malaysia Berhad', officer: 'Nurul Hana', severity: 'High', status: 'Under Review', submitted: '2025-01-17', lastUpdated: '2025-01-18', escalation: 'No', isOwn: false },
+    { id: 'PSIRP-2025-0031', title: 'Package Diversion Scheme', organisation: 'Global Express Logistics Sdn Bhd', officer: 'Lee Wei', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-01-17', lastUpdated: '2025-01-19', escalation: 'Pending', isOwn: false },
+    { id: 'PSIRP-2025-0029', title: 'Missing Registered Mail', organisation: 'Fast Delivery Enterprise', officer: 'Farah Amin', severity: 'Medium', status: 'RFI Sent', submitted: '2025-01-16', lastUpdated: '2025-01-17', escalation: 'No', isOwn: false },
+    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', lastUpdated: '2025-01-16', escalation: 'No', isOwn: true },
+    { id: 'PSIRP-2025-0032', title: 'Delayed Goods Complaint', organisation: 'Swift Logistics Sdn Bhd', officer: 'Ahmad Razif', severity: 'Low', status: 'Under Review', submitted: '2025-01-18', lastUpdated: '2025-01-20', escalation: 'No', isOwn: false },
   ];
 
   const filtered = allCases.filter((i) => {
@@ -32,23 +32,23 @@ export default function ReviewerAllCases() {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      'Pending Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30',
-      'RFI Sent': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30',
-      'Under Review': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30',
-      'Escalation Pending': 'bg-destructive/20 text-destructive border-destructive/30',
-      'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30',
+      'Pending Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
+      'RFI Sent': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
+      'Under Review': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30 px-2.5 py-0.5 rounded-full',
+      'Escalation Pending': 'bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full',
+      'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
     };
-    return colors[status] || 'bg-secondary';
+    return colors[status] || 'bg-secondary px-2.5 py-0.5 rounded-full';
   };
 
   const getSeverityColor = (severity: string) => {
     const colors: Record<string, string> = {
-      'Critical': 'bg-red-500/20 text-red-400 border-red-500/30',
-      'High': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      'Medium': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      'Low': 'bg-green-500/20 text-green-400 border-green-500/30',
+      'Critical': 'bg-red-500/20 text-red-500 border-red-500/30 px-2.5 py-0.5 rounded-full',
+      'High': 'bg-orange-500/20 text-orange-600 border-orange-500/30 px-2.5 py-0.5 rounded-full',
+      'Medium': 'bg-yellow-500/20 text-yellow-600 border-yellow-500/30 px-2.5 py-0.5 rounded-full',
+      'Low': 'bg-green-500/20 text-green-600 border-green-500/30 px-2.5 py-0.5 rounded-full',
     };
-    return colors[severity] || 'bg-secondary';
+    return colors[severity] || 'bg-secondary px-2.5 py-0.5 rounded-full';
   };
 
   return (
@@ -89,46 +89,72 @@ export default function ReviewerAllCases() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="w-full overflow-hidden border">
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Reference</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Title</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Organisation</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Assigned Officer</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Severity</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Submitted</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Action</th>
+          <div className="relative group w-full overflow-hidden">
+            <div className="overflow-x-auto w-full">
+              <table className="table-auto w-full text-sm">
+                <thead className="border-b bg-muted/50 border-border">
+                  <tr>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Reference</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[200px] text-foreground">Title</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[180px] text-foreground">Organisation</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Assigned Officer</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[120px] text-foreground">Severity</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Status</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalation Status</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Last Updated Date</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[100px] text-foreground">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3 font-mono text-role-reviewer">{c.id}</td>
-                    <td className="px-4 py-3 font-medium">{c.title}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.organisation}</td>
-                    <td className="px-4 py-3">
-                      <span className={c.isOwn ? 'text-role-reviewer font-medium' : 'text-muted-foreground'}>{c.officer}</span>
+                  <tr key={c.id} className="border-b hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => navigate(`/case-officer/cases/${c.id}`)}>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <span className="font-mono font-bold text-primary hover:underline cursor-pointer text-sm" onClick={() => navigate(`/case-officer/cases/${c.id}`)}>{c.id}</span>
                     </td>
-                    <td className="px-4 py-3"><Badge variant="outline" className={getSeverityColor(c.severity)}>{c.severity}</Badge></td>
-                    <td className="px-4 py-3"><Badge variant="outline" className={getStatusColor(c.status)}>{c.status}</Badge></td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.submitted}</td>
-                    <td className="px-4 py-3">
-                      <Button size="sm" variant="outline" onClick={() => navigate(`/reviewer/cases/${c.id}`)}>
-                        <Eye className="mr-1 h-3 w-3" />{c.isOwn ? 'Review' : 'View'}
-                      </Button>
+                    <td className="px-3 py-4 text-center align-middle text-sm font-medium whitespace-normal">{c.title}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground whitespace-normal">{c.organisation}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <span className={c.isOwn ? 'text-role-reviewer font-medium text-sm' : 'text-muted-foreground text-sm'}>{c.officer}</span>
+                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        <Badge variant="outline" className={`${getSeverityColor(c.severity)} text-[11px]`}>{c.severity}</Badge>
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        <Badge variant="outline" className={`${getStatusColor(c.status)} text-[11px]`}>{c.status}</Badge>
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        {c.escalation === 'Yes' && <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">Yes</Badge>}
+                        {c.escalation === 'Pending' && <Badge variant="outline" className="bg-status-investigation/20 text-status-investigation border-status-investigation/30 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">Pending</Badge>}
+                        {c.escalation === 'No' && <span className="text-muted-foreground text-sm">No</span>}
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.lastUpdated}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.submitted}</td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">
+                      <div className="flex justify-center">
+                        <Button size="sm" variant="outline" onClick={() => navigate(`/case-officer/cases/${c.id}`)}>
+                          <Eye className="mr-1 h-3 w-3" />{c.isOwn ? 'Review' : 'View'}
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+          {/* Scroll Hint Shadow */}
+          <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
+        </div>
+      </CardContent>
+    </Card>
     </div>
   );
 }

@@ -89,7 +89,7 @@ export default function ReporterDrafts() {
                       </td>
                       <td className="py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button size="sm" variant="outline" onClick={() => navigate('/reporter/incidents/new')}>
+                          <Button size="sm" variant="outline" onClick={() => navigate('/licensee-reporter/incidents/new')}>
                             Continue <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
                           <Button size="icon" variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => handleDelete(draft.id)}>

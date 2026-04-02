@@ -64,7 +64,7 @@ export default function EscalationQueue() {
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => navigate(`/validator/cases/${esc.id}`)}>
+          <Button variant="outline" onClick={() => navigate(`/supervisor/cases/${esc.id}`)}>
             <Eye className="h-4 w-4 mr-2" /> View Full Case
           </Button>
           <Button className="bg-status-closed text-primary-foreground hover:bg-status-closed/90" onClick={() => setApproveDialog(esc.id)}>
@@ -84,7 +84,7 @@ export default function EscalationQueue() {
             </DialogHeader>
             <DialogFooter>
               <Button variant="outline" onClick={() => setApproveDialog(null)}>Cancel</Button>
-              <Button className="bg-status-closed text-primary-foreground" onClick={() => { toast({ title: 'Escalation Approved', description: `${approveDialog} escalated to LEA.` }); setApproveDialog(null); navigate('/validator/escalations'); }}>
+              <Button className="bg-status-closed text-primary-foreground" onClick={() => { toast({ title: 'Escalation Approved', description: `${approveDialog} escalated to LEA.` }); setApproveDialog(null); navigate('/supervisor/escalations'); }}>
                 Confirm Approval
               </Button>
             </DialogFooter>
@@ -101,7 +101,7 @@ export default function EscalationQueue() {
             <Textarea placeholder="Enter rejection reason (required)..." value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} className="min-h-[100px]" />
             <DialogFooter>
               <Button variant="outline" onClick={() => { setRejectDialog(null); setRejectionReason(''); }}>Cancel</Button>
-              <Button variant="destructive" disabled={!rejectionReason.trim()} onClick={() => { toast({ title: 'Escalation Rejected', description: `${rejectDialog} returned to Case Officer.` }); setRejectDialog(null); setRejectionReason(''); navigate('/validator/escalations'); }}>
+              <Button variant="destructive" disabled={!rejectionReason.trim()} onClick={() => { toast({ title: 'Escalation Rejected', description: `${rejectDialog} returned to Case Officer.` }); setRejectDialog(null); setRejectionReason(''); navigate('/supervisor/escalations'); }}>
                 Confirm Rejection
               </Button>
             </DialogFooter>
@@ -154,7 +154,7 @@ export default function EscalationQueue() {
                   <TableCell className="text-muted-foreground">{esc.submitted}</TableCell>
                   <TableCell>{esc.days}</TableCell>
                   <TableCell>
-                    <Button size="sm" variant="outline" onClick={() => navigate(`/validator/escalations/${esc.id}`)}>Review</Button>
+                    <Button size="sm" variant="outline" onClick={() => navigate(`/supervisor/escalations/${esc.id}`)}>Review</Button>
                   </TableCell>
                 </TableRow>
               ))}

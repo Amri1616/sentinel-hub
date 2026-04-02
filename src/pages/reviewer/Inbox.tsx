@@ -215,7 +215,7 @@ export default function CaseOfficerInbox() {
                       if (exportMode) {
                         toggleSelectOne(incident.id);
                       } else {
-                        navigate(`/reviewer/cases/${incident.id}`);
+                        navigate(`/case-officer/cases/${incident.id}`);
                       }
                     }}
                   >
@@ -236,7 +236,7 @@ export default function CaseOfficerInbox() {
                     <td className="px-4 py-3 text-muted-foreground">{incident.escalation}</td>
                     <td className="px-4 py-3 text-muted-foreground">{incident.submitted}</td>
                     <td className="px-4 py-3">
-                      <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/reviewer/cases/${incident.id}`); }}>
+                      <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/case-officer/cases/${incident.id}`); }}>
                         <Eye className="mr-1 h-3 w-3" />Review
                       </Button>
                     </td>

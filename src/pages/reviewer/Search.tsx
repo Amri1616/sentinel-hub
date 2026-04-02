@@ -142,7 +142,7 @@ export default function CaseOfficerSearch() {
                     <td className="px-4 py-3 text-muted-foreground">{c.organisation}</td>
                     <td className="px-4 py-3"><Badge variant="outline" className={getSeverityColor(c.severity)}>{c.severity}</Badge></td>
                     <td className="px-4 py-3"><Badge variant="outline" className={getStatusColor(c.status)}>{c.status}</Badge></td>
-                    <td className="px-4 py-3"><Button size="sm" variant="outline" onClick={() => navigate(`/reviewer/cases/${c.id}`)}><Eye className="mr-1 h-3 w-3" />View</Button></td>
+                    <td className="px-4 py-3"><Button size="sm" variant="outline" onClick={() => navigate(`/case-officer/cases/${c.id}`)}><Eye className="mr-1 h-3 w-3" />View</Button></td>
                   </tr>
                 ))}
               </tbody>

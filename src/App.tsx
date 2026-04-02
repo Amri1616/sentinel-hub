@@ -108,8 +108,8 @@ const App = () => (
                   <Route path="/otp" element={<OtpVerification />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                  {/* Reporter Routes - with sidebar layout */}
-                  <Route path="/reporter" element={<ProtectedRoute><ReporterLayout /></ProtectedRoute>}>
+                  {/* Licensee Reporter Routes - with sidebar layout */}
+                  <Route path="/licensee-reporter" element={<ProtectedRoute><ReporterLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<ReporterDashboard />} />
                     <Route path="drafts" element={<ReporterDrafts />} />
                     <Route path="incidents" element={<ReporterIncidents />} />
@@ -138,7 +138,7 @@ const App = () => (
                   </Route>
 
                   {/* Case Officer Routes - with sidebar layout */}
-                  <Route path="/reviewer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
+                  <Route path="/case-officer" element={<ProtectedRoute><CaseOfficerLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<ReviewerDashboard />} />
                     <Route path="inbox" element={<CaseOfficerInbox />} />
                     <Route path="all-cases" element={<ReviewerAllCases />} />
@@ -151,9 +151,8 @@ const App = () => (
                     <Route path="security" element={<CaseOfficerSecurity />} />
                   </Route>
 
-                  {/* Validator Routes */}
                   {/* Supervisor Routes - with sidebar layout */}
-                  <Route path="/validator" element={<ProtectedRoute><SupervisorLayout /></ProtectedRoute>}>
+                  <Route path="/supervisor" element={<ProtectedRoute><SupervisorLayout /></ProtectedRoute>}>
                     <Route path="search" element={<SupervisorSearchFilter />} />
                     <Route path="dashboard" element={<ValidatorDashboard />} />
                     <Route path="cases" element={<CaseMonitoring />} />
@@ -167,7 +166,8 @@ const App = () => (
                   </Route>
 
                   {/* Investigator / MCMC Internal Routes - with sidebar layout */}
-                  <Route path="/investigator" element={<ProtectedRoute><InvestigatorLayout /></ProtectedRoute>}>
+                  {/* MCMC Internal Routes - with sidebar layout */}
+                  <Route path="/internal" element={<ProtectedRoute><InvestigatorLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<InvestigatorDashboard />} />
                     <Route path="analytics" element={<InvestigatorAnalytics />} />
                     <Route path="cases" element={<InvestigatorAllCases />} />

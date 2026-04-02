@@ -37,8 +37,16 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ContactCard({ title, info }: { title: string; info: ContactInfo }) {
-  if (!info.name) return null;
+function ContactCard({ title, info }: { title: string; info: ContactInfo | undefined }) {
+  if (!info) return (
+    <div className="p-4 border border-border rounded-lg bg-muted/30 space-y-2 opacity-50">
+      <p className="text-xs font-semibold text-muted-foreground">{title}</p>
+      <Field label="Name" value="—" />
+      <Field label="Address" value="—" />
+      <Field label="State / Country" value="—" />
+      <Field label="Phone No." value="—" />
+    </div>
+  );
   return (
     <div className="p-4 border border-border rounded-lg bg-muted/30 space-y-2">
       <p className="text-xs font-semibold text-muted-foreground">{title}</p>
@@ -51,11 +59,9 @@ function ContactCard({ title, info }: { title: string; info: ContactInfo }) {
 }
 
 export default function LogisticsData({ incident }: Props) {
-  const hasParcelFields = incident.trackingNumber || incident.packageDeclaration || incident.packageWeight || incident.prohibitedItemType;
-  const hasSenderRecipient = (incident.senderInfo?.name) || (incident.recipientInfo?.name);
+  const hasParcelFields = true; // Always show the section structure
+  const hasSenderRecipient = true;
   const hasLegacyItems = incident.items && incident.items.length > 0;
-
-  if (!hasParcelFields && !hasSenderRecipient && !hasLegacyItems) return null;
 
   return (
     <Card>
@@ -76,13 +82,10 @@ export default function LogisticsData({ incident }: Props) {
           </div>
         )}
 
-        {/* Sender & Recipient */}
-        {hasSenderRecipient && (
-          <div className="grid md:grid-cols-2 gap-4">
-            {incident.senderInfo && <ContactCard title="Sender Information" info={incident.senderInfo} />}
-            {incident.recipientInfo && <ContactCard title="Recipient Information" info={incident.recipientInfo} />}
-          </div>
-        )}
+        <div className="grid md:grid-cols-2 gap-4">
+          <ContactCard title="Sender Information" info={incident.senderInfo} />
+          <ContactCard title="Recipient Information" info={incident.recipientInfo} />
+        </div>
 
         {/* Legacy multi-item */}
         {hasLegacyItems && !hasParcelFields && incident.items!.map((item, idx) => (
