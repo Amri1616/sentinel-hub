@@ -75,8 +75,7 @@ export default function CaseOfficerLayout() {
                 <ClipboardCheck className="h-5 w-5 text-role-reviewer" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">MCMC Case Officer</p>
-                <p className="text-xs text-muted-foreground truncate">Mohd Kamal</p>
+                <p className="text-sm font-semibold truncate">Case Officer</p>
               </div>
             </div>
           ) : (

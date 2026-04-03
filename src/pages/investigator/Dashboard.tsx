@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -40,26 +41,25 @@ const recentClosed = [
 ];
 
 export default function InvestigatorDashboard() {
-  
+  const navigate = useNavigate();
 
-  
   const kpis = [
-    { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'role-investigator' },
-    { label: 'Open Cases', value: '47', icon: Clock, color: 'status-in-review' },
-    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'destructive' },
-    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'status-closed' },
-    { label: 'Escalation Ratio', value: '15.7%', icon: AlertTriangle, color: 'role-validator' },
-    { label: 'High Severity', value: '38', icon: ShieldAlert, color: 'role-investigator' },
+    { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'role-investigator', route: '/internal/cases' },
+    { label: 'Open Cases', value: '47', icon: Clock, color: 'status-in-review', route: '/internal/cases' },
+    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'destructive', route: '/internal/cases' },
+    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'status-closed', route: '/internal/cases' },
+    { label: 'Escalation Ratio', value: '15.7%', icon: AlertTriangle, color: 'role-validator', route: '/internal/analytics' },
+    { label: 'High Severity', value: '38', icon: ShieldAlert, color: 'role-investigator', route: '/internal/cases' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Governance Dashboard</h1>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground">MCMC Internal — strategic oversight and analytics</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-3">
         {kpis.map((k) => {
           const colorClass = k.color === 'role-investigator' ? 'text-role-investigator' :
                             k.color === 'status-in-review' ? 'text-status-in-review' :
@@ -74,7 +74,11 @@ export default function InvestigatorDashboard() {
                                   k.color === 'role-validator' ? 'border-role-validator/20' : 'border-border/20';
 
           return (
-            <Card key={k.label} className={cn(borderColorClass, "min-h-[120px] flex flex-col")}>
+            <Card
+              key={k.label}
+              className={cn(borderColorClass, 'min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border')}
+              onClick={() => navigate(k.route)}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{k.label}</CardTitle>
                 <k.icon className="h-4 w-4 text-muted-foreground" />

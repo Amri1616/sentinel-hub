@@ -64,8 +64,7 @@ export default function SupervisorLayout() {
                 <BadgeCheck className="h-5 w-5 text-role-validator" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">MCMC Supervisor</p>
-                <p className="text-xs text-muted-foreground truncate">Sarah Lim</p>
+                <p className="text-sm font-semibold truncate">Supervisor</p>
               </div>
             </div>
           ) : (

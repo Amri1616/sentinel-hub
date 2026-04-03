@@ -61,8 +61,7 @@ export default function InvestigatorLayout() {
                 <Eye className="h-5 w-5 text-role-investigator" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">MCMC Internal</p>
-                <p className="text-xs text-muted-foreground truncate">Nurul Huda</p>
+                <p className="text-sm font-semibold truncate">Internal</p>
               </div>
             </div>
           ) : (

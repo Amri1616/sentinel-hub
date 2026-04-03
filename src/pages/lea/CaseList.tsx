@@ -12,21 +12,19 @@ const cases = [
   { id: 'ESC-2025-001', title: 'High-Value Package Theft ring', escalationDate: '2025-06-10', org: 'Global Express Logistics', severity: 'High', status: 'Under Investigation' },
   { id: 'ESC-2025-002', title: 'Contraband Interception - Narcotics', escalationDate: '2025-06-12', org: 'Pos Malaysia', severity: 'Critical', status: 'Evidence Seized' },
   { id: 'ESC-2025-003', title: 'Organized Parcel Tampering', escalationDate: '2025-06-13', org: 'J&T Express', severity: 'High', status: 'Pending Further Information' },
-  { id: 'ESC-2025-004', title: 'Repeated Warehouse Intrusions', escalationDate: '2025-06-14', org: 'Pos Malaysia', severity: 'High', status: 'Pending Acknowledgement' },
-  { id: 'ESC-2025-005', title: 'Large Scale Delivery Fraud', escalationDate: '2025-06-15', org: 'J&T Express', severity: 'Critical', status: 'Pending Acknowledgement' },
+  { id: 'ESC-2025-004', title: 'Repeated Warehouse Intrusions', escalationDate: '2025-06-14', org: 'Pos Malaysia', severity: 'High', status: 'Pending Further Information' },
+  { id: 'ESC-2025-005', title: 'Large Scale Delivery Fraud', escalationDate: '2025-06-15', org: 'J&T Express', severity: 'Critical', status: 'Under Investigation' },
   { id: 'ESC-2025-006', title: 'Stolen Goods Resell Syndicate', escalationDate: '2025-05-20', org: 'CityLink', severity: 'Medium', status: 'Case Referred for Prosecution' },
   { id: 'ESC-2025-007', title: 'Suspicious Document Forgery', escalationDate: '2025-05-15', org: 'DHL eCommerce', severity: 'High', status: 'No Further Action' },
-  { id: 'ESC-2025-008', title: 'Inside Job - Delivery Driver Theft', escalationDate: '2025-05-10', org: 'Global Express Logistics', severity: 'Medium', status: 'Outcome Submitted' },
+  { id: 'ESC-2025-008', title: 'Inside Job - Delivery Driver Theft', escalationDate: '2025-05-10', org: 'Global Express Logistics', severity: 'Medium', status: 'Case Referred for Prosecution' },
 ];
 
 const statusColors: Record<string, string> = {
   'Under Investigation': 'bg-primary/20 text-primary border-primary/30 px-2.5 py-0.5 rounded-full',
   'Evidence Seized': 'bg-role-validator/20 text-role-validator border-role-validator/30 px-2.5 py-0.5 rounded-full',
   'Pending Further Information': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
-  'Pending Acknowledgement': 'bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full',
   'Case Referred for Prosecution': 'bg-role-investigator/20 text-role-investigator border-role-investigator/30 px-2.5 py-0.5 rounded-full',
   'No Further Action': 'bg-muted-foreground/10 text-muted-foreground border-muted-foreground/30 px-2.5 py-0.5 rounded-full',
-  'Outcome Submitted': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
 };
 
 export default function LEACaseList() {
@@ -60,13 +58,11 @@ export default function LEACaseList() {
               <SelectTrigger className="w-[220px]"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Pending Acknowledgement">Pending Acknowledgement</SelectItem>
                 <SelectItem value="Under Investigation">Under Investigation</SelectItem>
                 <SelectItem value="Evidence Seized">Evidence Seized</SelectItem>
                 <SelectItem value="Pending Further Information">Pending Further Information</SelectItem>
                 <SelectItem value="Case Referred for Prosecution">Case Referred for Prosecution</SelectItem>
                 <SelectItem value="No Further Action">No Further Action</SelectItem>
-                <SelectItem value="Outcome Submitted">Outcome Submitted</SelectItem>
               </SelectContent>
             </Select>
             <Select value={severityFilter} onValueChange={setSeverityFilter}>

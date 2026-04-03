@@ -104,17 +104,7 @@ export default function ReporterIncidents() {
         </div>
       </div>
 
-      {/* Metrics */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-4 flex flex-col justify-center h-full">
-            <h3 className="text-sm font-medium text-muted-foreground mb-1">Average Case Resolution Time</h3>
-            <div className="text-2xl font-bold text-primary flex items-baseline gap-2">
-              4.2 Days <span className="text-xs font-normal text-muted-foreground">across all closed cases</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
 
       {/* Filters */}
       <Card>

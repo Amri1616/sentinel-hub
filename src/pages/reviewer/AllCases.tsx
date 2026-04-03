@@ -105,7 +105,7 @@ export default function ReviewerAllCases() {
                   <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalation Status</th>
                   <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Last Updated Date</th>
                   <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
-                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[100px] text-foreground">Action</th>
+                  <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[50px] text-foreground"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -140,8 +140,8 @@ export default function ReviewerAllCases() {
                     <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.submitted}</td>
                     <td className="px-3 py-4 text-center align-middle text-sm">
                       <div className="flex justify-center">
-                        <Button size="sm" variant="outline" onClick={() => navigate(`/case-officer/cases/${c.id}`)}>
-                          <Eye className="mr-1 h-3 w-3" />{c.isOwn ? 'Review' : 'View'}
+                        <Button size="sm" variant="ghost" onClick={() => navigate(`/case-officer/cases/${c.id}`)}>
+                          <Eye className="h-4 w-4" />
                         </Button>
                       </div>
                     </td>
