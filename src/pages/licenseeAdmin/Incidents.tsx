@@ -3,19 +3,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Search, Filter, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import AdvancedFilterDrawer, {
+  AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
+} from '@/components/shared/AdvancedFilterDrawer';
 
 const incidents = [
-  { id: 'PSIRP-2025-0025', reporter: 'Ahmad bin Abdullah', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', updated: '2025-01-20', escalated: true, description: 'High-value package theft at sorting facility', attachments: ['evidence-photo.jpg', 'cctv-footage.mp4'] },
-  { id: 'PSIRP-2025-0024', reporter: 'Mohd Zaki', type: 'Suspicious Parcel', severity: 'Medium', status: 'Submitted', submitted: '2025-01-14', updated: '2025-01-15', escalated: false, description: 'Suspicious parcel detected during scanning', attachments: ['scan-report.pdf'] },
-  { id: 'PSIRP-2025-0023', reporter: 'Kamal Hassan', type: 'Prohibited Items', severity: 'Low', status: 'Draft', submitted: '2025-01-13', updated: '2025-01-13', escalated: false, description: 'Prohibited items found in shipment', attachments: [] },
-  { id: 'PSIRP-2025-0022', reporter: 'Fatimah Zahra', type: 'Security Breach', severity: 'High', status: 'Escalated', submitted: '2025-01-12', updated: '2025-01-16', escalated: true, description: 'Unauthorized access to secure area', attachments: ['access-log.csv', 'photo1.jpg'] },
-  { id: 'PSIRP-2025-0021', reporter: 'Azman Ali', type: 'Theft', severity: 'Critical', status: 'Closed', submitted: '2025-01-11', updated: '2025-01-20', escalated: true, description: 'Serial theft case across multiple branches', attachments: ['police-report.pdf'] },
-  { id: 'PSIRP-2025-0020', reporter: 'Ahmad bin Abdullah', type: 'Others', severity: 'Low', status: 'Under Review', submitted: '2025-01-10', updated: '2025-01-12', escalated: false, description: 'Equipment tampering report', attachments: [] },
+  { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', updated: '2025-01-20', escalated: true },
+  { id: 'PSIRP-2025-0024', title: 'Suspicious Parcel Detected', reporter: 'Mohd Zaki', org: 'Pos Malaysia', type: 'Suspicious Parcel', severity: 'Medium', status: 'Submitted', submitted: '2025-01-14', updated: '2025-01-15', escalated: false },
+  { id: 'PSIRP-2025-0023', title: 'Prohibited Items in Shipment', reporter: 'Kamal Hassan', org: 'J&T Express', type: 'Prohibited Items', severity: 'Low', status: 'Draft', submitted: '2025-01-13', updated: '2025-01-13', escalated: false },
+  { id: 'PSIRP-2025-0022', title: 'Unauthorized Access to Secure Area', reporter: 'Fatimah Zahra', org: 'DHL eCommerce', type: 'Security Breach', severity: 'High', status: 'Escalated', submitted: '2025-01-12', updated: '2025-01-16', escalated: true },
+  { id: 'PSIRP-2025-0021', title: 'Serial Theft Across Branches', reporter: 'Azman Ali', org: 'CityLink', type: 'Theft', severity: 'Critical', status: 'Closed', submitted: '2025-01-11', updated: '2025-01-20', escalated: true },
+  { id: 'PSIRP-2025-0020', title: 'Equipment Tampering Report', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Others', severity: 'Low', status: 'Under Review', submitted: '2025-01-10', updated: '2025-01-12', escalated: false },
 ];
 
 const statusColors: Record<string, string> = {
@@ -35,13 +35,32 @@ const severityColors: Record<string, string> = {
 
 export default function LicenseeAdminIncidents() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [advFilters, setAdvFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
   const navigate = useNavigate();
 
-  const filtered = incidents.filter(i =>
-    i.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.reporter.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.type.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const activeCount = countActiveFilters(advFilters);
+
+  const filtered = incidents.filter((i) => {
+    // Main search: Ref No, Title, Organisation, Reporter
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const match =
+        i.id.toLowerCase().includes(q) ||
+        i.title.toLowerCase().includes(q) ||
+        i.org.toLowerCase().includes(q) ||
+        i.reporter.toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    // Advanced filter – status
+    if (advFilters.status !== 'all' && i.status !== advFilters.status) return false;
+    // Advanced filter – severity
+    if (advFilters.severity !== 'all' && i.severity !== advFilters.severity) return false;
+    // Advanced filter – date range
+    if (advFilters.dateFrom && i.submitted < advFilters.dateFrom) return false;
+    if (advFilters.dateTo && i.submitted > advFilters.dateTo) return false;
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -56,74 +75,27 @@ export default function LicenseeAdminIncidents() {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search by reference, reporter, type..." className="pl-10" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <Input
+                placeholder="Search by reference, title, organisation, reporter..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline">
-                  <Filter className="mr-2 h-4 w-4" />
-                  Advanced Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Filter Cases</SheetTitle>
-                </SheetHeader>
-                <div className="space-y-6 mt-6">
-                  <div className="space-y-2">
-                    <Label>Date Range</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input type="date" />
-                      <Input type="date" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Case Type</Label>
-                    <Select>
-                      <SelectTrigger><SelectValue placeholder="All types" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="theft">Theft</SelectItem>
-                        <SelectItem value="suspicious">Suspicious Parcel</SelectItem>
-                        <SelectItem value="prohibited">Prohibited Items</SelectItem>
-                        <SelectItem value="breach">Security Breach</SelectItem>
-                        <SelectItem value="others">Others</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Status</Label>
-                    <Select>
-                      <SelectTrigger><SelectValue placeholder="All statuses" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="submitted">Submitted</SelectItem>
-                        <SelectItem value="review">Under Review</SelectItem>
-                        <SelectItem value="escalated">Escalated</SelectItem>
-                        <SelectItem value="closed">Closed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Reporter</Label>
-                    <Select>
-                      <SelectTrigger><SelectValue placeholder="All reporters" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="ahmad">Ahmad bin Abdullah</SelectItem>
-                        <SelectItem value="siti">Mastura Salleh</SelectItem>
-                        <SelectItem value="kamal">Kamal Hassan</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex gap-2 pt-4">
-                    <Button className="flex-1">Apply Filters</Button>
-                    <Button variant="outline" className="flex-1">Reset</Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+            <Button
+              variant="outline"
+              id="btn-advanced-filters"
+              onClick={() => setDrawerOpen(true)}
+              className={activeCount > 0 ? 'border-primary/50 text-primary' : ''}
+            >
+              <Filter className="mr-2 h-4 w-4" />
+              Advanced Filters
+              {activeCount > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
+                  {activeCount}
+                </span>
+              )}
+            </Button>
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export
@@ -141,21 +113,29 @@ export default function LicenseeAdminIncidents() {
                 <thead className="border-b bg-muted/50 border-border">
                   <tr>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Reference</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[180px] text-foreground">Reporter</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[200px] text-foreground">Incident Title</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[180px] text-foreground">Organisation</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Reporter</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Case Type</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[120px] text-foreground">Severity</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Status</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Last Updated Date</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Last Updated</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalation Status</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalation</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
                   {filtered.map((incident) => (
-                    <tr key={incident.id} className="border-b hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => navigate(`/licensee-admin/incidents/${incident.id}`)}>
+                    <tr
+                      key={incident.id}
+                      className="border-b hover:bg-muted/30 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/licensee-admin/incidents/${incident.id}`)}
+                    >
                       <td className="px-3 py-4 text-center align-middle text-sm">
                         <span className="font-mono font-bold text-primary hover:underline cursor-pointer text-sm">{incident.id}</span>
                       </td>
+                      <td className="px-3 py-4 text-center align-middle text-sm whitespace-normal font-medium">{incident.title}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm whitespace-normal">{incident.org}</td>
                       <td className="px-3 py-4 text-center align-middle text-sm whitespace-normal">{incident.reporter}</td>
                       <td className="px-3 py-4 text-center align-middle text-sm whitespace-normal">{incident.type}</td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
@@ -175,7 +155,7 @@ export default function LicenseeAdminIncidents() {
                           {incident.escalated ? (
                             <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">Yes</Badge>
                           ) : (
-                            <span className="text-sm text-muted-foreground whitespace-nowrap">No</span>
+                            <span className="text-sm text-muted-foreground">No</span>
                           )}
                         </div>
                       </td>
@@ -189,6 +169,15 @@ export default function LicenseeAdminIncidents() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Advanced Filter Drawer */}
+      <AdvancedFilterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        filters={advFilters}
+        onApply={setAdvFilters}
+        activeCount={activeCount}
+      />
     </div>
   );
 }

@@ -8,9 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Eye, Lock, CheckCircle, Download } from 'lucide-react';
+import { Search, Eye, Lock, CheckCircle, Download, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import AdvancedFilterDrawer, {
+  AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
+} from '@/components/shared/AdvancedFilterDrawer';
 
 const allCases = [
   { id: 'PSIRP-2025-0063', org: 'Global Express Logistics', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', escalation: 'None', date: '2025-06-09', lastUpdated: '2025-06-11' },
@@ -43,24 +46,29 @@ const statusColors: Record<string, string> = {
 
 export default function CaseMonitoring() {
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [severityFilter, setSeverityFilter] = useState('all');
-  const [orgFilter, setOrgFilter] = useState('all');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [advFilters, setAdvFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
   const [closeDialog, setCloseDialog] = useState<string | null>(null);
   const [outcome, setOutcome] = useState('');
   const [summary, setSummary] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const activeCount = countActiveFilters(advFilters);
+
   const filtered = allCases.filter((c) => {
-    if (search && !c.id.toLowerCase().includes(search.toLowerCase()) && !c.org.toLowerCase().includes(search.toLowerCase())) return false;
-    if (statusFilter !== 'all' && c.status !== statusFilter) return false;
-    if (severityFilter !== 'all' && c.severity !== severityFilter) return false;
-    if (orgFilter !== 'all' && c.org !== orgFilter) return false;
+    // Main search: Ref No, Org (acts as org name), Title not in data so search id+org
+    if (search) {
+      const q = search.toLowerCase();
+      const match = c.id.toLowerCase().includes(q) || c.org.toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    if (advFilters.status !== 'all' && c.status !== advFilters.status) return false;
+    if (advFilters.severity !== 'all' && c.severity !== advFilters.severity) return false;
+    if (advFilters.dateFrom && c.date < advFilters.dateFrom) return false;
+    if (advFilters.dateTo && c.date > advFilters.dateTo) return false;
     return true;
   });
-
-  const orgs = [...new Set(allCases.map((c) => c.org))];
 
   return (
     <div className="space-y-6">
@@ -82,41 +90,31 @@ export default function CaseMonitoring() {
 
         <TabsContent value="monitoring" className="space-y-4">
           <Card>
-            <CardHeader><CardTitle>Filters</CardTitle></CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <CardContent className="pt-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by reference, organisation, reporter..."
+                    className="pl-10"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="Under Review">Under Review</SelectItem>
-                    <SelectItem value="Escalation Pending">Escalation Pending</SelectItem>
-                    <SelectItem value="Clarification Requested">Clarification Requested</SelectItem>
-                    <SelectItem value="Escalated">Escalated</SelectItem>
-                    <SelectItem value="Closed">Closed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={severityFilter} onValueChange={setSeverityFilter}>
-                  <SelectTrigger><SelectValue placeholder="Severity" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Severities</SelectItem>
-                    <SelectItem value="Critical">Critical</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="Low">Low</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={orgFilter} onValueChange={setOrgFilter}>
-                  <SelectTrigger><SelectValue placeholder="Organisation" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Organisations</SelectItem>
-                    {orgs.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Button
+                  variant="outline"
+                  id="btn-advanced-filters"
+                  onClick={() => setDrawerOpen(true)}
+                  className={activeCount > 0 ? 'border-primary/50 text-primary' : ''}
+                >
+                  <Filter className="mr-2 h-4 w-4" />
+                  Advanced Filters
+                  {activeCount > 0 && (
+                    <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
+                      {activeCount}
+                    </span>
+                  )}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -274,6 +272,15 @@ export default function CaseMonitoring() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Advanced Filter Drawer */}
+      <AdvancedFilterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        filters={advFilters}
+        onApply={setAdvFilters}
+        activeCount={activeCount}
+      />
     </div>
   );
 }

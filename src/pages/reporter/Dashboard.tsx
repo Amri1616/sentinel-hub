@@ -55,12 +55,11 @@ export default function ReporterDashboard() {
           >
             <MessageSquare className="h-4 w-4" />
             Pending Action
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive" />
-            </span>
-            <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
-              {pendingClarificationCount}
+            <span className="relative inline-flex items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-50" />
+              <span className="relative inline-flex items-center justify-center h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
+                {pendingClarificationCount}
+              </span>
             </span>
           </Button>
         )}
