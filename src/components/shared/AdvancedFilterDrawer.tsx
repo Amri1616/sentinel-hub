@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
 import { X, Filter, SlidersHorizontal } from 'lucide-react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -23,6 +24,8 @@ export interface AdvancedFilters {
   // Report Details
   trackingNo: string;
   senderRecipient: string;
+  // Escalation
+  agencies: string[]; // Multi-select
   // Logic
   assistanceRequired: string;
   incidentContained: string;
@@ -39,6 +42,7 @@ const EMPTY_FILTERS: AdvancedFilters = {
   countryDestination: 'all',
   trackingNo: '',
   senderRecipient: '',
+  agencies: [],
   assistanceRequired: 'all',
   incidentContained: 'all',
 };
@@ -51,6 +55,7 @@ interface AdvancedFilterDrawerProps {
   filters: AdvancedFilters;
   onApply: (filters: AdvancedFilters) => void;
   activeCount?: number;
+  hideAgencyFilter?: boolean;
 }
 
 // ─── Static options ──────────────────────────────────────────────────────────
@@ -83,6 +88,10 @@ const INCIDENT_TYPES = [
   { value: 'others', label: 'Others' },
 ];
 
+const LEA_AGENCIES = [
+  'K-KOM', 'KKM', 'NRES', 'KPDN', 'MKN', 'PDRM', 'KASTAM', 'KDN', 'MOT', 'AKPS', 'PERHILITAN'
+];
+
 const ASSISTANCE_OPTIONS = [
   { value: 'legal-advice', label: 'Legal Advice' },
   { value: 'parcel-inspection', label: 'Parcel Inspection' },
@@ -105,7 +114,7 @@ function SectionHeader({ label }: { label: string }) {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function AdvancedFilterDrawer({
-  open, onClose, filters, onApply, activeCount = 0,
+  open, onClose, filters, onApply, activeCount = 0, hideAgencyFilter = false,
 }: AdvancedFilterDrawerProps) {
   const [draft, setDraft] = useState<AdvancedFilters>(filters);
 
@@ -120,6 +129,15 @@ export default function AdvancedFilterDrawer({
   const handleApply = () => {
     onApply(draft);
     onClose();
+  };
+
+  const toggleAgency = (agency: string) => {
+    setDraft(prev => {
+      const agencies = prev.agencies.includes(agency)
+        ? prev.agencies.filter(a => a !== agency)
+        : [...prev.agencies, agency];
+      return { ...prev, agencies };
+    });
   };
 
   if (!open) return null;
@@ -219,6 +237,30 @@ export default function AdvancedFilterDrawer({
               </SelectContent>
             </Select>
           </div>
+
+          {/* ── Escalated Agency Multi-select ── */}
+          {!hideAgencyFilter && (
+            <>
+              <SectionHeader label="Escalated To (LEA)" />
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-1">
+                {LEA_AGENCIES.map((agency) => (
+                  <div key={agency} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`agency-${agency}`} 
+                      checked={draft.agencies.includes(agency)}
+                      onCheckedChange={() => toggleAgency(agency)}
+                    />
+                    <label
+                      htmlFor={`agency-${agency}`}
+                      className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      {agency}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           {/* ── Geography ── */}
           <SectionHeader label="Geography" />
@@ -349,6 +391,12 @@ export { EMPTY_FILTERS };
 export function countActiveFilters(f: AdvancedFilters): number {
   return Object.entries(f).filter(([k, v]) => {
     const empty = EMPTY_FILTERS[k as keyof AdvancedFilters];
+    
+    // special handling for arrays
+    if (Array.isArray(v)) {
+        return v.length > 0;
+    }
+
     return v !== empty && v !== '' && v !== 'all';
   }).length;
 }

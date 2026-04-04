@@ -7,9 +7,58 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Search, Filter, Download, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import AdvancedFilterDrawer, {
   AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
 } from '@/components/shared/AdvancedFilterDrawer';
+
+interface Escalation {
+  name: string;
+  status: string;
+}
+
+const incidents = [
+  { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Theft', status: 'In Review', submitted: '2025-01-15', lastUpdated: '2 hours ago', severity: 'High', 
+    escalations: [
+      { name: 'PDRM', status: 'Under Investigation' }
+    ] 
+  },
+  { id: 'PSIRP-2025-0023', title: 'Tampered Shipment Detected', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Tampering', status: 'RFI Sent', submitted: '2025-01-14', lastUpdated: '1 hour ago', severity: 'Medium', escalations: [] },
+  { id: 'PSIRP-2025-0020', title: 'Lost Consignment Investigation', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Loss', status: 'Under Investigation', submitted: '2025-01-12', lastUpdated: '5 hours ago', severity: 'Critical', 
+    escalations: [
+      { name: 'PDRM', status: 'Under Investigation' },
+      { name: 'MOT', status: 'Under Investigation' },
+      { name: 'JKDM', status: 'Evidence Seized' }
+    ] 
+  },
+  { id: 'PSIRP-2025-0019', title: 'Dangerous Goods Mishandling', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Dangerous Goods', status: 'Closed', submitted: '2025-01-10', lastUpdated: '1 day ago', severity: 'High', 
+    escalations: [
+      { name: 'MOT', status: 'Closed' }
+    ] 
+  },
+  { id: 'PSIRP-2025-0018', title: 'Fraud Attempt Reported', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Fraud', status: 'Submitted', submitted: '2025-01-09', lastUpdated: '3 days ago', severity: 'Low', escalations: [] },
+];
+
+const severityColors: Record<string, string> = {
+  'Low': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
+  'Medium': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
+  'High': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
+  'Critical': 'bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full',
+};
+
+const statusColors: Record<string, string> = {
+  'Draft': 'bg-status-draft/20 text-status-draft border-status-draft/30 px-2.5 py-0.5 rounded-full',
+  'Submitted': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30 px-2.5 py-0.5 rounded-full',
+  'In Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
+  'RFI Sent': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
+  'Under Investigation': 'bg-status-investigation/20 text-status-investigation border-status-investigation/30 px-2.5 py-0.5 rounded-full',
+  'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
+};
 
 export default function ReporterIncidents() {
   const navigate = useNavigate();
@@ -20,25 +69,9 @@ export default function ReporterIncidents() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [advFilters, setAdvFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
 
-  const incidents = [
-    { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Theft', status: 'In Review', submitted: '2025-01-15', lastUpdated: '2 hours ago', severity: 'High', escalated: false },
-    { id: 'PSIRP-2025-0023', title: 'Tampered Shipment Detected', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Tampering', status: 'RFI Sent', submitted: '2025-01-14', lastUpdated: '1 hour ago', severity: 'Medium', escalated: false },
-    { id: 'PSIRP-2025-0020', title: 'Lost Consignment Investigation', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Loss', status: 'Under Investigation', submitted: '2025-01-12', lastUpdated: '5 hours ago', severity: 'Critical', escalated: true },
-    { id: 'PSIRP-2025-0019', title: 'Dangerous Goods Mishandling', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Dangerous Goods', status: 'Closed', submitted: '2025-01-10', lastUpdated: '1 day ago', severity: 'High', escalated: false },
-    { id: 'PSIRP-2025-0018', title: 'Fraud Attempt Reported', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Fraud', status: 'Submitted', submitted: '2025-01-09', lastUpdated: '3 days ago', severity: 'Low', escalated: false },
-  ];
-
-  const severityColors: Record<string, string> = {
-    'Low': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
-    'Medium': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
-    'High': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
-    'Critical': 'bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full',
-  };
-
   const activeCount = countActiveFilters(advFilters);
 
   const filtered = incidents.filter((i) => {
-    // Main search: Ref No, Title, Organisation, Reporter
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const match =
@@ -48,27 +81,22 @@ export default function ReporterIncidents() {
         i.reporter.toLowerCase().includes(q);
       if (!match) return false;
     }
-    // Advanced filters
     if (advFilters.status !== 'all' && i.status !== advFilters.status) return false;
     if (advFilters.severity !== 'all' && i.severity !== advFilters.severity) return false;
     if (advFilters.dateFrom && i.submitted < advFilters.dateFrom) return false;
     if (advFilters.dateTo && i.submitted > advFilters.dateTo) return false;
+
+    // Agency Filter
+    if (advFilters.agencies.length > 0) {
+      const caseAgencies = i.escalations.map(e => e.name);
+      const normalizedCaseAgencies = caseAgencies.map(a => a === 'JKDM' ? 'KASTAM' : a);
+      const hasMatch = advFilters.agencies.some(a => normalizedCaseAgencies.includes(a));
+      if (!hasMatch) return false;
+    }
+
     return true;
   });
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      'Draft': 'bg-status-draft/20 text-status-draft border-status-draft/30 px-2.5 py-0.5 rounded-full',
-      'Submitted': 'bg-status-submitted/20 text-status-submitted border-status-submitted/30 px-2.5 py-0.5 rounded-full',
-      'In Review': 'bg-status-in-review/20 text-status-in-review border-status-in-review/30 px-2.5 py-0.5 rounded-full',
-      'RFI Sent': 'bg-status-rfi/20 text-status-rfi border-status-rfi/30 px-2.5 py-0.5 rounded-full',
-      'Under Investigation': 'bg-status-investigation/20 text-status-investigation border-status-investigation/30 px-2.5 py-0.5 rounded-full',
-      'Closed': 'bg-status-closed/20 text-status-closed border-status-closed/30 px-2.5 py-0.5 rounded-full',
-    };
-    return colors[status] || 'bg-secondary px-2.5 py-0.5 rounded-full';
-  };
-
-  /* ── Export mode helpers ── */
   const handleToggleExportMode = () => {
     if (exportMode) { setExportMode(false); setSelectedIds(new Set()); }
     else { setExportMode(true); setSelectedIds(new Set()); }
@@ -86,6 +114,75 @@ export default function ReporterIncidents() {
     toast({ title: 'Export Started', description: `Exporting ${selectedIds.size} report${selectedIds.size > 1 ? 's' : ''}…` });
     setExportMode(false); setSelectedIds(new Set());
   };
+
+  const renderEscalatedTo = (escalations: Escalation[]) => {
+    if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
+    const display = escalations.slice(0, 2);
+    const remaining = escalations.length - 2;
+    return (
+      <div className="flex flex-wrap justify-center gap-1">
+        {display.map((e, idx) => (
+          <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
+            {e.name}
+          </Badge>
+        ))}
+        {remaining > 0 && (
+          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+            +{remaining} more
+          </Badge>
+        )}
+      </div>
+    );
+  };
+
+  const renderAgencyProgress = (escalations: Escalation[]) => {
+    if (escalations.length === 0) return <span className="text-muted-foreground text-xs">-</span>;
+    const statuses = escalations.map(e => e.status);
+    const uniqueStatuses = Array.from(new Set(statuses));
+    const isAllSame = uniqueStatuses.length === 1;
+    const completedCount = escalations.filter(e => e.status.toLowerCase().includes('closed') || e.status.toLowerCase().includes('completed')).length;
+    let badgeText = '';
+    let badgeStyle = 'bg-slate-100 text-slate-700 border-slate-200';
+    if (isAllSame) {
+      badgeText = `All ${uniqueStatuses[0]}`;
+      if (uniqueStatuses[0].toLowerCase().includes('investigation')) badgeStyle = 'bg-blue-50 text-blue-700 border-blue-200';
+      if (uniqueStatuses[0].toLowerCase().includes('closed')) badgeStyle = 'bg-green-50 text-green-700 border-green-200';
+    } else {
+      if (completedCount > 0) {
+        badgeText = `${completedCount}/${escalations.length} Completed`;
+        badgeStyle = 'bg-amber-50 text-amber-700 border-amber-200';
+      } else {
+        badgeText = 'Pending Updates';
+        badgeStyle = 'bg-slate-100 text-slate-600 border-slate-200 italic';
+      }
+    }
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>
+            <div className="flex justify-center cursor-help">
+              <Badge variant="outline" className={`${badgeStyle} text-[10px] px-2 py-0.5 font-medium whitespace-nowrap`}>
+                {badgeText}
+              </Badge>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="p-3 bg-popover border-border shadow-xl min-w-[200px]">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Agency Status Breakdown</p>
+              {escalations.map((e, idx) => (
+                <div key={idx} className="flex items-center justify-between gap-4 py-1 border-b border-border/50 last:border-0">
+                  <span className="font-bold text-xs">{e.name}</span>
+                  <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${e.status.toLowerCase().includes('closed') ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                    {e.status}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -145,13 +242,13 @@ export default function ReporterIncidents() {
 
       {/* Export mode banner */}
       {exportMode && (
-        <div className="flex items-center gap-3 px-4 py-2.5 rounded-lg border border-primary/30 bg-primary/5 text-sm">
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-lg border border-primary/30 bg-primary/5 text-sm animate-in fade-in slide-in-from-top-2 duration-300">
           <Download className="h-4 w-4 text-primary shrink-0" />
           <span className="text-muted-foreground">
             Select the reports you want to export, then click <strong className="text-foreground">Download</strong>.
           </span>
           {selectedIds.size > 0 && (
-            <Badge variant="outline" className="ml-auto border-primary/30 text-primary px-2.5 py-0.5 rounded-full">
+            <Badge variant="outline" className="ml-auto border-primary/30 text-primary px-2.5 py-0.5 rounded-full uppercase tracking-wider font-bold text-[10px]">
               {selectedIds.size} selected
             </Badge>
           )}
@@ -170,7 +267,6 @@ export default function ReporterIncidents() {
                       <th className="px-3 py-4 text-center align-middle text-sm font-semibold w-10">
                         <Checkbox
                           checked={allSelected}
-                          ref={undefined}
                           onCheckedChange={toggleSelectAll}
                           aria-label="Select all"
                           {...(someSelected ? { 'data-state': 'indeterminate' } : {})}
@@ -181,17 +277,18 @@ export default function ReporterIncidents() {
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[200px] text-foreground">Title</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Case Type</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[120px] text-foreground">Severity</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Status</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Internal Status</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalated To</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Agency Progress</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Last Updated</th>
                     <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalation</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
                   {filtered.map((incident) => (
                     <tr
                       key={incident.id}
-                      className="hover:bg-accent/30 cursor-pointer transition-colors"
+                      className="hover:bg-accent/30 cursor-pointer transition-colors border-b"
                       onClick={() => {
                         if (exportMode) toggleSelectOne(incident.id);
                         else navigate(`/licensee-reporter/incidents/${incident.id}`);
@@ -214,20 +311,17 @@ export default function ReporterIncidents() {
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
                         <div className="flex justify-center">
-                          <Badge variant="outline" className={`${getStatusColor(incident.status)} text-[11px]`}>{incident.status}</Badge>
+                          <Badge variant="outline" className={`${statusColors[incident.status] || ''} text-[11px]`}>{incident.status}</Badge>
                         </div>
+                      </td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">
+                        {renderEscalatedTo(incident.escalations)}
+                      </td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">
+                        {renderAgencyProgress(incident.escalations)}
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{incident.lastUpdated}</td>
                       <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{incident.submitted}</td>
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        <div className="flex justify-center">
-                          {incident.escalated ? (
-                            <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">Yes</Badge>
-                          ) : (
-                            <span className="text-muted-foreground text-sm">No</span>
-                          )}
-                        </div>
-                      </td>
                     </tr>
                   ))}
                 </tbody>

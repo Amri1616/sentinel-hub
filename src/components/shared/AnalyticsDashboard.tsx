@@ -128,6 +128,22 @@ const TREND_DATA = [
   { month: 'Mar', submitted: 52, closed: 35, escalated: 6 },
 ];
 
+const AGENCY_DATA = [
+  { name: 'PDRM', count: 42 },
+  { name: 'K-KOM', count: 35 },
+  { name: 'KKM', count: 28 },
+  { name: 'JKDM', count: 24 },
+  { name: 'KPDN', count: 18 },
+  { name: 'KDN', count: 15 },
+  { name: 'MOT', count: 12 },
+  { name: 'MKM', count: 10 },
+  { name: 'NRES', count: 8 },
+  { name: 'AKPS', count: 5 },
+  { name: 'PERHILITAN', count: 3 },
+].sort((a, b) => b.count - a.count);
+
+const totalEscalations = AGENCY_DATA.reduce((acc, curr) => acc + curr.count, 0);
+
 const IMPACT_DATA = [
   { name: 'Financial', value: 45, color: CATEGORY_COLORS['Medium Severity Incident'] },
   { name: 'Operational', value: 35, color: CATEGORY_COLORS['Operational Issues'] },
@@ -476,6 +492,73 @@ export default function AnalyticsDashboard({ scope, userRole, organisationName, 
               </CardHeader>
               <CardContent className="p-0 overflow-hidden rounded-b-xl">
                 <MalaysiaIncidentMap />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* MCMC Roles Specific: Escalations by Target LEA */}
+          {(['reviewer', 'validator', 'investigator']).includes(userRole) && (
+            <Card id="agency-escalations-chart" className="border-border shadow-sm scroll-mt-20">
+              <CardHeader className="border-b border-border bg-muted/20">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" /> Escalations by Target LEA
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-[400px] w-full pr-2 custom-scrollbar overflow-y-auto">
+                    <div className="h-[600px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart 
+                          data={AGENCY_DATA} 
+                          layout="vertical" 
+                          margin={{ left: 10, right: 30, top: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
+                          <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} hide />
+                          <YAxis 
+                            type="category" 
+                            dataKey="name" 
+                            stroke="hsl(var(--muted-foreground))" 
+                            fontSize={12} 
+                            width={100} 
+                            axisLine={false} 
+                            tickLine={false}
+                            className="font-bold"
+                          />
+                          <Tooltip 
+                            content={({ active, payload }) => {
+                              if (active && payload && payload.length) {
+                                const data = payload[0].payload;
+                                const percentage = ((data.count / totalEscalations) * 100).toFixed(1);
+                                return (
+                                  <div className="bg-card border border-border p-3 rounded-lg shadow-lg text-sm">
+                                    <p className="font-bold mb-1 text-primary">{data.name}</p>
+                                    <div className="flex justify-between gap-8 mb-1">
+                                      <span className="text-muted-foreground">Total Case Count:</span>
+                                      <span className="font-bold">{data.count}</span>
+                                    </div>
+                                    <div className="flex justify-between gap-8">
+                                      <span className="text-muted-foreground">Percentage of Total:</span>
+                                      <span className="font-bold">{percentage}%</span>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            }}
+                            cursor={{ fill: 'hsl(var(--muted) / 0.2)' }} 
+                          />
+                          <Bar 
+                            dataKey="count" 
+                            fill="#475569" /* Slate 600 */
+                            radius={[0, 4, 4, 0]} 
+                            barSize={30} 
+                            name="Escalations" 
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                </div>
               </CardContent>
             </Card>
           )}
