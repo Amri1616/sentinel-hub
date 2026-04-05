@@ -59,8 +59,8 @@ export default function CaseReview() {
   };
 
   const handleSubmitEscalation = () => {
-    if (!escalationJustification.trim() || selectedAgencies.length === 0) {
-      toast({ title: 'Missing Information', description: 'Select at least one agency and provide justification.', variant: 'destructive' });
+    if (selectedAgencies.length === 0) {
+      toast({ title: 'Missing Information', description: 'Select at least one agency.', variant: 'destructive' });
       return;
     }
     toast({ title: 'Escalation Submitted', description: 'Awaiting Supervisor approval.' });
@@ -85,6 +85,7 @@ export default function CaseReview() {
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back to Inbox"
         onBack={() => navigate('/case-officer/inbox')}
+        escalatedTo={incident.escalations?.map(e => e.agency)}
       />
 
       <Tabs defaultValue="details" className="space-y-6">
@@ -176,17 +177,17 @@ export default function CaseReview() {
                           />
                           <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
                             {[
-                              'Ministry of Communications and Digital',
-                              'Ministry of Health',
-                              'Ministry of Natural Resources and Environmental Sustainability',
-                              'KPDNKK',
+                              'K-KOM',
+                              'KKM',
+                              'NRES',
+                              'KPDN',
                               'MKN',
                               'PDRM',
                               'KASTAM',
                               'KDN',
                               'MOT',
                               'AKPS',
-                              'Jabatan Perhilitan',
+                              'PERHILITAN',
                             ].map((agency) => (
                               <div key={agency} data-agency={agency} className="flex items-center gap-2 py-1">
                                 <Checkbox
@@ -212,7 +213,7 @@ export default function CaseReview() {
                         )}
                       </div>
                       <div className="space-y-2">
-                        <Label>Justification *</Label>
+                        <Label>Justification</Label>
                         <Textarea value={escalationJustification} onChange={(e) => setEscalationJustification(e.target.value)} placeholder="Provide justification for escalation..." rows={4} />
                       </div>
                       <p className="text-xs text-muted-foreground">This will be routed to MCMC Supervisor for approval.</p>

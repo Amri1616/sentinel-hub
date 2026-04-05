@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 export interface ClarificationMessage {
     id: number;
     from: string;
-    role: 'officer' | 'reporter' | 'admin' | 'supervisor' | 'lea';
+    role: 'officer' | 'reporter' | 'admin' | 'supervisor' | 'agency';
     timestamp: string;
     message: string;
     status?: string;
@@ -22,7 +22,7 @@ export const sampleClarificationMessages: ClarificationMessage[] = [
     { id: 2, from: 'Licensee Reporter (Ali Hassan)', role: 'reporter', message: 'The incident occurred at Sorting Line 3, specifically at the secondary scanning station before the dispatch area.', timestamp: '2025-06-09 11:15' },
     { id: 3, from: 'Licensee Admin (Sarah Wong)', role: 'admin', message: 'I have attached the access logs for Sorting Line 3 for the 02:00-04:00 shift. Please note that only  staff members were authorized in that zone.', timestamp: '2025-06-09 14:00' },
     { id: 4, from: 'MCMC Supervisor (Zulkifli Ahmad)', role: 'supervisor', message: 'Case Officer, please ensure you cross-reference these access logs with the CCTV footage from Camera 7.', timestamp: '2025-06-10 09:00', status: 'Responded' },
-    { id: 5, from: 'Agency (PDRM - Commercial Crime)', role: 'lea', message: 'PDRM has received the escalation. We require the full shift roster and contact details of the staff members identified in the access logs.', timestamp: '2025-06-11 10:00' },
+    { id: 5, from: 'Agency (PDRM - Commercial Crime)', role: 'agency', message: 'PDRM has received the escalation. We require the full shift roster and contact details of the staff members identified in the access logs.', timestamp: '2025-06-11 10:00' },
 ];
 
 const roleStyles: Record<ClarificationMessage['role'], { border: string; bg: string; text: string; badge: string }> = {

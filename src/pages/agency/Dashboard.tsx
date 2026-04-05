@@ -32,10 +32,10 @@ export default function LEADashboard() {
 
   
   const kpis = [
-    { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'hsl(220 70% 50%)' },
-    { label: 'Open Cases', value: '47', icon: Clock, color: 'hsl(var(--status-in-review))' },
-    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'hsl(var(--destructive))' },
-    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'hsl(var(--status-closed))' },
+    { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'hsl(220 70% 50%)', route: '/agency/cases' },
+    { label: 'Open Cases', value: '47', icon: Clock, color: 'hsl(var(--status-in-review))', route: '/agency/open-cases' },
+    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'hsl(var(--destructive))', route: '/agency/cases' },
+    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'hsl(var(--status-closed))', route: '/agency/closed-cases' },
   ];
 
   return (
@@ -48,7 +48,11 @@ export default function LEADashboard() {
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => (
-          <Card key={k.label} className="min-h-[120px] flex flex-col">
+          <Card
+            key={k.label}
+            className="min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border"
+            onClick={() => navigate(k.route)}
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{k.label}</CardTitle>
               <k.icon className="h-4 w-4 text-muted-foreground" />
@@ -61,7 +65,7 @@ export default function LEADashboard() {
       </div>
 
       {/* High Risk Alert Widget */}
-      <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/lea/cases')}>
+      <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/agency/high-risk')}>
         <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 shrink-0 rounded-full bg-destructive/20 flex items-center justify-center">
@@ -90,7 +94,7 @@ export default function LEADashboard() {
                 <p className="text-sm font-medium">{c.id} — {c.title}</p>
                 <p className="text-xs text-muted-foreground">{c.org} · Severity: {c.severity} · Escalated: {c.escalatedDate}</p>
               </div>
-              <Button size="sm" onClick={() => navigate(`/lea/cases/${c.id}`)}>Acknowledge</Button>
+              <Button size="sm" onClick={() => navigate(`/agency/cases/${c.id}`)}>Acknowledge</Button>
             </div>
           ))}
         </CardContent>

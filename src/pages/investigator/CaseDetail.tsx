@@ -47,6 +47,7 @@ export default function InvestigatorCaseDetail() {
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back to All Cases"
         onBack={() => navigate('/internal/cases')}
+        escalatedTo={incident.escalations?.map(e => e.agency)}
         topBadges={
           <Badge variant="outline" className="bg-role-investigator/10 text-role-investigator border-role-investigator/30 gap-1 opacity-70">
             <Lock className="h-3 w-3" /> Strategic Oversight — Read-Only

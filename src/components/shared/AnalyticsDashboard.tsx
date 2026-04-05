@@ -6,8 +6,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { 
   Download, Filter, TrendingUp, AlertTriangle, CheckCircle2, 
   MapPin, PieChart as PieChartIcon, Activity, ActivityIcon,
-  FileSpreadsheet, FileText, BarChartIcon, Calendar as CalendarIcon,
-  ChevronsUpDown, Check
+  FileText, BarChartIcon, Calendar as CalendarIcon,
+  ChevronsUpDown, Check, Globe
 } from 'lucide-react';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -93,6 +93,32 @@ const STATE_DATA = [
   { name: 'Labuan', count: 1 },
 ];
 
+const COUNTRY_ORIGIN_DATA = [
+  { name: 'China', count: 142 },
+  { name: 'United States', count: 98 },
+  { name: 'Singapore', count: 76 },
+  { name: 'Thailand', count: 54 },
+  { name: 'Indonesia', count: 48 },
+  { name: 'India', count: 35 },
+  { name: 'United Kingdom', count: 28 },
+  { name: 'South Korea', count: 22 },
+  { name: 'Japan', count: 18 },
+  { name: 'Germany', count: 12 },
+];
+
+const COUNTRY_DESTINATION_DATA = [
+  { name: 'Malaysia', count: 310 },
+  { name: 'Singapore', count: 88 },
+  { name: 'Indonesia', count: 64 },
+  { name: 'Thailand', count: 42 },
+  { name: 'Philippines', count: 35 },
+  { name: 'Vietnam', count: 28 },
+  { name: 'Australia', count: 22 },
+  { name: 'United Kingdom', count: 18 },
+  { name: 'United States', count: 14 },
+  { name: 'Japan', count: 9 },
+];
+
 const TREND_DATA = [
   { month: 'Oct', submitted: 24, closed: 18, escalated: 2 },
   { month: 'Nov', submitted: 32, closed: 22, escalated: 4 },
@@ -101,6 +127,22 @@ const TREND_DATA = [
   { month: 'Feb', submitted: 38, closed: 28, escalated: 3 },
   { month: 'Mar', submitted: 52, closed: 35, escalated: 6 },
 ];
+
+const AGENCY_DATA = [
+  { name: 'PDRM', count: 42 },
+  { name: 'K-KOM', count: 35 },
+  { name: 'KKM', count: 28 },
+  { name: 'JKDM', count: 24 },
+  { name: 'KPDN', count: 18 },
+  { name: 'KDN', count: 15 },
+  { name: 'MOT', count: 12 },
+  { name: 'MKM', count: 10 },
+  { name: 'NRES', count: 8 },
+  { name: 'AKPS', count: 5 },
+  { name: 'PERHILITAN', count: 3 },
+].sort((a, b) => b.count - a.count);
+
+const totalEscalations = AGENCY_DATA.reduce((acc, curr) => acc + curr.count, 0);
 
 const IMPACT_DATA = [
   { name: 'Financial', value: 45, color: CATEGORY_COLORS['Medium Severity Incident'] },
@@ -172,21 +214,12 @@ export default function AnalyticsDashboard({ scope, userRole, organisationName, 
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 p-2">
             <DropdownMenuItem className="py-3 px-4 flex items-center gap-3 cursor-pointer">
-              <div className="h-8 w-8 rounded bg-green-50 flex items-center justify-center text-green-600">
-                <FileSpreadsheet className="h-4 w-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm text-foreground">Excel Spreadsheet</span>
-                <span className="text-[10px] text-muted-foreground">Export format: .xlsx</span>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="py-3 px-4 flex items-center gap-3 cursor-pointer mt-1">
-              <div className="h-8 w-8 rounded bg-blue-50 flex items-center justify-center text-blue-600">
+              <div className="h-8 w-8 rounded bg-red-50 flex items-center justify-center text-red-600">
                 <FileText className="h-4 w-4" />
               </div>
               <div className="flex flex-col">
-                <span className="font-semibold text-sm text-foreground">CSV Dataset</span>
-                <span className="text-[10px] text-muted-foreground">Export format: .csv</span>
+                <span className="font-semibold text-sm text-foreground">Generate PDF</span>
+                <span className="text-[10px] text-muted-foreground">Export format: .pdf</span>
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -449,7 +482,139 @@ export default function AnalyticsDashboard({ scope, userRole, organisationName, 
             </Card>
           </div>
 
-          {/* Charts Row 2: Distributions and Impact */}
+          {/* Malaysia Incident Heatmap — case officer, supervisor, internal & LEA only */}
+          {(['reviewer', 'validator', 'investigator', 'agency']).includes(userRole) && (
+            <Card className="border-border shadow-sm">
+              <CardHeader className="border-b border-border bg-muted/20">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-primary" /> Malaysia Incident Heatmap
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 overflow-hidden rounded-b-xl">
+                <MalaysiaIncidentMap />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* MCMC Roles Specific: Escalations by Target LEA */}
+          {(['reviewer', 'validator', 'investigator']).includes(userRole) && (
+            <Card id="agency-escalations-chart" className="border-border shadow-sm scroll-mt-20">
+              <CardHeader className="border-b border-border bg-muted/20">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" /> Escalations by Target LEA
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-[400px] w-full pr-2 custom-scrollbar overflow-y-auto">
+                    <div className="h-[600px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart 
+                          data={AGENCY_DATA} 
+                          layout="vertical" 
+                          margin={{ left: 10, right: 30, top: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
+                          <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} hide />
+                          <YAxis 
+                            type="category" 
+                            dataKey="name" 
+                            stroke="hsl(var(--muted-foreground))" 
+                            fontSize={12} 
+                            width={100} 
+                            axisLine={false} 
+                            tickLine={false}
+                            className="font-bold"
+                          />
+                          <Tooltip 
+                            content={({ active, payload }) => {
+                              if (active && payload && payload.length) {
+                                const data = payload[0].payload;
+                                const percentage = ((data.count / totalEscalations) * 100).toFixed(1);
+                                return (
+                                  <div className="bg-card border border-border p-3 rounded-lg shadow-lg text-sm">
+                                    <p className="font-bold mb-1 text-primary">{data.name}</p>
+                                    <div className="flex justify-between gap-8 mb-1">
+                                      <span className="text-muted-foreground">Total Case Count:</span>
+                                      <span className="font-bold">{data.count}</span>
+                                    </div>
+                                    <div className="flex justify-between gap-8">
+                                      <span className="text-muted-foreground">Percentage of Total:</span>
+                                      <span className="font-bold">{percentage}%</span>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            }}
+                            cursor={{ fill: 'hsl(var(--muted) / 0.2)' }} 
+                          />
+                          <Bar 
+                            dataKey="count" 
+                            fill="#475569" /* Slate 600 */
+                            radius={[0, 4, 4, 0]} 
+                            barSize={30} 
+                            name="Escalations" 
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Charts Row 2: International Incident Tracking */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Incidents by Country of Origin */}
+            <Card className="border-border shadow-sm">
+              <CardHeader className="border-b border-border bg-muted/20">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-primary" /> Incidents by Country of Origin
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-[300px] w-full overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="h-[380px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={COUNTRY_ORIGIN_DATA} layout="vertical" margin={{ left: -10, bottom: -5 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
+                        <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} hide />
+                        <YAxis type="category" dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={11} width={110} axisLine={false} tickLine={false} />
+                        <Tooltip contentStyle={CHART_TOOLTIP_STYLE} cursor={{ fill: 'hsl(var(--muted) / 0.2)' }} />
+                        <Bar dataKey="count" fill="#0D9488" radius={[0, 4, 4, 0]} barSize={16} name="Incidents" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Incidents by Country of Destination */}
+            <Card className="border-border shadow-sm">
+              <CardHeader className="border-b border-border bg-muted/20">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-primary" /> Incidents by Country of Destination
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-[300px] w-full overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="h-[380px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={COUNTRY_DESTINATION_DATA} layout="vertical" margin={{ left: -10, bottom: -5 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
+                        <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} hide />
+                        <YAxis type="category" dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={11} width={110} axisLine={false} tickLine={false} />
+                        <Tooltip contentStyle={CHART_TOOLTIP_STYLE} cursor={{ fill: 'hsl(var(--muted) / 0.2)' }} />
+                        <Bar dataKey="count" fill="#7C3AED" radius={[0, 4, 4, 0]} barSize={16} name="Incidents" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts Row 3: Distributions and Impact */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Category Analysis */}

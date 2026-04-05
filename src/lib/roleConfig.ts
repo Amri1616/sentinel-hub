@@ -81,7 +81,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     description: 'View and investigate escalated cases from MCMC.',
     color: 'hsl(220 70% 50%)',
     glowClass: 'glow-indigo',
-    basePath: '/lea',
+    basePath: '/agency',
     icon: Shield,
   },
 };

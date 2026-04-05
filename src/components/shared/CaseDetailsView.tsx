@@ -1,6 +1,8 @@
 import { differenceInDays, parseISO, isValid } from 'date-fns';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import BasicCaseInfo from '@/components/reporter/incident-details/BasicCaseInfo';
 import IncidentClassification from '@/components/reporter/incident-details/IncidentClassification';
 import IncidentDescription from '@/components/reporter/incident-details/IncidentDescription';
@@ -67,6 +69,12 @@ export interface CaseData {
   parcelHandedOver: string;
   assistanceRequested: string[];
   documents: { name: string; size: string; uploadedBy: string; uploadDate: string }[];
+  escalations?: {
+    agency: string;
+    status: string;
+    date: string;
+    reference?: string;
+  }[];
   // Legacy
   impactIndicators?: string[];
   // Declaration (Step 6)
@@ -141,6 +149,54 @@ export default function CaseDetailsView({ incident, children }: Props) {
 
       {/* Section 4: Logistics Data — Parcel, Sender, Recipient (Step 3 parcel fields) */}
       <LogisticsData incident={incident} />
+
+      {/* NEW: Multi-Agency Escalation Tracking */}
+      {incident.escalations && incident.escalations.length > 0 && (
+        <Card className="border-destructive/20 bg-destructive/5 overflow-hidden shadow-sm">
+          <CardHeader className="bg-destructive/10 py-3 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-bold flex items-center gap-2 text-destructive">
+              <ArrowUpRight className="h-4 w-4" />
+              Multi-Agency Escalation Status
+            </CardTitle>
+            <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 uppercase tracking-widest text-[10px] font-bold">
+              {incident.escalations.length} Agencies
+            </Badge>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead className="bg-muted/50 border-b border-border text-muted-foreground uppercase tracking-wider font-bold">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-semibold">Agency</th>
+                    <th className="px-4 py-3 text-center font-semibold">Status</th>
+                    <th className="px-4 py-3 text-center font-semibold">Escalation Date</th>
+                    <th className="px-4 py-3 text-right font-semibold">Ref Number</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50 bg-white/50">
+                  {incident.escalations.map((esc, idx) => (
+                    <tr key={idx} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3 font-bold text-foreground">{esc.agency}</td>
+                      <td className="px-4 py-3 text-center">
+                        <Badge variant="outline" className={cn(
+                          "px-2 py-0.5 text-[10px] font-medium rounded-full",
+                          esc.status.includes('Investigat') ? "bg-blue-50 text-blue-700 border-blue-200" :
+                          esc.status.includes('Closed') ? "bg-green-50 text-green-700 border-green-200" :
+                          "bg-slate-100 text-slate-700 border-slate-200"
+                        )}>
+                          {esc.status}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-center text-muted-foreground font-mono">{esc.date}</td>
+                      <td className="px-4 py-3 text-right text-muted-foreground font-mono">{esc.reference || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Section 5: Action & Authority Tracking (Step 4) */}
       <ActionsTaken incident={incident} />

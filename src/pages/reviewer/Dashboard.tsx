@@ -41,7 +41,7 @@ export default function ReviewerDashboard() {
 
       {/* KPI Cards Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card className="border-role-reviewer/20 hover:border-role-reviewer/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
+        <Card className="border-role-reviewer/20 hover:border-role-reviewer/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/assigned-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Assigned Cases</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -51,7 +51,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 hover:border-destructive/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
+        <Card className="border-destructive/20 hover:border-destructive/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/high-severity')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">High Severity</CardTitle>
             <ShieldAlert className="h-4 w-4 text-muted-foreground" />
@@ -61,7 +61,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-rfi/20 hover:border-status-rfi/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
+        <Card className="border-status-rfi/20 hover:border-status-rfi/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/escalation-pending')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Escalation Pending</CardTitle>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -71,7 +71,7 @@ export default function ReviewerDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
+        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/clarification-pending')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Clarification Pending</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
@@ -82,7 +82,7 @@ export default function ReviewerDashboard() {
         </Card>
 
         {/* Priority Alerts Stat Card */}
-        <Card className="border-destructive/40 bg-destructive/5 hover:border-destructive/60 transition-all cursor-pointer group min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/all-cases')}>
+        <Card className="border-destructive/40 bg-destructive/5 hover:border-destructive/60 transition-all cursor-pointer group min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/priority-alerts')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-destructive">Priority Alerts</CardTitle>
             <ShieldAlert className="h-4 w-4 text-destructive" />

@@ -19,10 +19,10 @@ export default function SupervisorDashboard() {
   const navigate = useNavigate();
 
   const kpis = [
-    { label: 'Total Open Cases', value: 34, icon: FolderOpen, color: 'text-role-validator' },
-    { label: 'Pending Tasks', value: 5, icon: AlertTriangle, color: 'text-destructive' },
-    { label: 'Closed This Month', value: 12, icon: Inbox, color: 'text-status-closed' },
-    { label: 'Escalated Cases', value: 8, icon: Shield, color: 'text-role-reviewer' },
+    { label: 'Total Open Cases', value: 34, icon: FolderOpen, color: 'text-role-validator', route: '/supervisor/cases' },
+    { label: 'Pending Tasks', value: 5, icon: AlertTriangle, color: 'text-destructive', route: '/supervisor/pending-tasks' },
+    { label: 'Closed This Month', value: 12, icon: Inbox, color: 'text-status-closed', route: '/supervisor/closed-cases' },
+    { label: 'Escalated Cases', value: 8, icon: Shield, color: 'text-role-reviewer', route: '/supervisor/escalated-cases' },
   ];
 
   return (
@@ -32,15 +32,16 @@ export default function SupervisorDashboard() {
           <h1 className="text-3xl font-bold">Supervisor Dashboard</h1>
           <p className="text-muted-foreground">Governance overview & escalation management</p>
         </div>
-        <Button onClick={() => navigate('/supervisor/escalations')} className="bg-role-validator text-primary-foreground hover:bg-role-validator/90">
-          <Inbox className="mr-2 h-4 w-4" /> Pending Tasks
-        </Button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className={cn("border-border/40 min-h-[120px] flex flex-col")}>
+          <Card
+            key={kpi.label}
+            className={cn('border-border/40 min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border')}
+            onClick={() => navigate(kpi.route)}
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs font-medium text-muted-foreground">{kpi.label}</CardTitle>
               <kpi.icon className={cn('h-4 w-4', kpi.color)} />
@@ -54,7 +55,7 @@ export default function SupervisorDashboard() {
 
       {/* Priority Alerts */}
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/supervisor/escalations')}>
+        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/supervisor/critical-incidents')}>
           <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-destructive/20 flex items-center justify-center">
@@ -71,7 +72,7 @@ export default function SupervisorDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/supervisor/escalations')}>
+        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/supervisor/pending-tasks')}>
           <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-amber-500/20 flex items-center justify-center">
@@ -93,7 +94,10 @@ export default function SupervisorDashboard() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Pending Tasks Queue</CardTitle>
-          <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30">{escalationQueue.length} pending</Badge>
+          <span className="relative flex items-center">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-15" style={{ animationDuration: '2.5s' }} />
+            <Badge variant="outline" className="relative bg-destructive/20 text-destructive border-destructive/30">{escalationQueue.length} pending</Badge>
+          </span>
         </CardHeader>
         <CardContent className="space-y-3">
           {escalationQueue.map((item) => (

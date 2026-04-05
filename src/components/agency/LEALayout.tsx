@@ -25,11 +25,11 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 const navItems = [
-  { title: 'Dashboard', path: '/lea/dashboard', icon: LayoutDashboard },
-  { title: 'Notifications', path: '/lea/notifications', icon: Bell, badge: 3 },
-  { title: 'Escalated Cases', path: '/lea/cases', icon: FolderOpen },
-  { title: 'Analytics & Report', path: '/lea/analytics', icon: BarChart3 },
-  { title: 'Profile', path: '/lea/security', icon: Shield },
+  { title: 'Dashboard', path: '/agency/dashboard', icon: LayoutDashboard },
+  { title: 'Notifications', path: '/agency/notifications', icon: Bell, badge: 3 },
+  { title: 'Escalated Cases', path: '/agency/cases', icon: FolderOpen },
+  { title: 'Analytics & Report', path: '/agency/analytics', icon: BarChart3 },
+  { title: 'Profile', path: '/agency/security', icon: Shield },
 ];
 
 const sidebarAnnouncements = [

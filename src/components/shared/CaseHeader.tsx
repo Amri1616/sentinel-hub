@@ -16,6 +16,7 @@ interface CaseHeaderProps {
   onBack: () => void;
   topBadges?: React.ReactNode;
   actions?: React.ReactNode;
+  escalatedTo?: string[];
 }
 
 export default function CaseHeader({
@@ -30,7 +31,8 @@ export default function CaseHeader({
   backLabel,
   onBack,
   topBadges,
-  actions
+  actions,
+  escalatedTo
 }: CaseHeaderProps) {
   return (
     <div className="space-y-6 mb-8">
@@ -44,6 +46,11 @@ export default function CaseHeader({
         >
           <ArrowLeft className="h-4 w-4 mr-2" /> {backLabel}
         </Button>
+        {escalatedTo && escalatedTo.length > 0 && (
+          <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30 border-2 font-bold uppercase tracking-widest text-[10px] px-2 py-0.5">
+            Escalated to {escalatedTo.length} {escalatedTo.length > 1 ? 'Agencies' : 'Agency'}
+          </Badge>
+        )}
         {topBadges && (
           <div className="flex items-center gap-2">
             {topBadges}

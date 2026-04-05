@@ -55,12 +55,11 @@ export default function ReporterDashboard() {
           >
             <MessageSquare className="h-4 w-4" />
             Pending Action
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive" />
-            </span>
-            <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
-              {pendingClarificationCount}
+            <span className="relative inline-flex items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-50" />
+              <span className="relative inline-flex items-center justify-center h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
+                {pendingClarificationCount}
+              </span>
             </span>
           </Button>
         )}
@@ -98,7 +97,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/under-review')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Under Review</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -108,7 +107,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/escalated')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Escalated</CardTitle>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -118,7 +117,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/closed')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Closed</CardTitle>
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />

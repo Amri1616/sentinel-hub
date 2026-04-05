@@ -158,6 +158,7 @@ export default function IncidentDetails() {
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back to Submissions"
         onBack={() => navigate('/licensee-reporter/incidents')}
+        escalatedTo={incident.escalations?.map(e => e.agency)}
       />
 
       <Tabs defaultValue="details" className="space-y-6">

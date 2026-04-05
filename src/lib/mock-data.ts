@@ -51,4 +51,9 @@ export const fallbackIncident = (id: string): CaseData => ({
   ],
   declarationAgreed: true,
   declarationDate: '2025-01-15',
+  escalations: [
+    { agency: 'PDRM', status: 'Under Investigation', date: '2025-01-16', reference: 'PDRM-2025-KL-992' },
+    { agency: 'KASTAM', status: 'Evidence Seized', date: '2025-01-17', reference: 'KST-X-2025-004' },
+    { agency: 'MKN', status: 'Under Investigation', date: '2025-01-18' },
+  ]
 });

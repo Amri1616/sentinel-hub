@@ -92,7 +92,8 @@ export default function LEACaseDetail() {
         severityColor={getSeverityColor(incident.severity)}
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back to Cases"
-        onBack={() => navigate('/lea/cases')}
+        onBack={() => navigate('/agency/cases')}
+        escalatedTo={incident.escalations?.map(e => e.agency)}
         topBadges={
           <Badge variant="outline" className="gap-1 opacity-70" style={{ backgroundColor: 'hsl(220 70% 50% / 0.1)', color: 'hsl(220 70% 50%)', borderColor: 'hsl(220 70% 50% / 0.3)' }}>
             <Lock className="h-3 w-3" /> LEA Access — Read-Only Incident Data
@@ -252,7 +253,7 @@ export default function LEACaseDetail() {
         <TabsContent value="clarification">
           <CaseClarificationThread
             messages={[]}
-            currentRole="lea"
+            currentRole="agency"
             replyPlaceholder="Enter your clarification request to MCMC or Licensee..."
           />
         </TabsContent>
