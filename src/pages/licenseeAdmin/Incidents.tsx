@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Filter, Download, X } from 'lucide-react';
+import { Search, Filter, Download, X, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -23,28 +23,31 @@ interface Escalation {
 }
 
 const incidents = [
-  { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', updated: '2025-01-20', 
+  {
+    id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', updated: '2025-01-20',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'JKDM', status: 'Under Investigation' }
-    ] 
+    ]
   },
   { id: 'PSIRP-2025-0024', title: 'Suspicious Parcel Detected', reporter: 'Mohd Zaki', org: 'Pos Malaysia', type: 'Suspicious Parcel', severity: 'Medium', status: 'Submitted', submitted: '2025-01-14', updated: '2025-01-15', escalations: [] },
   { id: 'PSIRP-2025-0023', title: 'Prohibited Items in Shipment', reporter: 'Kamal Hassan', org: 'J&T Express', type: 'Prohibited Items', severity: 'Low', status: 'Draft', submitted: '2025-01-13', updated: '2025-01-13', escalations: [] },
-  { id: 'PSIRP-2025-0022', title: 'Unauthorized Access to Secure Area', reporter: 'Fatimah Zahra', org: 'DHL eCommerce', type: 'Security Breach', severity: 'High', status: 'Escalated', submitted: '2025-01-12', updated: '2025-01-16', 
+  {
+    id: 'PSIRP-2025-0022', title: 'Unauthorized Access to Secure Area', reporter: 'Fatimah Zahra', org: 'DHL eCommerce', type: 'Security Breach', severity: 'High', status: 'Escalated', submitted: '2025-01-12', updated: '2025-01-16',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'MOT', status: 'Evidence Seized' },
       { name: 'KKM', status: 'Under Investigation' }
-    ] 
+    ]
   },
-  { id: 'PSIRP-2025-0021', title: 'Serial Theft Across Branches', reporter: 'Azman Ali', org: 'CityLink', type: 'Theft', severity: 'Critical', status: 'Closed', submitted: '2025-01-11', updated: '2025-01-20', 
+  {
+    id: 'PSIRP-2025-0021', title: 'Serial Theft Across Branches', reporter: 'Azman Ali', org: 'CityLink', type: 'Theft', severity: 'Critical', status: 'Closed', submitted: '2025-01-11', updated: '2025-01-20',
     escalations: [
       { name: 'PDRM', status: 'Closed' },
       { name: 'MKD', status: 'Closed' },
       { name: 'KDN', status: 'Closed' },
       { name: 'JKDM', status: 'Closed' }
-    ] 
+    ]
   },
   { id: 'PSIRP-2025-0020', title: 'Equipment Tampering Report', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Others', severity: 'Low', status: 'Under Review', submitted: '2025-01-10', updated: '2025-01-12', escalations: [] },
 ];
@@ -195,6 +198,16 @@ export default function LicenseeAdminIncidents() {
         <p className="text-muted-foreground">Read-only view of all organisation incidents</p>
       </div>
 
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-muted-foreground hover:text-foreground p-0 h-auto flex items-center"
+        onClick={() => navigate('/licensee-admin/dashboard')}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Dashboard
+      </Button>
+
       {/* Search & Filter */}
       <Card>
         <CardContent className="pt-6">
@@ -222,7 +235,7 @@ export default function LicenseeAdminIncidents() {
                 </span>
               )}
             </Button>
-            
+
             {/* Export / Cancel + Download */}
             {!exportMode ? (
               <Button variant="outline" onClick={handleToggleExportMode}>

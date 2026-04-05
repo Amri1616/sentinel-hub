@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Filter, Download, X } from 'lucide-react';
+import { Search, Filter, Download, X, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -192,6 +192,16 @@ export default function ReporterIncidents() {
           <p className="text-muted-foreground">Track and manage your incident reports</p>
         </div>
       </div>
+
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className="text-muted-foreground hover:text-foreground p-0 h-auto flex items-center"
+        onClick={() => navigate('/licensee-reporter/dashboard')}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Dashboard
+      </Button>
 
       {/* Search & Filters */}
       <Card>

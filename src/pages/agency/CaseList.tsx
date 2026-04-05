@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Filter, Eye, Download, X } from 'lucide-react';
+import { Search, Filter, Eye, Download, X, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import AdvancedFilterDrawer, {
@@ -87,9 +87,13 @@ export default function LEACaseList() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Escalated Cases</h1>
+        <h1 className="text-3xl font-bold mb-2">Escalated Cases</h1>
         <p className="text-muted-foreground">Cases formally referred to your agency</p>
       </div>
+
+      <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground p-0 h-auto flex items-center" onClick={() => navigate('/agency/dashboard')}>
+        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+      </Button>
 
       <Card>
         <CardContent className="pt-6">
@@ -184,7 +188,7 @@ export default function LEACaseList() {
                       className="hover:bg-muted/30 transition-colors cursor-pointer border-b"
                       onClick={() => {
                         if (exportMode) toggleSelectOne(c.id);
-                        else navigate(`/lea/cases/${c.id}`);
+                        else navigate(`/agency/cases/${c.id}`);
                       }}
                     >
                       {exportMode && (
@@ -212,7 +216,7 @@ export default function LEACaseList() {
                       {!exportMode && (
                         <td className="px-3 py-4 text-center align-middle text-sm" onClick={(e) => e.stopPropagation()}>
                           <div className="flex justify-center">
-                            <Button size="sm" variant="ghost" onClick={() => navigate(`/lea/cases/${c.id}`)}>
+                            <Button size="sm" variant="ghost" onClick={() => navigate(`/agency/cases/${c.id}`)}>
                               <Eye className="h-4 w-4" />
                             </Button>
                           </div>

@@ -23,33 +23,37 @@ interface Escalation {
 }
 
 const allCases = [
-  { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', lastUpdated: '2025-01-18', isOwn: true, 
+  {
+    id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', lastUpdated: '2025-01-18', isOwn: true,
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'KKM', status: 'Under Investigation' },
       { name: 'MOT', status: 'Evidence Seized' }
-    ] 
+    ]
   },
   { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', organisation: 'Swift Logistics Sdn Bhd', reporter: 'Mohd Zaki', officer: 'You', severity: 'High', status: 'Pending Review', submitted: '2025-01-16', lastUpdated: '2025-01-17', isOwn: true, escalations: [] },
-  { id: 'PSIRP-2025-0030', title: 'Warehouse Break-in', organisation: 'Pos Malaysia Berhad', reporter: 'Kamal Hassan', officer: 'Nurul Hana', severity: 'High', status: 'Under Review', submitted: '2025-01-17', lastUpdated: '2025-01-18', isOwn: false, 
+  {
+    id: 'PSIRP-2025-0030', title: 'Warehouse Break-in', organisation: 'Pos Malaysia Berhad', reporter: 'Kamal Hassan', officer: 'Nurul Hana', severity: 'High', status: 'Under Review', submitted: '2025-01-17', lastUpdated: '2025-01-18', isOwn: false,
     escalations: [
       { name: 'JKDM', status: 'Closed' },
       { name: 'K-KOM', status: 'Closed' },
       { name: 'KDN', status: 'Closed' },
       { name: 'MKN', status: 'Closed' }
-    ] 
+    ]
   },
   { id: 'PSIRP-2025-0031', title: 'Package Diversion Scheme', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Fatimah Zahra', officer: 'Lee Wei', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-01-17', lastUpdated: '2025-01-19', isOwn: false, escalations: [] },
-  { id: 'PSIRP-2025-0029', title: 'Missing Registered Mail', organisation: 'Fast Delivery Enterprise', reporter: 'Azman Ali', officer: 'Farah Amin', severity: 'Medium', status: 'RFI Sent', submitted: '2025-01-16', lastUpdated: '2025-01-17', isOwn: false, 
+  {
+    id: 'PSIRP-2025-0029', title: 'Missing Registered Mail', organisation: 'Fast Delivery Enterprise', reporter: 'Azman Ali', officer: 'Farah Amin', severity: 'Medium', status: 'RFI Sent', submitted: '2025-01-16', lastUpdated: '2025-01-17', isOwn: false,
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'MOT', status: 'Closed' }
-    ] 
+    ]
   },
-  { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', lastUpdated: '2025-01-16', isOwn: true, 
+  {
+    id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', lastUpdated: '2025-01-16', isOwn: true,
     escalations: [
       { name: 'KKM', status: 'Under Investigation' }
-    ] 
+    ]
   },
   { id: 'PSIRP-2025-0032', title: 'Delayed Goods Complaint', organisation: 'Swift Logistics Sdn Bhd', reporter: 'Mohd Zaki', officer: 'Ahmad Razif', severity: 'Low', status: 'Under Review', submitted: '2025-01-18', lastUpdated: '2025-01-20', isOwn: false, escalations: [] },
 ];
@@ -79,7 +83,7 @@ export default function ReviewerAllCases() {
     if (advFilters.severity !== 'all' && i.severity !== advFilters.severity) return false;
     if (advFilters.dateFrom && i.submitted < advFilters.dateFrom) return false;
     if (advFilters.dateTo && i.submitted > advFilters.dateTo) return false;
-    
+
     // Agency Filter
     if (advFilters.agencies.length > 0) {
       const caseAgencies = i.escalations.map(e => e.name);
@@ -233,7 +237,7 @@ export default function ReviewerAllCases() {
                 </span>
               )}
             </Button>
-            
+
             {/* Export Mode Toggle */}
             {!exportMode ? (
               <Button variant="outline" onClick={handleToggleExportMode}>

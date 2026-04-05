@@ -23,7 +23,8 @@ interface Escalation {
 }
 
 const allCases = [
-  { id: 'PSIRP-2025-0063', org: 'Global Express Logistics', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', date: '2025-06-09', lastUpdated: '2025-06-11',
+  {
+    id: 'PSIRP-2025-0063', org: 'Global Express Logistics', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', date: '2025-06-09', lastUpdated: '2025-06-11',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'JKDM', status: 'Evidence Seized' }
@@ -31,27 +32,30 @@ const allCases = [
   },
   { id: 'PSIRP-2025-0060', org: 'Pos Malaysia', officer: 'Farah Amin', severity: 'Critical', status: 'Escalation Pending', date: '2025-06-10', lastUpdated: '2025-06-12', escalations: [] },
   { id: 'PSIRP-2025-0058', org: 'J&T Express', officer: 'Lee Wei', severity: 'High', status: 'Escalation Pending', date: '2025-06-08', lastUpdated: '2025-06-10', escalations: [] },
-  { id: 'PSIRP-2025-0055', org: 'DHL eCommerce', officer: 'Ahmad Razif', severity: 'High', status: 'Under Review', date: '2025-06-06', lastUpdated: '2025-06-07', 
+  {
+    id: 'PSIRP-2025-0055', org: 'DHL eCommerce', officer: 'Ahmad Razif', severity: 'High', status: 'Under Review', date: '2025-06-06', lastUpdated: '2025-06-07',
     escalations: [
-        { name: 'KKM', status: 'Closed' },
-        { name: 'KDN', status: 'Closed' }
+      { name: 'KKM', status: 'Closed' },
+      { name: 'KDN', status: 'Closed' }
     ]
   },
   { id: 'PSIRP-2025-0052', org: 'Ninja Van', officer: 'Nurul Hana', severity: 'High', status: 'Escalation Pending', date: '2025-06-10', lastUpdated: '2025-06-12', escalations: [] },
   { id: 'PSIRP-2025-0048', org: 'CityLink', officer: 'Lee Wei', severity: 'Low', status: 'Clarification Requested', date: '2025-06-03', lastUpdated: '2025-06-05', escalations: [] },
   { id: 'PSIRP-2025-0045', org: 'Global Express Logistics', officer: 'Ahmad Razif', severity: 'Critical', status: 'Escalation Pending', date: '2025-06-09', lastUpdated: '2025-06-11', escalations: [] },
-  { id: 'PSIRP-2025-0030', org: 'Pos Malaysia', officer: 'Nurul Hana', severity: 'Medium', status: 'Closed', date: '2025-05-28', lastUpdated: '2025-06-05', 
+  {
+    id: 'PSIRP-2025-0030', org: 'Pos Malaysia', officer: 'Nurul Hana', severity: 'Medium', status: 'Closed', date: '2025-05-28', lastUpdated: '2025-06-05',
     escalations: [
-        { name: 'MOT', status: 'Closed' },
-        { name: 'PERHILITAN', status: 'Closed' },
-        { name: 'KKM', status: 'Closed' },
-        { name: 'PDRM', status: 'Closed' }
+      { name: 'MOT', status: 'Closed' },
+      { name: 'PERHILITAN', status: 'Closed' },
+      { name: 'KKM', status: 'Closed' },
+      { name: 'PDRM', status: 'Closed' }
     ]
   },
-  { id: 'PSIRP-2025-0025', org: 'DHL eCommerce', officer: 'Farah Amin', severity: 'High', status: 'Escalated', date: '2025-05-22', lastUpdated: '2025-05-28', 
+  {
+    id: 'PSIRP-2025-0025', org: 'DHL eCommerce', officer: 'Farah Amin', severity: 'High', status: 'Escalated', date: '2025-05-22', lastUpdated: '2025-05-28',
     escalations: [
-        { name: 'AKPS', status: 'Under Investigation' },
-        { name: 'MKN', status: 'Pending Review' }
+      { name: 'AKPS', status: 'Under Investigation' },
+      { name: 'MKN', status: 'Pending Review' }
     ]
   },
 ];
@@ -220,7 +224,7 @@ export default function CaseMonitoring() {
                 </span>
               )}
             </Button>
-            
+
             {/* Export Mode Toggle */}
             {!exportMode ? (
               <Button variant="outline" onClick={handleToggleExportMode}>

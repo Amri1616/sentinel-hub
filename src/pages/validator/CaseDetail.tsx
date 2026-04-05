@@ -46,6 +46,7 @@ export default function CaseDetail() {
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back to Queue"
         onBack={() => navigate('/supervisor/escalations')}
+        escalatedTo={incident.escalations?.map(e => e.agency)}
       />
 
       <Tabs defaultValue="details" className="space-y-6">

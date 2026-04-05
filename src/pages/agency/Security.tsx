@@ -8,8 +8,8 @@ export default function LEASecurity() {
         <p className="text-muted-foreground">Manage your profile and account security</p>
       </div>
 
-      <ProfileInformationCard role="lea" iconColor="text-primary" />
-      <ChangePasswordCard idPrefix="lea" iconColor="text-primary" />
+      <ProfileInformationCard role="agency" iconColor="text-primary" />
+      <ChangePasswordCard idPrefix="agency" iconColor="text-primary" />
     </div>
   );
 }

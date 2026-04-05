@@ -19,6 +19,9 @@ import IncidentDetails from "./pages/reporter/IncidentDetails";
 import ReporterNotifications from "./pages/reporter/Notifications";
 import ReporterAnalytics from "./pages/reporter/Analytics";
 import ReporterDrafts from "./pages/reporter/Drafts";
+import ReporterUnderReview from "./pages/reporter/UnderReview";
+import ReporterEscalated from "./pages/reporter/Escalated";
+import ReporterClosed from "./pages/reporter/Closed";
 import ReporterProfileSecurity from "./pages/reporter/ProfileSecurity";
 import CaseOfficerLayout from "./components/caseOfficer/CaseOfficerLayout";
 import ReviewerDashboard from "./pages/reviewer/Dashboard";
@@ -29,6 +32,11 @@ import CaseOfficerSearch from "./pages/reviewer/Search";
 import CaseOfficerReports from "./pages/reviewer/Reports";
 import CaseOfficerAnnouncements from "./pages/reviewer/Announcements";
 import ReviewerAllCases from "./pages/reviewer/AllCases";
+import CaseOfficerAssignedCases from "./pages/reviewer/AssignedCases";
+import CaseOfficerHighSeverity from "./pages/reviewer/HighSeverity";
+import CaseOfficerEscalationPending from "./pages/reviewer/EscalationPending";
+import CaseOfficerClarificationPending from "./pages/reviewer/ClarificationPending";
+import CaseOfficerPriorityAlerts from "./pages/reviewer/PriorityAlerts";
 import CaseOfficerNotifications from "./pages/reviewer/Notifications";
 import CaseOfficerSecurity from "./pages/reviewer/Security";
 import LicenseeAdminLayout from "./components/licenseeAdmin/LicenseeAdminLayout";
@@ -48,6 +56,10 @@ import LicenseeAdminTesting from "./pages/licenseeAdmin/Testing";
 import SupervisorLayout from "./components/supervisor/SupervisorLayout";
 import ValidatorDashboard from "./pages/validator/Dashboard";
 import CaseMonitoring from "./pages/validator/AllCases";
+import SupervisorPendingTasks from "./pages/validator/PendingTasks";
+import SupervisorClosedCases from "./pages/validator/ClosedCases";
+import SupervisorEscalatedCases from "./pages/validator/EscalatedCases";
+import SupervisorCriticalIncidents from "./pages/validator/CriticalIncidents";
 import CaseDetail from "./pages/validator/CaseDetail";
 import EscalationQueue from "./pages/validator/EscalationQueue";
 import AuditCompliance from "./pages/validator/AuditCompliance";
@@ -59,6 +71,10 @@ import InvestigatorLayout from "./components/investigator/InvestigatorLayout";
 import InvestigatorDashboard from "./pages/investigator/Dashboard";
 import InvestigatorAnalytics from "./pages/investigator/Analytics";
 import InvestigatorAllCases from "./pages/investigator/AllCases";
+import InternalOpenCases from "./pages/investigator/OpenCases";
+import InternalClosedCases from "./pages/investigator/ClosedCases";
+import InternalEscalatedCases from "./pages/investigator/EscalatedCases";
+import InternalHighSeverity from "./pages/investigator/HighSeverity";
 import InvestigatorCaseDetail from "./pages/investigator/CaseDetail";
 
 import InvestigatorAuditCompliance from "./pages/investigator/AuditCompliance";
@@ -70,13 +86,16 @@ import AdminOrganisations from "./pages/admin/Organisations";
 import MasterData from "./pages/admin/MasterData";
 import AuditLogs from "./pages/admin/AuditLogs";
 import SuperAdminDashboard from "./pages/superAdmin/Dashboard";
-import LEALayout from "./components/lea/LEALayout";
-import LEADashboard from "./pages/lea/Dashboard";
-import LEACaseList from "./pages/lea/CaseList";
-import LEACaseDetail from "./pages/lea/CaseDetail";
-import LEANotifications from "./pages/lea/Notifications";
-import LEASecurity from "./pages/lea/Security";
-import LEAAnalytics from "./pages/lea/Analytics";
+import LEALayout from "./components/agency/LEALayout";
+import LEADashboard from "./pages/agency/Dashboard";
+import LEACaseList from "./pages/agency/CaseList";
+import LEAOpenCases from "./pages/agency/OpenCases";
+import LEAClosedCases from "./pages/agency/ClosedCases";
+import LEAHighRiskCases from "./pages/agency/HighRiskCases";
+import LEACaseDetail from "./pages/agency/CaseDetail";
+import LEANotifications from "./pages/agency/Notifications";
+import LEASecurity from "./pages/agency/Security";
+import LEAAnalytics from "./pages/agency/Analytics";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
 
@@ -112,6 +131,9 @@ const App = () => (
                   <Route path="/licensee-reporter" element={<ProtectedRoute><ReporterLayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<ReporterDashboard />} />
                     <Route path="drafts" element={<ReporterDrafts />} />
+                    <Route path="under-review" element={<ReporterUnderReview />} />
+                    <Route path="escalated" element={<ReporterEscalated />} />
+                    <Route path="closed" element={<ReporterClosed />} />
                     <Route path="incidents" element={<ReporterIncidents />} />
                     <Route path="incidents/new" element={<NewIncident />} />
                     <Route path="incidents/:id" element={<IncidentDetails />} />
@@ -142,6 +164,11 @@ const App = () => (
                     <Route path="dashboard" element={<ReviewerDashboard />} />
                     <Route path="inbox" element={<CaseOfficerInbox />} />
                     <Route path="all-cases" element={<ReviewerAllCases />} />
+                    <Route path="assigned-cases" element={<CaseOfficerAssignedCases />} />
+                    <Route path="high-severity" element={<CaseOfficerHighSeverity />} />
+                    <Route path="escalation-pending" element={<CaseOfficerEscalationPending />} />
+                    <Route path="clarification-pending" element={<CaseOfficerClarificationPending />} />
+                    <Route path="priority-alerts" element={<CaseOfficerPriorityAlerts />} />
                     <Route path="incidents" element={<ReviewerIncidents />} />
                     <Route path="cases/:id" element={<CaseReview />} />
                     <Route path="search" element={<CaseOfficerSearch />} />
@@ -156,6 +183,10 @@ const App = () => (
                     <Route path="search" element={<SupervisorSearchFilter />} />
                     <Route path="dashboard" element={<ValidatorDashboard />} />
                     <Route path="cases" element={<CaseMonitoring />} />
+                    <Route path="pending-tasks" element={<SupervisorPendingTasks />} />
+                    <Route path="closed-cases" element={<SupervisorClosedCases />} />
+                    <Route path="escalated-cases" element={<SupervisorEscalatedCases />} />
+                    <Route path="critical-incidents" element={<SupervisorCriticalIncidents />} />
                     <Route path="cases/:id" element={<CaseDetail />} />
                     <Route path="escalations" element={<EscalationQueue />} />
                     <Route path="escalations/:id" element={<EscalationQueue />} />
@@ -171,6 +202,10 @@ const App = () => (
                     <Route path="dashboard" element={<InvestigatorDashboard />} />
                     <Route path="analytics" element={<InvestigatorAnalytics />} />
                     <Route path="cases" element={<InvestigatorAllCases />} />
+                    <Route path="open-cases" element={<InternalOpenCases />} />
+                    <Route path="closed-cases" element={<InternalClosedCases />} />
+                    <Route path="escalated-cases" element={<InternalEscalatedCases />} />
+                    <Route path="high-severity" element={<InternalHighSeverity />} />
                     <Route path="cases/:id" element={<InvestigatorCaseDetail />} />
                     <Route path="notifications" element={<InvestigatorNotifications />} />
                     <Route path="security" element={<InvestigatorSecurity />} />
@@ -187,9 +222,12 @@ const App = () => (
                   <Route path="/super-admin/dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
 
                   {/* LEA Routes - with sidebar layout */}
-                  <Route path="/lea" element={<ProtectedRoute><LEALayout /></ProtectedRoute>}>
+                  <Route path="/agency" element={<ProtectedRoute><LEALayout /></ProtectedRoute>}>
                     <Route path="dashboard" element={<LEADashboard />} />
                     <Route path="cases" element={<LEACaseList />} />
+                    <Route path="open-cases" element={<LEAOpenCases />} />
+                    <Route path="closed-cases" element={<LEAClosedCases />} />
+                    <Route path="high-risk" element={<LEAHighRiskCases />} />
                     <Route path="cases/:id" element={<LEACaseDetail />} />
                     <Route path="analytics" element={<LEAAnalytics />} />
                     <Route path="notifications" element={<LEANotifications />} />

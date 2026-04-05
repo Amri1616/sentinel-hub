@@ -45,11 +45,11 @@ export default function InvestigatorDashboard() {
 
   const kpis = [
     { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'role-investigator', route: '/internal/cases' },
-    { label: 'Open Cases', value: '47', icon: Clock, color: 'status-in-review', route: '/internal/cases' },
-    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'destructive', route: '/internal/cases' },
-    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'status-closed', route: '/internal/cases' },
+    { label: 'Open Cases', value: '47', icon: Clock, color: 'status-in-review', route: '/internal/open-cases' },
+    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'destructive', route: '/internal/escalated-cases' },
+    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'status-closed', route: '/internal/closed-cases' },
     { label: 'Escalation Ratio', value: '15.7%', icon: AlertTriangle, color: 'role-validator', route: '/internal/analytics' },
-    { label: 'High Severity', value: '38', icon: ShieldAlert, color: 'role-investigator', route: '/internal/cases' },
+    { label: 'High Severity', value: '38', icon: ShieldAlert, color: 'role-investigator', route: '/internal/high-severity' },
   ];
 
   return (

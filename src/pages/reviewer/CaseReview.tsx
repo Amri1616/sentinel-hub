@@ -85,6 +85,7 @@ export default function CaseReview() {
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back to Inbox"
         onBack={() => navigate('/case-officer/inbox')}
+        escalatedTo={incident.escalations?.map(e => e.agency)}
       />
 
       <Tabs defaultValue="details" className="space-y-6">

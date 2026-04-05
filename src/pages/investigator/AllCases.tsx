@@ -23,26 +23,30 @@ interface Escalation {
 }
 
 const casesData = [
-  { id: 'PSIRP-2025-0063', title: 'High-Value Package Theft', org: 'Global Express Logistics', reporter: 'Ali Hassan', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', submitted: '2025-06-10', lastUpdated: '2025-06-12',
+  {
+    id: 'PSIRP-2025-0063', title: 'High-Value Package Theft', org: 'Global Express Logistics', reporter: 'Ali Hassan', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', submitted: '2025-06-10', lastUpdated: '2025-06-12',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' }
     ]
   },
   { id: 'PSIRP-2025-0060', title: 'Contraband Interception', org: 'Pos Malaysia', reporter: 'Siti Aisyah', officer: 'Farah Amin', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-06-08', lastUpdated: '2025-06-10', escalations: [] },
   { id: 'PSIRP-2025-0058', title: 'Unauthorized Warehouse Access', org: 'J&T Express', reporter: 'Lim Wei Jie', officer: 'Lee Wei', severity: 'High', status: 'Under Review', submitted: '2025-06-07', lastUpdated: '2025-06-09', escalations: [] },
-  { id: 'PSIRP-2025-0055', title: 'Internal Theft — Sorting Facility', org: 'Global Express Logistics', reporter: 'Ahmad Zulkifli', officer: 'Ahmad Razif', severity: 'Medium', status: 'Closed', submitted: '2025-06-05', lastUpdated: '2025-06-09',
+  {
+    id: 'PSIRP-2025-0055', title: 'Internal Theft — Sorting Facility', org: 'Global Express Logistics', reporter: 'Ahmad Zulkifli', officer: 'Ahmad Razif', severity: 'Medium', status: 'Closed', submitted: '2025-06-05', lastUpdated: '2025-06-09',
     escalations: [
-        { name: 'KKM', status: 'Closed' }
+      { name: 'KKM', status: 'Closed' }
     ]
   },
-  { id: 'PSIRP-2025-0052', title: 'Parcel Diversion Scheme', org: 'J&T Express', reporter: 'Tan Mei Ling', officer: 'Nurul Hana', severity: 'High', status: 'Escalated', submitted: '2025-06-03', lastUpdated: '2025-06-10', 
+  {
+    id: 'PSIRP-2025-0052', title: 'Parcel Diversion Scheme', org: 'J&T Express', reporter: 'Tan Mei Ling', officer: 'Nurul Hana', severity: 'High', status: 'Escalated', submitted: '2025-06-03', lastUpdated: '2025-06-10',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'JKDM', status: 'Under Investigation' }
     ]
   },
   { id: 'PSIRP-2025-0049', title: 'Package Tampering Complaint', org: 'CityLink', reporter: 'Kumar Raj', officer: 'Ahmad Razif', severity: 'Low', status: 'Closed', submitted: '2025-06-01', lastUpdated: '2025-06-06', escalations: [] },
-  { id: 'PSIRP-2025-0045', title: 'Suspicious Cross-Border Shipment', org: 'DHL eCommerce', reporter: 'Wong Kai Wen', officer: 'Farah Amin', severity: 'Critical', status: 'Escalated', submitted: '2025-05-28', lastUpdated: '2025-06-05', 
+  {
+    id: 'PSIRP-2025-0045', title: 'Suspicious Cross-Border Shipment', org: 'DHL eCommerce', reporter: 'Wong Kai Wen', officer: 'Farah Amin', severity: 'Critical', status: 'Escalated', submitted: '2025-05-28', lastUpdated: '2025-06-05',
     escalations: [
       { name: 'JKDM', status: 'Under Investigation' },
       { name: 'KDN', status: 'Evidence Seized' },
@@ -218,7 +222,7 @@ export default function InvestigatorAllCases() {
                 </span>
               )}
             </Button>
-            
+
             {!exportMode ? (
               <Button variant="outline" onClick={handleToggleExportMode}>
                 <Download className="mr-2 h-4 w-4" />Export

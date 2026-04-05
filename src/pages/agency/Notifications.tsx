@@ -5,12 +5,12 @@ import { AlertTriangle, CheckCircle, MessageSquare, FileText, Upload } from 'luc
 import { useNavigate } from 'react-router-dom';
 
 const initialNotifications = [
-  { id: 1, type: 'escalation', title: 'New Escalated Case', message: 'New case ESC-2025-005 escalated to your agency — Critical severity.', time: '1 hour ago', read: false, icon: AlertTriangle, action: '/lea/cases/ESC-2025-005', actionLabel: 'Review' },
-  { id: 2, type: 'escalation', title: 'New Escalated Case', message: 'New case ESC-2025-004 escalated to your agency — High severity.', time: '3 hours ago', read: false, icon: AlertTriangle, action: '/lea/cases/ESC-2025-004', actionLabel: 'Review' },
-  { id: 3, type: 'clarification', title: 'Clarification Response', message: 'MCMC responded to your clarification request for ESC-2025-001.', time: '1 day ago', read: false, icon: MessageSquare, action: '/lea/cases/ESC-2025-001', actionLabel: 'View' },
-  { id: 4, type: 'upload', title: 'Report Logged', message: 'Your investigation report for ESC-2025-001 was logged successfully.', time: '2 days ago', read: true, icon: Upload, action: '/lea/cases/ESC-2025-001', actionLabel: 'View' },
-  { id: 5, type: 'status', title: 'Outcome Submitted', message: 'Outcome submitted for ESC-2025-006 — Prosecution Recommended.', time: '5 days ago', read: true, icon: CheckCircle, action: '/lea/cases/ESC-2025-006', actionLabel: 'View' },
-  { id: 6, type: 'document', title: 'Documents Attached', message: 'Additional documents attached to ESC-2025-003 by MCMC.', time: '1 week ago', read: true, icon: FileText, action: '/lea/cases/ESC-2025-003', actionLabel: 'View' },
+  { id: 1, type: 'escalation', title: 'New Escalated Case', message: 'New case ESC-2025-005 escalated to your agency — Critical severity.', time: '1 hour ago', read: false, icon: AlertTriangle, action: '/agency/cases/ESC-2025-005', actionLabel: 'Review' },
+  { id: 2, type: 'escalation', title: 'New Escalated Case', message: 'New case ESC-2025-004 escalated to your agency — High severity.', time: '3 hours ago', read: false, icon: AlertTriangle, action: '/agency/cases/ESC-2025-004', actionLabel: 'Review' },
+  { id: 3, type: 'clarification', title: 'Clarification Response', message: 'MCMC responded to your clarification request for ESC-2025-001.', time: '1 day ago', read: false, icon: MessageSquare, action: '/agency/cases/ESC-2025-001', actionLabel: 'View' },
+  { id: 4, type: 'upload', title: 'Report Logged', message: 'Your investigation report for ESC-2025-001 was logged successfully.', time: '2 days ago', read: true, icon: Upload, action: '/agency/cases/ESC-2025-001', actionLabel: 'View' },
+  { id: 5, type: 'status', title: 'Outcome Submitted', message: 'Outcome submitted for ESC-2025-006 — Prosecution Recommended.', time: '5 days ago', read: true, icon: CheckCircle, action: '/agency/cases/ESC-2025-006', actionLabel: 'View' },
+  { id: 6, type: 'document', title: 'Documents Attached', message: 'Additional documents attached to ESC-2025-003 by MCMC.', time: '1 week ago', read: true, icon: FileText, action: '/agency/cases/ESC-2025-003', actionLabel: 'View' },
 ];
 
 const typeColors: Record<string, string> = {

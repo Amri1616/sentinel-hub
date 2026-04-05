@@ -3,11 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import AdvancedFilterDrawer, { EMPTY_FILTERS, countActiveFilters, AdvancedFilters } from '@/components/shared/AdvancedFilterDrawer';
 
 const incidents = [
   { id: 'PSIRP-2025-0025', reporter: 'Ahmad bin Abdullah', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', description: 'High-value package theft at sorting facility' },
@@ -24,6 +22,9 @@ const severityColors: Record<string, string> = {
 export default function LicenseeAdminUnderReview() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
+  const activeFilterCount = countActiveFilters(filters);
 
   const filtered = incidents.filter(i =>
     i.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -38,6 +39,16 @@ export default function LicenseeAdminUnderReview() {
         <p className="text-muted-foreground">Cases currently being reviewed by MCMC</p>
       </div>
 
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-muted-foreground hover:text-foreground p-0 h-auto flex items-center"
+        onClick={() => navigate('/licensee-admin/dashboard')}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Dashboard
+      </Button>
+
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -45,60 +56,13 @@ export default function LicenseeAdminUnderReview() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search by reference, reporter, type..." className="pl-10" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline">
-                  <Filter className="mr-2 h-4 w-4" />
-                  Advanced Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Filter Cases</SheetTitle>
-                </SheetHeader>
-                <div className="space-y-6 mt-6">
-                  <div className="space-y-2">
-                    <Label>Date Range</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input type="date" />
-                      <Input type="date" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Severity</Label>
-                    <Select>
-                      <SelectTrigger><SelectValue placeholder="All severities" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="critical">Critical</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Case Type</Label>
-                    <Select>
-                      <SelectTrigger><SelectValue placeholder="All types" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="theft">Theft</SelectItem>
-                        <SelectItem value="suspicious">Suspicious Parcel</SelectItem>
-                        <SelectItem value="prohibited">Prohibited Items</SelectItem>
-                        <SelectItem value="breach">Security Breach</SelectItem>
-                        <SelectItem value="others">Others</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex gap-2 pt-4">
-                    <Button className="flex-1">Apply Filters</Button>
-                    <Button variant="outline" className="flex-1">Reset</Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-
+            <Button variant="outline" onClick={() => setIsFilterOpen(true)} className="relative">
+              <Filter className="mr-2 h-4 w-4" />
+              Advanced Filters
+              {activeFilterCount > 0 && (
+                <Badge className="ml-2 px-1.5 min-w-[1.25rem] h-5 justify-center">{activeFilterCount}</Badge>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -135,6 +99,15 @@ export default function LicenseeAdminUnderReview() {
           </div>
         </CardContent>
       </Card>
+
+      <AdvancedFilterDrawer
+        open={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        filters={filters}
+        onApply={setFilters}
+      />
     </div>
   );
 }
+
+

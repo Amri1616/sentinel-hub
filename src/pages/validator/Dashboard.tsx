@@ -20,9 +20,9 @@ export default function SupervisorDashboard() {
 
   const kpis = [
     { label: 'Total Open Cases', value: 34, icon: FolderOpen, color: 'text-role-validator', route: '/supervisor/cases' },
-    { label: 'Pending Tasks', value: 5, icon: AlertTriangle, color: 'text-destructive', route: '/supervisor/escalations' },
-    { label: 'Closed This Month', value: 12, icon: Inbox, color: 'text-status-closed', route: '/supervisor/cases' },
-    { label: 'Escalated Cases', value: 8, icon: Shield, color: 'text-role-reviewer', route: '/supervisor/escalations' },
+    { label: 'Pending Tasks', value: 5, icon: AlertTriangle, color: 'text-destructive', route: '/supervisor/pending-tasks' },
+    { label: 'Closed This Month', value: 12, icon: Inbox, color: 'text-status-closed', route: '/supervisor/closed-cases' },
+    { label: 'Escalated Cases', value: 8, icon: Shield, color: 'text-role-reviewer', route: '/supervisor/escalated-cases' },
   ];
 
   return (
@@ -55,7 +55,7 @@ export default function SupervisorDashboard() {
 
       {/* Priority Alerts */}
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/supervisor/escalations')}>
+        <Card className="border-destructive/40 bg-destructive/5 cursor-pointer hover:border-destructive/60 transition-all" onClick={() => navigate('/supervisor/critical-incidents')}>
           <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-destructive/20 flex items-center justify-center">
@@ -72,7 +72,7 @@ export default function SupervisorDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/supervisor/escalations')}>
+        <Card className="border-amber-500/40 bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all dark:bg-amber-500/10" onClick={() => navigate('/supervisor/pending-tasks')}>
           <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-amber-500/20 flex items-center justify-center">

@@ -97,7 +97,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/under-review')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Under Review</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -107,7 +107,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/escalated')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Escalated</CardTitle>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -117,7 +117,7 @@ export default function ReporterDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/closed')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Closed</CardTitle>
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
