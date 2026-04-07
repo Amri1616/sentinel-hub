@@ -1,13 +1,13 @@
 // Simple in-memory auth for demo purposes
-export type Role = 
-  | 'reporter' 
-  | 'licensee-admin' 
-  | 'reviewer' 
-  | 'validator' 
-  | 'investigator' 
-  | 'system-admin' 
-  | 'super-admin'
-  | 'lea-viewer';
+export type Role =
+  | "reporter"
+  | "licensee-admin"
+  | "reviewer"
+  | "validator"
+  | "investigator"
+  | "system-admin"
+  | "super-admin"
+  | "lea-viewer";
 
 export interface User {
   id: string;
@@ -23,14 +23,14 @@ let currentUser: User | null = null;
 export const login = (email: string, password: string, role: Role): User => {
   // Demo: accept any credentials
   const roleNames: Record<Role, string> = {
-    'reporter': 'Licensee Reporter',
-    'licensee-admin': 'Licensee Admin',
-    'reviewer': 'MCMC Case Officer',
-    'validator': 'MCMC Supervisor',
-    'investigator': 'MCMC Internal',
-    'system-admin': 'MCMC System Admin',
-    'super-admin': 'MCMC Super Admin',
-    'lea-viewer': 'Agency',
+    reporter: "Licensee Reporter",
+    "licensee-admin": "Licensee Admin",
+    reviewer: "MCMC Case Officer",
+    validator: "MCMC Supervisor",
+    investigator: "MCMC Internal",
+    "system-admin": "MCMC System Admin",
+    "super-admin": "MCMC Super Admin",
+    "lea-viewer": "Agency",
   };
 
   const user: User = {
@@ -38,8 +38,12 @@ export const login = (email: string, password: string, role: Role): User => {
     name: roleNames[role],
     email,
     role,
-    organisationId: role === 'reporter' || role === 'licensee-admin' ? 'org-001' : undefined,
-    organisationName: role === 'reporter' || role === 'licensee-admin' ? 'Global Express Logistics Sdn Bhd' : undefined,
+    organisationId:
+      role === "reporter" || role === "licensee-admin" ? "org-001" : undefined,
+    organisationName:
+      role === "reporter" || role === "licensee-admin"
+        ? "Global Express Logistics Sdn Bhd"
+        : undefined,
   };
 
   currentUser = user;
@@ -51,6 +55,7 @@ export const logout = () => {
 };
 
 export const getCurrentUser = (): User | null => {
+  if (currentUser == null) login("", "", "reporter");
   return currentUser;
 };
 
