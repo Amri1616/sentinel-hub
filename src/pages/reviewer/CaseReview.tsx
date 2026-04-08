@@ -33,6 +33,7 @@ export default function CaseReview() {
   const [selectedAgencies, setSelectedAgencies] = useState<string[]>([]);
   const [replyText, setReplyText] = useState('');
   const [peerComment, setPeerComment] = useState('');
+  const [otherAgency, setOtherAgency] = useState('');
 
   const peerComments = [
     { author: 'Nurul Hana (CO-2024-018)', comment: 'Similar MO observed in PSIRP-2025-0030 — recommend cross-referencing access logs.', date: '2025-01-16 11:00' },
@@ -63,9 +64,16 @@ export default function CaseReview() {
       toast({ title: 'Missing Information', description: 'Select at least one agency.', variant: 'destructive' });
       return;
     }
+    
+    if (selectedAgencies.includes('OTHERS') && !otherAgency.trim()) {
+      toast({ title: 'Missing Information', description: 'Please specify the other agency name.', variant: 'destructive' });
+      return;
+    }
+
     toast({ title: 'Escalation Submitted', description: 'Awaiting Supervisor approval.' });
     setEscalationJustification('');
     setSelectedAgencies([]);
+    setOtherAgency('');
   };
 
   const handleSaveAssessment = () => {
@@ -176,19 +184,22 @@ export default function CaseReview() {
                             }}
                           />
                           <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
-                            {[
-                              'K-KOM',
-                              'KKM',
-                              'NRES',
-                              'KPDN',
-                              'MKN',
-                              'PDRM',
-                              'KASTAM',
-                              'KDN',
-                              'MOT',
-                              'AKPS',
-                              'PERHILITAN',
-                            ].map((agency) => (
+                             {[
+                                'AKPS',
+                                'ATOM MALAYSIA',
+                                'BPFKKM',
+                                'CSM',
+                                'CUSTOMS',
+                                'KDN',
+                                'KPDN',
+                                'MCMC',
+                                'MOT',
+                                'NACSA',
+                                'NRES',
+                                'PDRM',
+                                'PERHILITAN',
+                                'OTHERS',
+                              ].map((agency) => (
                               <div key={agency} data-agency={agency} className="flex items-center gap-2 py-1">
                                 <Checkbox
                                   checked={selectedAgencies.includes(agency)}
@@ -202,11 +213,23 @@ export default function CaseReview() {
                             ))}
                           </div>
                         </div>
+                        {selectedAgencies.includes('OTHERS') && (
+                          <div className="space-y-2 mt-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <Label className="text-destructive font-medium">Specify Other Agency Name *</Label>
+                            <Input
+                              placeholder="Enter agency name..."
+                              value={otherAgency}
+                              onChange={(e) => setOtherAgency(e.target.value)}
+                              required
+                              className="border-destructive/40 focus-visible:ring-destructive"
+                            />
+                          </div>
+                        )}
                         {selectedAgencies.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
+                          <div className="flex flex-wrap gap-1 mt-4">
                             {selectedAgencies.map((a) => (
                               <Badge key={a} variant="outline" className="text-xs cursor-pointer hover:bg-destructive/10" onClick={() => setSelectedAgencies((prev) => prev.filter((x) => x !== a))}>
-                                {a} ✕
+                                {a === 'OTHERS' && otherAgency ? `OTHERS (${otherAgency})` : a} ✕
                               </Badge>
                             ))}
                           </div>

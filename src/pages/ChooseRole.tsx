@@ -45,7 +45,7 @@ export default function ChooseRole() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {roleOrder.map((roleId) => {
-            const config = roleConfigs[roleId];
+            const config = roleConfigs[roleId as Role];
             return (
             <Card
               key={config.id}

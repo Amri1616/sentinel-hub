@@ -126,8 +126,8 @@ export default function LicenseeAdminIncidents() {
     if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
     const display = escalations.slice(0, 2);
     const remaining = escalations.length - 2;
-    return (
-      <div className="flex flex-wrap justify-center gap-1">
+    const content = (
+      <div className={`flex flex-wrap justify-center gap-1 ${escalations.length > 2 ? 'cursor-help' : ''}`}>
         {display.map((e, idx) => (
           <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
             {e.name}
@@ -139,6 +139,28 @@ export default function LicenseeAdminIncidents() {
           </Badge>
         )}
       </div>
+    );
+
+    if (escalations.length <= 2) return content;
+
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>{content}</TooltipTrigger>
+          <TooltipContent className="p-3 bg-popover border-border shadow-xl min-w-[150px]">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Escalated Agencies</p>
+              <div className="flex flex-wrap gap-1.5">
+                {escalations.map((e, idx) => (
+                  <Badge key={idx} variant="outline" className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-700 border-slate-200 font-bold uppercase">
+                    {e.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   };
 

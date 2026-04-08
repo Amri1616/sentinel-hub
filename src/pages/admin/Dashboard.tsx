@@ -24,10 +24,6 @@ export default function SystemAdminDashboard() {
             <Home className="h-4 w-4 mr-2" />
             Home
           </Button>
-          <Button variant="outline" size="sm" onClick={() => navigate('/choose-role')}>
-            <ArrowLeftRight className="h-4 w-4 mr-2" />
-            Change Role
-          </Button>
         </div>
       </div>
 

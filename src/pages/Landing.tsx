@@ -39,10 +39,10 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 size="lg"
-                onClick={() => navigate('/choose-role')}
+                onClick={() => navigate('/login')}
                 className="text-lg px-8 glow-cyan"
               >
-                Choose Role
+                Sign In
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button

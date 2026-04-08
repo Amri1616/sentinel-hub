@@ -2,30 +2,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RoleChip } from '@/components/RoleChip';
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { login, Role } from '@/lib/auth';
-import { getRoleConfig } from '@/lib/roleConfig';
+import { useNavigate } from 'react-router-dom';
+import { login } from '@/lib/auth';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 import mcmcLogo from '@/assets/mcmc-logo.png';
 
 export default function Login() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const role = (location.state?.role || 'reporter') as Role;
-  const config = getRoleConfig(role);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleAutoFill = () => {
-    setEmail('demo@mcmc.gov.my');
-    setPassword('demo123');
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,12 +22,13 @@ export default function Login() {
 
     setTimeout(() => {
       try {
-        login(email, password, role);
-        const otp = String(Math.floor(100000 + Math.random() * 900000));
-        toast.success('Credentials verified. Please complete MFA.');
-        navigate('/otp', { state: { role, otp } });
+        const user = login(email, password);
+        const otp = '123456';
+        toast.success(`Welcome back, ${user.name}. Please complete MFA.`);
+        // Pass the user's role to OTP page so it knows where to redirect after MFA
+        navigate('/otp', { state: { role: user.role, otp } });
       } catch (error) {
-        toast.error('Login failed');
+        toast.error('Invalid email or password');
       } finally {
         setIsLoading(false);
       }
@@ -46,32 +36,29 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 bg-[#1a1a1a] relative">
-      <div className="w-full max-w-md flex flex-col items-center mb-8">
-        <img src={mcmcLogo} alt="MCMC Logo" className="h-20 w-auto mb-4" />
-        <h1 className="text-[28px] font-bold font-poppins text-white text-center tracking-wide uppercase">
-          Postal Security Incident Reporting Platform
+    <div className="fixed inset-0 h-screen w-screen flex flex-col items-center justify-center p-4 bg-[#1a1a1a] z-50 overflow-hidden">
+      <div className="w-full max-w-md flex flex-col items-center mb-6">
+        <img src={mcmcLogo} alt="MCMC Logo" className="h-32 w-auto mb-6" />
+        <h1 className="text-[28px] font-bold font-poppins text-white text-center tracking-wide uppercase leading-tight">
+          Postal Security Incident<br />Reporting Platform
         </h1>
       </div>
 
       <div className="w-full max-w-md">
         <Button
           variant="ghost"
-          onClick={() => navigate('/choose-role')}
+          onClick={() => navigate('/')}
           className="mb-6 text-white hover:bg-white/10"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Role Selection
+          Back to Home
         </Button>
 
         <Card className="border-t-[4px] border-x-0 border-b-0 border-[#044cd0] bg-white rounded-lg shadow-xl shadow-black/50">
           <CardHeader className="space-y-2 text-center pb-4">
             <CardTitle className="text-xl text-[#111111] font-poppins">System Login</CardTitle>
-            <div className="flex justify-center">
-              <RoleChip role={role} />
-            </div>
             <CardDescription className="text-sm pt-2 text-gray-600">
-              {config.description}
+              Enter your credentials to access the secure reporting platform
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -84,7 +71,6 @@ export default function Login() {
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onFocus={handleAutoFill}
                   required
                   className="bg-white text-black border-gray-300 focus:border-[#044cd0] focus:ring-[#044cd0]"
                 />
@@ -122,7 +108,7 @@ export default function Login() {
         </Card>
       </div>
 
-      <div className="absolute bottom-6 font-poppins text-xs text-center text-gray-400">
+      <div className="mt-8 font-poppins text-xs text-center text-gray-400">
         IT HELPDESK: 03-8688 8008 | ITHelpdesk@mcmc.gov.my
       </div>
     </div>

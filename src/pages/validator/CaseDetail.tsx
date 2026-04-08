@@ -4,6 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, CheckCircle2, Copy, Mail, MessageSquare, Share2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
@@ -30,8 +35,29 @@ const clarificationMessages: ClarificationMessage[] = [
 export default function CaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [copied, setCopied] = useState(false);
 
   const incident = fallbackIncident(id || 'PSIRP-2025-0042');
+
+  const caseUrl = `https://portal.mcmc.gov.my/cases/${incident.id}`;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(caseUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = encodeURIComponent(`Case Report: ${incident.id} — ${incident.title}\n${caseUrl}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
+
+  const handleShareEmail = () => {
+    const subject = encodeURIComponent(`Case Report: ${incident.id}`);
+    const body = encodeURIComponent(`Hi,\n\nPlease find the case report for ${incident.id} — ${incident.title}.\n\nLink: ${caseUrl}\n\nRegards`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12">
@@ -47,6 +73,76 @@ export default function CaseDetail() {
         backLabel="Back to Queue"
         onBack={() => navigate('/supervisor/escalations')}
         escalatedTo={incident.escalations?.map(e => e.agency)}
+        actions={
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="bg-background">
+                <Share2 className="h-4 w-4 mr-2" /> Share Case Report
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader><DialogTitle>Share Case Report</DialogTitle></DialogHeader>
+              <div className="space-y-5 py-4">
+                {/* Share buttons row */}
+                <div>
+                  <p className="text-sm font-medium mb-3">Share via</p>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleShareWhatsApp}
+                      className="flex-1 gap-2 text-white"
+                      style={{ backgroundColor: '#25D366' }}
+                    >
+                      <MessageSquare className="h-4 w-4" /> WhatsApp
+                    </Button>
+                    <Button
+                      onClick={handleShareEmail}
+                      variant="outline"
+                      className="flex-1 gap-2"
+                    >
+                      <Mail className="h-4 w-4" /> Email
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+                  <div className="relative flex justify-center text-xs"><span className="bg-background px-2 text-muted-foreground">or copy link</span></div>
+                </div>
+
+                {/* Copy link section */}
+                <div>
+                  <Label className="text-sm font-medium mb-2 block">Secure Public Link</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      readOnly
+                      value={caseUrl}
+                      className="text-sm bg-muted/40 cursor-default"
+                      onClick={(e) => (e.target as HTMLInputElement).select()}
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className={`shrink-0 transition-colors ${copied ? 'border-status-closed/50 text-status-closed' : ''}`}
+                      onClick={handleCopyLink}
+                    >
+                      {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  {copied && (
+                    <p className="text-xs text-status-closed mt-1.5 animate-in fade-in">Link copied to clipboard!</p>
+                  )}
+                </div>
+
+                <div className="p-3 bg-muted/30 rounded-lg border border-border/50">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <strong>Note:</strong> This link provides read-only access to case details. Ensure you only share this with authorized parties.
+                  </p>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        }
       />
 
       <Tabs defaultValue="details" className="space-y-6">

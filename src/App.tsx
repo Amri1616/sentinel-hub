@@ -8,7 +8,7 @@ import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { getCurrentUser } from "./lib/auth";
 import Landing from "./pages/Landing";
-import ChooseRole from "./pages/ChooseRole";
+// import ChooseRole from "./pages/ChooseRole";
 import Login from "./pages/Login";
 import OtpVerification from "./pages/OtpVerification";
 import ReporterLayout from "./components/reporter/ReporterLayout";
@@ -122,7 +122,7 @@ const App = () => (
               <div className="container mx-auto px-4 py-6">
                 <Routes>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/choose-role" element={<ChooseRole />} />
+                  {/* <Route path="/choose-role" element={<ChooseRole />} /> */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/otp" element={<OtpVerification />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />

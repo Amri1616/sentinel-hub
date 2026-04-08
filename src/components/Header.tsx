@@ -60,14 +60,14 @@ export const Header = () => {
   const [language, setLanguage] = useState<'EN' | 'BM'>('EN');
   const [notifOpen, setNotifOpen] = useState(false);
 
-  const authRoutes = ['/', '/login', '/choose-role', '/otp', '/forgot-password'];
+  const authRoutes = ['/', '/login', '/otp', '/forgot-password'];
   if (authRoutes.includes(location.pathname)) {
     return null;
   }
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   const unreadCount = recentNotifications.filter((n) => !n.read).length;

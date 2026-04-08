@@ -1,6 +1,15 @@
 import mcmcLogo from '@/assets/mcmc-logo.png';
 
+import { useLocation } from 'react-router-dom';
+
 export const Footer = () => {
+    const location = useLocation();
+    const authRoutes = ['/', '/login', '/otp', '/forgot-password'];
+    
+    if (authRoutes.includes(location.pathname)) {
+        return null;
+    }
+
     return (
         <footer className="sticky bottom-0 z-40 bg-white dark:bg-card border-t border-border mt-auto">
             <div className="container mx-auto px-4 h-auto py-3 md:h-12 md:py-0 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
