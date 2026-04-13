@@ -89,7 +89,7 @@ const INCIDENT_TYPES = [
 ];
 
 const LEA_AGENCIES = [
-  'K-KOM', 'KKM', 'NRES', 'KPDN', 'MKN', 'PDRM', 'KASTAM', 'KDN', 'MOT', 'AKPS', 'PERHILITAN'
+  'AKPS', 'ATOM MALAYSIA', 'CSM', 'CUSTOMS', 'KDN', 'KKM ( Pharmacy )', 'KPDN', 'MCMC', 'MOT', 'NACSA', 'NRES', 'PDRM', 'PERHILITAN', 'OTHERS'
 ];
 
 const ASSISTANCE_OPTIONS = [

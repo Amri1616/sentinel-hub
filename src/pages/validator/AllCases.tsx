@@ -27,7 +27,7 @@ const allCases = [
     id: 'PSIRP-2025-0063', org: 'Global Express Logistics', officer: 'Raj Kumar', severity: 'Medium', status: 'Under Review', date: '2025-06-09', lastUpdated: '2025-06-11',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
-      { name: 'JKDM', status: 'Evidence Seized' }
+      { name: 'CUSTOMS', status: 'Evidence Seized' }
     ]
   },
   { id: 'PSIRP-2025-0060', org: 'Pos Malaysia', officer: 'Farah Amin', severity: 'Critical', status: 'Escalation Pending', date: '2025-06-10', lastUpdated: '2025-06-12', escalations: [] },
@@ -35,7 +35,7 @@ const allCases = [
   {
     id: 'PSIRP-2025-0055', org: 'DHL eCommerce', officer: 'Ahmad Razif', severity: 'High', status: 'Under Review', date: '2025-06-06', lastUpdated: '2025-06-07',
     escalations: [
-      { name: 'KKM', status: 'Closed' },
+      { name:  'KKM ( Pharmacy )', status: 'Closed' },
       { name: 'KDN', status: 'Closed' }
     ]
   },
@@ -47,7 +47,7 @@ const allCases = [
     escalations: [
       { name: 'MOT', status: 'Closed' },
       { name: 'PERHILITAN', status: 'Closed' },
-      { name: 'KKM', status: 'Closed' },
+      { name:  'KKM ( Pharmacy )', status: 'Closed' },
       { name: 'PDRM', status: 'Closed' }
     ]
   },
@@ -55,7 +55,7 @@ const allCases = [
     id: 'PSIRP-2025-0025', org: 'DHL eCommerce', officer: 'Farah Amin', severity: 'High', status: 'Escalated', date: '2025-05-22', lastUpdated: '2025-05-28',
     escalations: [
       { name: 'AKPS', status: 'Under Investigation' },
-      { name: 'MKN', status: 'Pending Review' }
+      { name: 'NACSA', status: 'Pending Review' }
     ]
   },
 ];
@@ -94,8 +94,7 @@ export default function CaseMonitoring() {
     // Agency Filter logic
     if (advFilters.agencies.length > 0) {
       const caseAgencies = c.escalations.map(e => e.name);
-      const normalizedCaseAgencies = caseAgencies.map(a => a === 'JKDM' ? 'KASTAM' : a);
-      const hasMatch = advFilters.agencies.some(a => normalizedCaseAgencies.includes(a));
+      const hasMatch = advFilters.agencies.some(a => caseAgencies.includes(a));
       if (!hasMatch) return false;
     }
 
@@ -120,23 +119,61 @@ export default function CaseMonitoring() {
     setExportMode(false); setSelectedIds(new Set());
   };
 
-  const renderEscalatedTo = (escalations: Escalation[]) => {
+  const renderEscalatedTo = (escalations: Escalation[], caseId: string) => {
     if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
+    const detailUrl = `/supervisor/cases/${caseId}#escalation-status`;
     const display = escalations.slice(0, 2);
     const remaining = escalations.length - 2;
-    return (
-      <div className="flex flex-wrap justify-center gap-1">
+    const content = (
+      <div className={`flex flex-wrap justify-center gap-1 ${escalations.length > 2 ? 'cursor-help' : ''}`}>
         {display.map((e, idx) => (
-          <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            key={idx} 
+            variant="secondary" 
+            className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             {e.name}
           </Badge>
         ))}
         {remaining > 0 && (
-          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            variant="secondary" 
+            className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:bg-primary/10 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             +{remaining} more
           </Badge>
         )}
       </div>
+    );
+
+    if (escalations.length <= 2) return content;
+
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>{content}</TooltipTrigger>
+          <TooltipContent className="p-3 bg-popover border-border shadow-xl min-w-[150px]">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Escalated Agencies</p>
+              <div className="flex flex-wrap gap-1.5">
+                {escalations.map((e, idx) => (
+                  <Badge key={idx} variant="outline" className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-700 border-slate-200 font-bold uppercase">
+                    {e.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   };
 
@@ -319,7 +356,7 @@ export default function CaseMonitoring() {
                         </div>
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
-                        {renderEscalatedTo(c.escalations)}
+                        {renderEscalatedTo(c.escalations, c.id)}
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
                         {renderAgencyProgress(c.escalations)}

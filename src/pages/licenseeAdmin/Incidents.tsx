@@ -27,7 +27,7 @@ const incidents = [
     id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Theft', severity: 'High', status: 'Under Review', submitted: '2025-01-15', updated: '2025-01-20',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
-      { name: 'JKDM', status: 'Under Investigation' }
+      { name: 'CUSTOMS', status: 'Under Investigation' }
     ]
   },
   { id: 'PSIRP-2025-0024', title: 'Suspicious Parcel Detected', reporter: 'Mohd Zaki', org: 'Pos Malaysia', type: 'Suspicious Parcel', severity: 'Medium', status: 'Submitted', submitted: '2025-01-14', updated: '2025-01-15', escalations: [] },
@@ -37,16 +37,16 @@ const incidents = [
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'MOT', status: 'Evidence Seized' },
-      { name: 'KKM', status: 'Under Investigation' }
+      { name:  'KKM ( Pharmacy )', status: 'Under Investigation' }
     ]
   },
   {
     id: 'PSIRP-2025-0021', title: 'Serial Theft Across Branches', reporter: 'Azman Ali', org: 'CityLink', type: 'Theft', severity: 'Critical', status: 'Closed', submitted: '2025-01-11', updated: '2025-01-20',
     escalations: [
       { name: 'PDRM', status: 'Closed' },
-      { name: 'MKD', status: 'Closed' },
+      { name: 'NACSA', status: 'Closed' },
       { name: 'KDN', status: 'Closed' },
-      { name: 'JKDM', status: 'Closed' }
+      { name: 'CUSTOMS', status: 'Closed' }
     ]
   },
   { id: 'PSIRP-2025-0020', title: 'Equipment Tampering Report', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', type: 'Others', severity: 'Low', status: 'Under Review', submitted: '2025-01-10', updated: '2025-01-12', escalations: [] },
@@ -96,8 +96,7 @@ export default function LicenseeAdminIncidents() {
     // Agency Filter
     if (advFilters.agencies.length > 0) {
       const caseAgencies = i.escalations.map(e => e.name);
-      const normalizedCaseAgencies = caseAgencies.map(a => a === 'JKDM' ? 'KASTAM' : a);
-      const hasMatch = advFilters.agencies.some(a => normalizedCaseAgencies.includes(a));
+      const hasMatch = advFilters.agencies.some(a => caseAgencies.includes(a));
       if (!hasMatch) return false;
     }
 
@@ -122,23 +121,61 @@ export default function LicenseeAdminIncidents() {
     setExportMode(false); setSelectedIds(new Set());
   };
 
-  const renderEscalatedTo = (escalations: Escalation[]) => {
+  const renderEscalatedTo = (escalations: Escalation[], incidentId: string) => {
     if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
+    const detailUrl = `/licensee-admin/incidents/${incidentId}#escalation-status`;
     const display = escalations.slice(0, 2);
     const remaining = escalations.length - 2;
-    return (
-      <div className="flex flex-wrap justify-center gap-1">
+    const content = (
+      <div className={`flex flex-wrap justify-center gap-1 ${escalations.length > 2 ? 'cursor-help' : ''}`}>
         {display.map((e, idx) => (
-          <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            key={idx} 
+            variant="secondary" 
+            className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             {e.name}
           </Badge>
         ))}
         {remaining > 0 && (
-          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            variant="secondary" 
+            className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:bg-primary/10 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             +{remaining} more
           </Badge>
         )}
       </div>
+    );
+
+    if (escalations.length <= 2) return content;
+
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>{content}</TooltipTrigger>
+          <TooltipContent className="p-3 bg-popover border-border shadow-xl min-w-[150px]">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Escalated Agencies</p>
+              <div className="flex flex-wrap gap-1.5">
+                {escalations.map((e, idx) => (
+                  <Badge key={idx} variant="outline" className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-700 border-slate-200 font-bold uppercase">
+                    {e.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   };
 
@@ -334,7 +371,7 @@ export default function LicenseeAdminIncidents() {
                         </div>
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
-                        {renderEscalatedTo(incident.escalations)}
+                        {renderEscalatedTo(incident.escalations, incident.id)}
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
                         {renderAgencyProgress(incident.escalations)}

@@ -20,8 +20,27 @@ export interface User {
 
 let currentUser: User | null = null;
 
-export const login = (email: string, password: string, role: Role): User => {
-  // Demo: accept any credentials
+export const login = (email: string, password: string): User => {
+  const credentials: Record<string, { role: Role; pass: string }> = {
+    'ladmin@testing.com': { role: 'licensee-admin', pass: '12345' },
+    'lreporter@testing.com': { role: 'reporter', pass: '12345' },
+    'cofficer@mcmc.gov.my': { role: 'reviewer', pass: '12345' },
+    'msupervisor@mcmc.gov.my': { role: 'validator', pass: '12345' },
+    'minternal@mcmc.gov.my': { role: 'investigator', pass: '12345' },
+    'agency@lea.gov.my': { role: 'lea-viewer', pass: '12345' },
+  };
+
+  const cred = credentials[email];
+  
+  if (!cred || cred.pass !== password) {
+    // For demo purposes, we still allow generic login as reporter if not matched
+    // But the user requested specific redirects for these.
+    // Let's throw an error for non-demo creds to enforce the rule.
+    throw new Error('Invalid credentials');
+  }
+
+  const role: Role = cred.role;
+
   const roleNames: Record<Role, string> = {
     reporter: "Licensee Reporter",
     "licensee-admin": "Licensee Admin",

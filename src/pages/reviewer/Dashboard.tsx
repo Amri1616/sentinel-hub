@@ -1,18 +1,67 @@
-import { FileText, MessageSquare, Clock, Eye, Inbox, ArrowUpRight, ShieldAlert, Megaphone, Users } from 'lucide-react';
+import { FileText, MessageSquare, Clock, Eye, Inbox, ArrowUpRight, ShieldAlert, Megaphone, Users, Circle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 export default function ReviewerDashboard() {
   const navigate = useNavigate();
 
   const priorityIncidents = [
-    { id: 'PSIRP-2025-0028', title: 'Critical Security Breach', licensee: 'Global Express Logistics Sdn Bhd', severity: 'Critical', status: 'Pending Review' },
-    { id: 'PSIRP-2025-0027', title: 'High-Value Theft Investigation', licensee: 'Swift Logistics Sdn Bhd', severity: 'High', status: 'Pending Review' },
-    { id: 'PSIRP-2025-0026', title: 'Package Tampering Report', licensee: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'RFI Sent' },
-    { id: 'PSIRP-2025-0024', title: 'Fraud Attempt Documentation', licensee: 'Global Express Logistics Sdn Bhd', severity: 'High', status: 'RFI Sent' },
+    { 
+      id: 'PSIRP-2025-0028', 
+      title: 'Critical Security Breach', 
+      licensee: 'Global Express Logistics Sdn Bhd', 
+      severity: 'Critical', 
+      status: 'Pending Review',
+      timestamp: '2026-04-10T10:30:00',
+      isRead: false
+    },
+    { 
+      id: 'PSIRP-2025-0027', 
+      title: 'High-Value Theft Investigation', 
+      licensee: 'Swift Logistics Sdn Bhd', 
+      severity: 'High', 
+      status: 'Pending Review',
+      timestamp: '2026-04-10T09:15:00',
+      isRead: false
+    },
+    { 
+      id: 'PSIRP-2025-0026', 
+      title: 'Package Tampering Report', 
+      licensee: 'Global Express Logistics Sdn Bhd', 
+      severity: 'High', 
+      status: 'RFI Sent',
+      timestamp: '2026-04-09T14:20:00',
+      isRead: true
+    },
+    { 
+      id: 'PSIRP-2025-0024', 
+      title: 'Fraud Attempt Documentation', 
+      licensee: 'Global Express Logistics Sdn Bhd', 
+      severity: 'High', 
+      status: 'RFI Sent',
+      timestamp: '2026-04-08T11:00:00',
+      isRead: true
+    },
   ];
+
+  const sortedIncidents = [...priorityIncidents].sort((a, b) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
+  const formatTimestamp = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    
+    if (isToday) {
+      return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+    
+    return `${date.toLocaleDateString('en-GB')} | ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+  };
 
   const getSeverityColor = (severity: string) => {
     const colors: Record<string, string> = {
@@ -105,22 +154,66 @@ export default function ReviewerDashboard() {
           <CardHeader><CardTitle>Recent Assigned Cases</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {priorityIncidents.map((incident) => (
+              {sortedIncidents.map((incident) => (
                 <div
                   key={incident.id}
-                  className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-role-reviewer/40 transition-all cursor-pointer"
+                  className={cn(
+                    "flex items-center justify-between p-4 rounded-lg border border-border hover:border-role-reviewer/40 transition-all cursor-pointer",
+                    !incident.isRead && "bg-blue-50/30 border-blue-100 shadow-sm"
+                  )}
                   onClick={() => navigate(`/case-officer/cases/${incident.id}`)}
                 >
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm text-role-reviewer">{incident.id}</span>
-                      <Badge variant="outline" className={getSeverityColor(incident.severity)}>{incident.severity}</Badge>
-                      <Badge variant="outline" className={getStatusColor(incident.status)}>{incident.status}</Badge>
+                      {!incident.isRead && (
+                        <Circle className="h-2 w-2 fill-[#044cd0] text-[#044cd0]" />
+                      )}
+                      <span className={cn(
+                        "font-mono text-sm",
+                        incident.isRead ? "text-role-reviewer" : "text-[#044cd0] font-bold"
+                      )}>
+                        {incident.id}
+                      </span>
+                      <Badge 
+                        variant="outline" 
+                        className={cn(
+                          incident.isRead 
+                            ? getSeverityColor(incident.severity) 
+                            : "bg-gray-100/50 text-gray-400 border-dashed border-gray-300"
+                        )}
+                      >
+                        {incident.isRead ? incident.severity : 'Not Set'}
+                      </Badge>
+                      <Badge 
+                        variant="outline" 
+                        className={cn(
+                          incident.isRead 
+                            ? getStatusColor(incident.status) 
+                            : "bg-gray-100/50 text-gray-400 border-dashed border-gray-300"
+                        )}
+                      >
+                        {incident.isRead ? incident.status : 'Pending Assessment'}
+                      </Badge>
                     </div>
-                    <p className="font-medium">{incident.title}</p>
-                    <p className="text-sm text-muted-foreground">{incident.licensee}</p>
+                    <p className={cn(
+                      "text-sm",
+                      !incident.isRead ? "font-bold text-gray-900" : "font-medium text-gray-700"
+                    )}>
+                      {incident.title}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{incident.licensee}</span>
+                      <span>•</span>
+                      <span className="flex items-center">
+                        <Clock className="mr-1 h-3 w-3" />
+                        {formatTimestamp(incident.timestamp)}
+                      </span>
+                    </div>
                   </div>
-                  <Button size="sm" variant="outline"><Eye className="mr-2 h-4 w-4" />Review</Button>
+                  <Button size="sm" variant="outline" className={cn(!incident.isRead && "border-blue-200 text-[#044cd0] hover:bg-blue-50")}>
+                    <Eye className="mr-2 h-4 w-4" />
+                    Review
+                  </Button>
                 </div>
               ))}
             </div>

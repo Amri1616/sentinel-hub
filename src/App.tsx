@@ -8,7 +8,7 @@ import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { getCurrentUser } from "./lib/auth";
 import Landing from "./pages/Landing";
-import ChooseRole from "./pages/ChooseRole";
+// import ChooseRole from "./pages/ChooseRole";
 import Login from "./pages/Login";
 import OtpVerification from "./pages/OtpVerification";
 import ReporterLayout from "./components/reporter/ReporterLayout";
@@ -62,6 +62,9 @@ import SupervisorEscalatedCases from "./pages/validator/EscalatedCases";
 import SupervisorCriticalIncidents from "./pages/validator/CriticalIncidents";
 import CaseDetail from "./pages/validator/CaseDetail";
 import EscalationQueue from "./pages/validator/EscalationQueue";
+import EscalationApprovals from "./pages/validator/EscalationApprovals";
+import TransferApprovals from "./pages/validator/TransferApprovals";
+import ClosureApprovals from "./pages/validator/ClosureApprovals";
 import AuditCompliance from "./pages/validator/AuditCompliance";
 import SupervisorNotifications from "./pages/validator/Notifications";
 import SupervisorSecurity from "./pages/validator/Security";
@@ -122,7 +125,7 @@ const App = () => (
               <div className="container mx-auto px-4 py-6">
                 <Routes>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/choose-role" element={<ChooseRole />} />
+                  {/* <Route path="/choose-role" element={<ChooseRole />} /> */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/otp" element={<OtpVerification />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -187,6 +190,9 @@ const App = () => (
                     <Route path="closed-cases" element={<SupervisorClosedCases />} />
                     <Route path="escalated-cases" element={<SupervisorEscalatedCases />} />
                     <Route path="critical-incidents" element={<SupervisorCriticalIncidents />} />
+                    <Route path="escalation-approvals" element={<EscalationApprovals />} />
+                    <Route path="transfer-approvals" element={<TransferApprovals />} />
+                    <Route path="closure-approvals" element={<ClosureApprovals />} />
                     <Route path="cases/:id" element={<CaseDetail />} />
                     <Route path="escalations" element={<EscalationQueue />} />
                     <Route path="escalations/:id" element={<EscalationQueue />} />

@@ -59,12 +59,8 @@ export default function InvestigatorCaseDetail() {
         <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
           <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
           <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Officer Assessment</TabsTrigger>
-          <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all flex items-center gap-2">
+          <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all">
             Clarification
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
-            </span>
           </TabsTrigger>
           <TabsTrigger value="escalation" className="px-6 h-full font-medium transition-all">Escalation History</TabsTrigger>
           <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>

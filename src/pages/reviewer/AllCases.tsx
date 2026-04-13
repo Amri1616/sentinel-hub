@@ -16,6 +16,7 @@ import {
 import AdvancedFilterDrawer, {
   AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
 } from '@/components/shared/AdvancedFilterDrawer';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Escalation {
   name: string;
@@ -27,7 +28,7 @@ const allCases = [
     id: 'PSIRP-2025-0028', title: 'Critical Security Breach', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', officer: 'You', severity: 'Critical', status: 'Under Review', submitted: '2025-01-16', lastUpdated: '2025-01-18', isOwn: true,
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
-      { name: 'KKM', status: 'Under Investigation' },
+      { name:  'KKM ( Pharmacy )', status: 'Under Investigation' },
       { name: 'MOT', status: 'Evidence Seized' }
     ]
   },
@@ -35,10 +36,10 @@ const allCases = [
   {
     id: 'PSIRP-2025-0030', title: 'Warehouse Break-in', organisation: 'Pos Malaysia Berhad', reporter: 'Kamal Hassan', officer: 'Nurul Hana', severity: 'High', status: 'Under Review', submitted: '2025-01-17', lastUpdated: '2025-01-18', isOwn: false,
     escalations: [
-      { name: 'JKDM', status: 'Closed' },
-      { name: 'K-KOM', status: 'Closed' },
+      { name: 'CUSTOMS', status: 'Closed' },
+      { name: 'KKM ( Pharmacy )', status: 'Closed' },
       { name: 'KDN', status: 'Closed' },
-      { name: 'MKN', status: 'Closed' }
+      { name: 'NACSA', status: 'Closed' }
     ]
   },
   { id: 'PSIRP-2025-0031', title: 'Package Diversion Scheme', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Fatimah Zahra', officer: 'Lee Wei', severity: 'Critical', status: 'Escalation Pending', submitted: '2025-01-17', lastUpdated: '2025-01-19', isOwn: false, escalations: [] },
@@ -52,7 +53,7 @@ const allCases = [
   {
     id: 'PSIRP-2025-0026', title: 'Package Tampering Report', organisation: 'Global Express Logistics Sdn Bhd', reporter: 'Ahmad bin Abdullah', officer: 'You', severity: 'High', status: 'RFI Sent', submitted: '2025-01-15', lastUpdated: '2025-01-16', isOwn: true,
     escalations: [
-      { name: 'KKM', status: 'Under Investigation' }
+      { name:  'KKM ( Pharmacy )', status: 'Under Investigation' }
     ]
   },
   { id: 'PSIRP-2025-0032', title: 'Delayed Goods Complaint', organisation: 'Swift Logistics Sdn Bhd', reporter: 'Mohd Zaki', officer: 'Ahmad Razif', severity: 'Low', status: 'Under Review', submitted: '2025-01-18', lastUpdated: '2025-01-20', isOwn: false, escalations: [] },
@@ -64,6 +65,7 @@ export default function ReviewerAllCases() {
   const [searchQuery, setSearchQuery] = useState('');
   const [exportMode, setExportMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState('my-cases');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [advFilters, setAdvFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
 
@@ -87,11 +89,13 @@ export default function ReviewerAllCases() {
     // Agency Filter
     if (advFilters.agencies.length > 0) {
       const caseAgencies = i.escalations.map(e => e.name);
-      // "JKDM" mapping fix in case data uses "JKDM" vs "KASTAM"
-      const normalizedCaseAgencies = caseAgencies.map(a => a === 'JKDM' ? 'KASTAM' : a);
-      const hasMatch = advFilters.agencies.some(a => normalizedCaseAgencies.includes(a));
+      const hasMatch = advFilters.agencies.some(a => caseAgencies.includes(a));
       if (!hasMatch) return false;
     }
+
+    // Tab Filter
+    if (activeTab === 'my-cases' && !i.isOwn) return false;
+    if (activeTab === 'peer-cases' && i.isOwn) return false;
 
     return true;
   });
@@ -117,23 +121,61 @@ export default function ReviewerAllCases() {
     return colors[severity] || 'bg-secondary px-2.5 py-0.5 rounded-full';
   };
 
-  const renderEscalatedTo = (escalations: Escalation[]) => {
+  const renderEscalatedTo = (escalations: Escalation[], caseId: string) => {
     if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
+    const detailUrl = `/case-officer/cases/${caseId}#escalation-status`;
     const display = escalations.slice(0, 2);
     const remaining = escalations.length - 2;
-    return (
-      <div className="flex flex-wrap justify-center gap-1">
+    const content = (
+      <div className={`flex flex-wrap justify-center gap-1 ${escalations.length > 2 ? 'cursor-help' : ''}`}>
         {display.map((e, idx) => (
-          <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            key={idx} 
+            variant="secondary" 
+            className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             {e.name}
           </Badge>
         ))}
         {remaining > 0 && (
-          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            variant="secondary" 
+            className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:bg-primary/10 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             +{remaining} more
           </Badge>
         )}
       </div>
+    );
+
+    if (escalations.length <= 2) return content;
+
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>{content}</TooltipTrigger>
+          <TooltipContent className="p-3 bg-popover border-border shadow-xl min-w-[150px]">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Escalated Agencies</p>
+              <div className="flex flex-wrap gap-1.5">
+                {escalations.map((e, idx) => (
+                  <Badge key={idx} variant="outline" className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-700 border-slate-200 font-bold uppercase">
+                    {e.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   };
 
@@ -272,94 +314,102 @@ export default function ReviewerAllCases() {
         </div>
       )}
 
-      <Card className="w-full overflow-hidden border">
-        <CardContent className="p-0">
-          <div className="relative group w-full overflow-hidden">
-            <div className="overflow-x-auto w-full">
-              <table className="table-auto w-full text-sm">
-                <thead className="bg-muted/50 border-b border-border">
-                  <tr>
-                    {exportMode && (
-                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold w-10">
-                        <Checkbox
-                          checked={allSelected}
-                          onCheckedChange={toggleSelectAll}
-                          aria-label="Select all"
-                          {...(someSelected ? { 'data-state': 'indeterminate' } : {})}
-                        />
-                      </th>
-                    )}
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Reference</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[180px] text-foreground">Organisation</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Assigned Officer</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[120px] text-foreground">Severity</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Internal Status</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalated To</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Agency Progress</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Last Updated</th>
-                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
-                    {!exportMode && <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[50px] text-foreground"></th>}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {filtered.map((c) => (
-                    <tr
-                      key={c.id}
-                      className="border-b hover:bg-muted/30 transition-colors cursor-pointer"
-                      onClick={() => {
-                        if (exportMode) toggleSelectOne(c.id);
-                        else navigate(`/case-officer/cases/${c.id}`);
-                      }}
-                    >
+      <Tabs defaultValue="my-cases" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="my-cases" className="px-8">My Assigned Cases</TabsTrigger>
+          <TabsTrigger value="peer-cases" className="px-8">Peer Cases</TabsTrigger>
+        </TabsList>
+
+        <Card className="w-full overflow-hidden border">
+          <CardContent className="p-0">
+            <div className="relative group w-full overflow-hidden">
+              <div className="overflow-x-auto w-full">
+                <table className="table-auto w-full text-sm">
+                  <thead className="bg-muted/50 border-b border-border">
+                    <tr>
                       {exportMode && (
-                        <td className="px-3 py-4 text-center align-middle" onClick={(e) => e.stopPropagation()}>
-                          <Checkbox checked={selectedIds.has(c.id)} onCheckedChange={() => toggleSelectOne(c.id)} aria-label={`Select ${c.id}`} />
-                        </td>
+                        <th className="px-3 py-4 text-center align-middle text-sm font-semibold w-10">
+                          <Checkbox
+                            checked={allSelected}
+                            onCheckedChange={toggleSelectAll}
+                            aria-label="Select all"
+                            {...(someSelected ? { 'data-state': 'indeterminate' } : {})}
+                          />
+                        </th>
                       )}
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        <span className="font-mono font-bold text-primary hover:underline cursor-pointer text-sm">{c.id}</span>
-                      </td>
-                      <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground whitespace-normal">{c.organisation}</td>
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        <span className={c.isOwn ? 'text-role-reviewer font-medium text-sm' : 'text-muted-foreground text-sm'}>{c.officer}</span>
-                      </td>
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        <div className="flex justify-center">
-                          <Badge variant="outline" className={`${getSeverityColor(c.severity)} text-[11px]`}>{c.severity}</Badge>
-                        </div>
-                      </td>
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        <div className="flex justify-center">
-                          <Badge variant="outline" className={`${getStatusColor(c.status)} text-[11px]`}>{c.status}</Badge>
-                        </div>
-                      </td>
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        {renderEscalatedTo(c.escalations)}
-                      </td>
-                      <td className="px-3 py-4 text-center align-middle text-sm">
-                        {renderAgencyProgress(c.escalations)}
-                      </td>
-                      <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.lastUpdated}</td>
-                      <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.submitted}</td>
-                      {!exportMode && (
-                        <td className="px-3 py-4 text-center align-middle text-sm" onClick={(e) => e.stopPropagation()}>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Reference</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[180px] text-foreground">Organisation</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Assigned Officer</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[120px] text-foreground">Severity</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Internal Status</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[150px] text-foreground">Escalated To</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Agency Progress</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[160px] text-foreground">Last Updated</th>
+                      <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[140px] text-foreground">Submitted</th>
+                      {!exportMode && <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[50px] text-foreground"></th>}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {filtered.map((c) => (
+                      <tr
+                        key={c.id}
+                        className="border-b hover:bg-muted/30 transition-colors cursor-pointer"
+                        onClick={() => {
+                          if (exportMode) toggleSelectOne(c.id);
+                          else navigate(`/case-officer/cases/${c.id}`);
+                        }}
+                      >
+                        {exportMode && (
+                          <td className="px-3 py-4 text-center align-middle" onClick={(e) => e.stopPropagation()}>
+                            <Checkbox checked={selectedIds.has(c.id)} onCheckedChange={() => toggleSelectOne(c.id)} aria-label={`Select ${c.id}`} />
+                          </td>
+                        )}
+                        <td className="px-3 py-4 text-center align-middle text-sm">
+                          <span className="font-mono font-bold text-primary hover:underline cursor-pointer text-sm">{c.id}</span>
+                        </td>
+                        <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground whitespace-normal">{c.organisation}</td>
+                        <td className="px-3 py-4 text-center align-middle text-sm">
+                          <span className={c.isOwn ? 'text-role-reviewer font-medium text-sm' : 'text-muted-foreground text-sm'}>{c.officer}</span>
+                        </td>
+                        <td className="px-3 py-4 text-center align-middle text-sm">
                           <div className="flex justify-center">
-                            <Button size="sm" variant="ghost" onClick={() => navigate(`/case-officer/cases/${c.id}`)}>
-                              <Eye className="h-4 w-4" />
-                            </Button>
+                            <Badge variant="outline" className={`${getSeverityColor(c.severity)} text-[11px]`}>{c.severity}</Badge>
                           </div>
                         </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <td className="px-3 py-4 text-center align-middle text-sm">
+                          <div className="flex justify-center">
+                            <Badge variant="outline" className={`${getStatusColor(c.status)} text-[11px]`}>{c.status}</Badge>
+                          </div>
+                        </td>
+                        <td className="px-3 py-4 text-center align-middle text-sm">
+                          {renderEscalatedTo(c.escalations, c.id)}
+                        </td>
+                        <td className="px-3 py-4 text-center align-middle text-sm">
+                          {renderAgencyProgress(c.escalations)}
+                        </td>
+                        <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.lastUpdated}</td>
+                        <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{c.submitted}</td>
+                        {!exportMode && (
+                          <td className="px-3 py-4 text-center align-middle text-sm" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-center">
+                              <Button size="sm" variant="outline" className={!c.isOwn ? "border-blue-200 text-[#044cd0] hover:bg-blue-50 px-3" : ""} onClick={() => navigate(`/case-officer/cases/${c.id}`)}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                {c.isOwn ? 'Review' : 'Peer Review'}
+                              </Button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Scroll Hint Shadow */}
+              <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
             </div>
-            {/* Scroll Hint Shadow */}
-            <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Tabs>
 
       {/* Advanced Filter Drawer */}
       <AdvancedFilterDrawer

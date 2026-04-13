@@ -10,8 +10,8 @@ import AdvancedFilterDrawer, {
 } from '@/components/shared/AdvancedFilterDrawer';
 
 const pendingTasks = [
-  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', officer: 'Ahmad Razif', severity: 'Critical', days: 2, status: 'Escalation Pending' },
-  { id: 'PSIRP-2025-0052', title: 'Dangerous goods interception', officer: 'Nurul Hana', severity: 'High', days: 1, status: 'Escalation Pending' },
+  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', officer: 'Ahmad Razif', severity: 'Critical', days: 2, status: 'Transfer Pending' },
+  { id: 'PSIRP-2025-0052', title: 'Dangerous goods interception', officer: 'Nurul Hana', severity: 'High', days: 1, status: 'Recommendation for Closure' },
   { id: 'PSIRP-2025-0060', title: 'Cross-border contraband attempt', officer: 'Farah Amin', severity: 'Critical', days: 1, status: 'Escalation Pending' },
 ];
 
@@ -74,13 +74,13 @@ export default function SupervisorPendingTasks() {
               </thead>
               <tbody className="divide-y divide-border">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="hover:bg-muted/30 cursor-pointer transition-colors border-b" onClick={() => navigate(`/supervisor/escalations/${c.id}`)}>
+                  <tr key={c.id} className="hover:bg-muted/30 cursor-pointer transition-colors border-b" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>
                     <td className="px-3 py-4 text-center align-middle font-mono font-bold text-primary">{c.id}</td>
                     <td className="px-3 py-4 text-center align-middle text-muted-foreground truncate max-w-[200px]">{c.title}</td>
                     <td className="px-3 py-4 text-center align-middle"><div className="flex justify-center"><Badge variant="outline" className={c.severity === 'Critical' ? 'border-destructive/50 text-destructive bg-destructive/5' : 'border-status-in-review/50 text-status-in-review bg-status-in-review/5'}>{c.severity}</Badge></div></td>
                     <td className="px-3 py-4 text-center align-middle text-muted-foreground">{c.officer}</td>
                     <td className="px-3 py-4 text-center align-middle"><div className="flex justify-center flex-col items-center"><Clock className="h-3 w-3 text-muted-foreground" /><span className="text-[10px] text-muted-foreground">{c.days}d ago</span></div></td>
-                    <td className="px-3 py-4 text-center align-middle"><Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); navigate(`/supervisor/escalations/${c.id}`); }}><Eye className="h-4 w-4 mr-2" /> Endorse</Button></td>
+                    <td className="px-3 py-4 text-center align-middle"><Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); navigate(`/supervisor/cases/${c.id}`); }}><Eye className="h-4 w-4 mr-2" /> Review Action</Button></td>
                   </tr>
                 ))}
               </tbody>

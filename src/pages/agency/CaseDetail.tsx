@@ -178,16 +178,18 @@ export default function LEACaseDetail() {
           <TabsTrigger value="investigation" className="px-6 h-full font-medium transition-all">Case Update</TabsTrigger>
           <TabsTrigger value="clarification" className="px-6 h-full font-medium transition-all flex items-center gap-2">
             Clarification
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
-            </span>
+            <div className="relative flex items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-40"></span>
+              <Badge className="relative h-5 min-w-[20px] px-1.5 border-0 rounded-full bg-destructive flex items-center justify-center text-[10px] font-bold text-destructive-foreground">
+                2
+              </Badge>
+            </div>
           </TabsTrigger>
           <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details">
-          <CaseDetailsView incident={incident} />
+          <CaseDetailsView incident={incident} hideEscalation />
         </TabsContent>
 
         <TabsContent value="investigation">

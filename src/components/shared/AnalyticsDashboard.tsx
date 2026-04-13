@@ -130,9 +130,9 @@ const TREND_DATA = [
 
 const AGENCY_DATA = [
   { name: 'PDRM', count: 42 },
-  { name: 'K-KOM', count: 35 },
-  { name: 'KKM', count: 28 },
-  { name: 'JKDM', count: 24 },
+  { name: 'KKM ( Pharmacy )', count: 35 },
+  { name:  'KKM ( Pharmacy )', count: 28 },
+  { name: 'CUSTOMS', count: 24 },
   { name: 'KPDN', count: 18 },
   { name: 'KDN', count: 15 },
   { name: 'MOT', count: 12 },
