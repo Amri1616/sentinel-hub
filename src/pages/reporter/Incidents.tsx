@@ -33,7 +33,7 @@ const incidents = [
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'MOT', status: 'Under Investigation' },
-      { name: 'JKDM', status: 'Evidence Seized' }
+      { name: 'CUSTOMS', status: 'Evidence Seized' }
     ] 
   },
   { id: 'PSIRP-2025-0019', title: 'Dangerous Goods Mishandling', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Dangerous Goods', status: 'Closed', submitted: '2025-01-10', lastUpdated: '1 day ago', severity: 'High', 
@@ -89,8 +89,7 @@ export default function ReporterIncidents() {
     // Agency Filter
     if (advFilters.agencies.length > 0) {
       const caseAgencies = i.escalations.map(e => e.name);
-      const normalizedCaseAgencies = caseAgencies.map(a => a === 'JKDM' ? 'KASTAM' : a);
-      const hasMatch = advFilters.agencies.some(a => normalizedCaseAgencies.includes(a));
+      const hasMatch = advFilters.agencies.some(a => caseAgencies.includes(a));
       if (!hasMatch) return false;
     }
 
@@ -115,19 +114,35 @@ export default function ReporterIncidents() {
     setExportMode(false); setSelectedIds(new Set());
   };
 
-  const renderEscalatedTo = (escalations: Escalation[]) => {
+  const renderEscalatedTo = (escalations: Escalation[], incidentId: string) => {
     if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
+    const detailUrl = `/licensee-reporter/incidents/${incidentId}#escalation-status`;
     const display = escalations.slice(0, 2);
     const remaining = escalations.length - 2;
     const content = (
       <div className={`flex flex-wrap justify-center gap-1 ${escalations.length > 2 ? 'cursor-help' : ''}`}>
         {display.map((e, idx) => (
-          <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            key={idx} 
+            variant="secondary" 
+            className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             {e.name}
           </Badge>
         ))}
         {remaining > 0 && (
-          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            variant="secondary" 
+            className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:bg-primary/10 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             +{remaining} more
           </Badge>
         )}
@@ -347,7 +362,7 @@ export default function ReporterIncidents() {
                         </div>
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
-                        {renderEscalatedTo(incident.escalations)}
+                        {renderEscalatedTo(incident.escalations, incident.id)}
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
                         {renderAgencyProgress(incident.escalations)}

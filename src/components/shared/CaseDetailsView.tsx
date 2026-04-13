@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { differenceInDays, parseISO, isValid } from 'date-fns';
 import { AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import BasicCaseInfo from '@/components/reporter/incident-details/BasicCaseInfo';
 import IncidentClassification from '@/components/reporter/incident-details/IncidentClassification';
 import IncidentDescription from '@/components/reporter/incident-details/IncidentDescription';
@@ -110,9 +113,41 @@ export function getSeverityColor(severity: string) {
 interface Props {
   incident: CaseData;
   children?: React.ReactNode;
+  hideEscalation?: boolean;
 }
 
-export default function CaseDetailsView({ incident, children }: Props) {
+const leaFullNames: Record<string, string> = {
+  'AKPS': 'Agensi Kawalan dan Perlindungan Sempadan Malaysia',
+  'ATOM MALAYSIA': 'Jabatan Tenaga Atom',
+  'BPFKKM': 'Bahagian Perkhidmatan Farmasi, Kementerian Kesihatan Malaysia',
+  'CSM': 'SiberSekuriti Malaysia (CyberSecurity Malaysia)',
+  'CUSTOMS': 'Jabatan Kastam Diraja Malaysia (JKDM)',
+  'KDN': 'Kementerian Dalam Negeri',
+  'MCMC': 'Suruhanjaya Komunikasi dan Multimedia Malaysia (SKMM)',
+  'MOT': 'Kementerian Pengangkutan Malaysia',
+  'NACSA': 'Agensi Keselamatan Siber Negara',
+  'NRES': 'Kementerian Sumber Asli dan Kelestarian Alam',
+  'PDRM': 'Polis Diraja Malaysia',
+  'PERHILITAN': 'Jabatan Perlindungan Hidupan Liar dan Taman Negara Semenanjung Malaysia',
+};
+
+export default function CaseDetailsView({ incident, hideEscalation, children }: Props) {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash === '#escalation-status') {
+      const element = document.getElementById('escalation-status');
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.classList.add('ring-2', 'ring-destructive/50', 'ring-offset-2');
+          setTimeout(() => {
+            element.classList.remove('ring-2', 'ring-destructive/50', 'ring-offset-2');
+          }, 3000);
+        }, 300);
+      }
+    }
+  }, [hash]);
   // Timeline Validation Logic
   const calculateTimeline = () => {
     if (!incident.incidentDate) return null;
@@ -151,8 +186,8 @@ export default function CaseDetailsView({ incident, children }: Props) {
       <LogisticsData incident={incident} />
 
       {/* NEW: Multi-Agency Escalation Tracking */}
-      {incident.escalations && incident.escalations.length > 0 && (
-        <Card className="border-destructive/20 bg-destructive/5 overflow-hidden shadow-sm">
+      {!hideEscalation && incident.escalations && incident.escalations.length > 0 && (
+        <Card id="escalation-status" className="border-destructive/20 bg-destructive/5 overflow-hidden shadow-sm">
           <CardHeader className="bg-destructive/10 py-3 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-destructive">
               <ArrowUpRight className="h-4 w-4" />
@@ -176,7 +211,20 @@ export default function CaseDetailsView({ incident, children }: Props) {
                 <tbody className="divide-y divide-border/50 bg-white/50">
                   {incident.escalations.map((esc, idx) => (
                     <tr key={idx} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3 font-bold text-foreground">{esc.agency}</td>
+                      <td className="px-4 py-3 font-bold text-foreground">
+                        <TooltipProvider delayDuration={200}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="cursor-help decoration-muted-foreground/30 underline decoration-dotted underline-offset-4">
+                                {esc.agency}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              <p className="font-medium text-sm">{leaFullNames[esc.agency] || esc.agency}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </td>
                       <td className="px-4 py-3 text-center">
                         <Badge variant="outline" className={cn(
                           "px-2 py-0.5 text-[10px] font-medium rounded-full",

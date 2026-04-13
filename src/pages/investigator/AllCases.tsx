@@ -34,23 +34,23 @@ const casesData = [
   {
     id: 'PSIRP-2025-0055', title: 'Internal Theft — Sorting Facility', org: 'Global Express Logistics', reporter: 'Ahmad Zulkifli', officer: 'Ahmad Razif', severity: 'Medium', status: 'Closed', submitted: '2025-06-05', lastUpdated: '2025-06-09',
     escalations: [
-      { name: 'KKM', status: 'Closed' }
+      { name:  'KKM ( Pharmacy )', status: 'Closed' }
     ]
   },
   {
     id: 'PSIRP-2025-0052', title: 'Parcel Diversion Scheme', org: 'J&T Express', reporter: 'Tan Mei Ling', officer: 'Nurul Hana', severity: 'High', status: 'Escalated', submitted: '2025-06-03', lastUpdated: '2025-06-10',
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
-      { name: 'JKDM', status: 'Under Investigation' }
+      { name: 'CUSTOMS', status: 'Under Investigation' }
     ]
   },
   { id: 'PSIRP-2025-0049', title: 'Package Tampering Complaint', org: 'CityLink', reporter: 'Kumar Raj', officer: 'Ahmad Razif', severity: 'Low', status: 'Closed', submitted: '2025-06-01', lastUpdated: '2025-06-06', escalations: [] },
   {
     id: 'PSIRP-2025-0045', title: 'Suspicious Cross-Border Shipment', org: 'DHL eCommerce', reporter: 'Wong Kai Wen', officer: 'Farah Amin', severity: 'Critical', status: 'Escalated', submitted: '2025-05-28', lastUpdated: '2025-06-05',
     escalations: [
-      { name: 'JKDM', status: 'Under Investigation' },
+      { name: 'CUSTOMS', status: 'Under Investigation' },
       { name: 'KDN', status: 'Evidence Seized' },
-      { name: 'MKN', status: 'Under Investigation' }
+      { name: 'NACSA', status: 'Under Investigation' }
     ]
   },
   { id: 'PSIRP-2025-0039', title: 'Missing Registered Mail', org: 'Pos Malaysia', reporter: 'Nurul Izzah', officer: 'Lee Wei', severity: 'Medium', status: 'Closed', submitted: '2025-05-25', lastUpdated: '2025-05-30', escalations: [] },
@@ -93,8 +93,7 @@ export default function InvestigatorAllCases() {
     // Agency Filter
     if (advFilters.agencies.length > 0) {
       const caseAgencies = c.escalations.map(e => e.name);
-      const normalizedCaseAgencies = caseAgencies.map(a => a === 'JKDM' ? 'KASTAM' : a);
-      const hasMatch = advFilters.agencies.some(a => normalizedCaseAgencies.includes(a));
+      const hasMatch = advFilters.agencies.some(a => caseAgencies.includes(a));
       if (!hasMatch) return false;
     }
 
@@ -119,19 +118,35 @@ export default function InvestigatorAllCases() {
     setExportMode(false); setSelectedIds(new Set());
   };
 
-  const renderEscalatedTo = (escalations: Escalation[]) => {
+  const renderEscalatedTo = (escalations: Escalation[], caseId: string) => {
     if (escalations.length === 0) return <span className="text-muted-foreground text-xs italic">Not Escalated</span>;
+    const detailUrl = `/internal/cases/${caseId}#escalation-status`;
     const display = escalations.slice(0, 2);
     const remaining = escalations.length - 2;
     const content = (
       <div className={`flex flex-wrap justify-center gap-1 ${escalations.length > 2 ? 'cursor-help' : ''}`}>
         {display.map((e, idx) => (
-          <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            key={idx} 
+            variant="secondary" 
+            className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             {e.name}
           </Badge>
         ))}
         {remaining > 0 && (
-          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+          <Badge 
+            variant="secondary" 
+            className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold cursor-pointer hover:bg-primary/10 transition-all"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              navigate(detailUrl);
+            }}
+          >
             +{remaining} more
           </Badge>
         )}
@@ -338,7 +353,7 @@ export default function InvestigatorAllCases() {
                         </div>
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
-                        {renderEscalatedTo(c.escalations)}
+                        {renderEscalatedTo(c.escalations, c.id)}
                       </td>
                       <td className="px-3 py-4 text-center align-middle text-sm">
                         {renderAgencyProgress(c.escalations)}

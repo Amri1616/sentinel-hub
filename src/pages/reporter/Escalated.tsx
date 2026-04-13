@@ -22,7 +22,7 @@ const incidents = [
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' },
       { name: 'MOT', status: 'Under Investigation' },
-      { name: 'JKDM', status: 'Evidence Seized' }
+      { name: 'CUSTOMS', status: 'Evidence Seized' }
     ]
   },
   { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', category: 'Theft', status: 'Escalated', submitted: '2025-01-15', lastUpdated: '2 hours ago', severity: 'High',

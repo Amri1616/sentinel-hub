@@ -5,8 +5,9 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '@/lib/auth';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, User, ShieldCheck, Users, Search, Eye, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 
 import mcmcLogo from '@/assets/mcmc-logo.png';
 
@@ -15,6 +16,24 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const demoUsers = [
+    { label: 'Licensee Admin', email: 'ladmin@testing.com', password: '12345', icon: Building2 },
+    { label: 'Licensee Reporter', email: 'lreporter@testing.com', password: '12345', icon: User },
+    { label: 'MCMC Case Officer', email: 'cofficer@mcmc.gov.my', password: '12345', icon: Search },
+    { label: 'MCMC Supervisor', email: 'msupervisor@mcmc.gov.my', password: '12345', icon: ShieldCheck },
+    { label: 'MCMC Internal', email: 'minternal@mcmc.gov.my', password: '12345', icon: Eye },
+    { label: 'Agency (LEA)', email: 'agency@lea.gov.my', password: '12345', icon: Users },
+  ];
+
+  const handleDemoClick = (email: string, pass: string, label: string) => {
+    setEmail(email);
+    setPassword(pass);
+    toast.info(`Form populated for ${label}`, {
+      description: "Click login to continue",
+      duration: 2000,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,6 +123,41 @@ export default function Login() {
                 </button>
               </div>
             </form>
+
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  Demo Accounts
+                </h3>
+                <Badge variant="outline" className="text-[10px] font-medium border-blue-100 text-[#044cd0] bg-blue-50/50">
+                  Quick Access
+                </Badge>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {demoUsers.map((user) => (
+                  <Button
+                    key={user.email}
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDemoClick(user.email, user.password, user.label)}
+                    className="h-auto py-2 px-3 justify-start items-center text-left hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all group"
+                  >
+                    <div className="mr-2.5 p-1.5 rounded-md bg-gray-100 group-hover:bg-[#044cd0]/10 group-hover:text-[#044cd0] transition-colors">
+                      <user.icon className="h-3.5 w-3.5" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-[11px] font-semibold text-gray-700 truncate">
+                        {user.label}
+                      </span>
+                      <span className="text-[9px] text-gray-400 truncate">
+                        {user.email}
+                      </span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

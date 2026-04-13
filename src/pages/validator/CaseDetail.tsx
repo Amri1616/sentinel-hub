@@ -4,16 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, CheckCircle2, Copy, Mail, MessageSquare, Share2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Copy, Mail, MessageSquare, Share2, Users, XCircle, CheckCircle, RotateCcw, FileCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
 import { fallbackIncident } from '@/lib/mock-data';
 import CaseHeader from '@/components/shared/CaseHeader';
+import { cn } from '@/lib/utils';
 
 const timelineEvents: TimelineEvent[] = [
   { event: 'Incident submitted by Licensee Reporter', actor: 'System', time: '2025-06-09 09:15', type: 'submission' },
@@ -37,8 +39,17 @@ export default function CaseDetail() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [decisionComment, setDecisionComment] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const incident = fallbackIncident(id || 'PSIRP-2025-0042');
+
+  // Simulation Logic: Inject status based on ID for demonstration
+  if (id === 'PSIRP-2025-0045') {
+    incident.status = 'Transfer Pending';
+  } else if (id === 'PSIRP-2025-0052') {
+    incident.status = 'Recommendation for Closure';
+  }
 
   const caseUrl = `https://portal.mcmc.gov.my/cases/${incident.id}`;
 
@@ -145,16 +156,131 @@ export default function CaseDetail() {
         }
       />
 
+      {/* SUPERVISOR DECISION CENTER */}
+      {['Recommendation for Closure', 'Transfer Pending'].includes(incident.status) && (
+        <Card className={cn(
+          "border-2 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 shadow-lg mt-6",
+          incident.status === 'Transfer Pending' ? "border-indigo-400 bg-indigo-50/30" : "border-emerald-400 bg-emerald-50/30"
+        )}>
+          <CardHeader className={cn(
+            "p-4 border-b",
+            incident.status === 'Transfer Pending' ? "bg-indigo-100/50" : "bg-emerald-100/50"
+          )}>
+            <CardTitle className="text-base flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {incident.status === 'Transfer Pending' ? <Users className="h-5 w-5 text-indigo-600" /> : <FileCheck className="h-5 w-5 text-emerald-600" />}
+                <span className={incident.status === 'Transfer Pending' ? "text-indigo-800" : "text-emerald-800"}>
+                  {incident.status === 'Transfer Pending' ? "Pending Case Transfer Approval" : "Case Closure Review Required"}
+                </span>
+              </div>
+              <Badge variant="outline" className={incident.status === 'Transfer Pending' ? "bg-indigo-600 text-white border-indigo-700" : "bg-emerald-600 text-white border-emerald-700"}>Urgent Action</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Request Details</h4>
+                  <div className="bg-white/60 p-4 rounded-lg border border-border/50 space-y-3">
+                    {incident.status === 'Transfer Pending' ? (
+                      <>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Original Officer:</span>
+                          <span className="font-semibold text-foreground">Ahmad Razif</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Target Officer:</span>
+                          <span className="font-bold text-indigo-700 select-none">Hanis Zakaria (CO-2024-008)</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Requested By:</span>
+                          <span className="font-semibold text-foreground">Ahmad Razif</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Original Status:</span>
+                          <span className="font-semibold text-foreground">Under Review</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Justification from Case Officer</h4>
+                  <div className="p-4 rounded-lg bg-white/80 border border-border italic text-sm text-foreground/80 leading-relaxed shadow-sm">
+                    {incident.status === 'Transfer Pending' 
+                      ? "Requesting transfer due to current high workload with 15 active critical cases. Hanis Zakaria has relevant expertise in sorting automation patterns identified in this case."
+                      : "Investigation completed. All necessary evidence gathered. No further criminal action recommended. Case aligns with MCMC Closure Guidelines Section 4.2."
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" /> 
+                    Supervisor Feedback / Final Instructions
+                  </Label>
+                  <Textarea 
+                    placeholder="Enter your comments here..." 
+                    className="min-h-[120px] bg-white border-border/60 focus-visible:ring-indigo-400"
+                    value={decisionComment}
+                    onChange={(e) => setDecisionComment(e.target.value)}
+                  />
+                  <p className="text-[11px] text-muted-foreground italic">Required if rejecting the request.</p>
+                </div>
+                <div className="flex gap-3">
+                  <Button 
+                    className={cn(
+                      "flex-1 font-bold h-11 transition-all",
+                      incident.status === 'Transfer Pending' ? "bg-indigo-600 hover:bg-indigo-700 glow-indigo" : "bg-emerald-600 hover:bg-emerald-700 glow-emerald"
+                    )}
+                    onClick={() => {
+                      setIsProcessing(true);
+                      setTimeout(() => {
+                        toast({ title: 'Request Approved', description: `Task completed successfully. Case updated.` });
+                        navigate('/supervisor/escalations');
+                      }, 1000);
+                    }}
+                  >
+                    <CheckCircle className="mr-2 h-4 w-4" /> Approve {incident.status === 'Transfer Pending' ? 'Transfer' : 'Closure'}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 font-bold h-11 text-destructive border-destructive/30 hover:bg-destructive/5"
+                    disabled={!decisionComment.trim()}
+                    onClick={() => {
+                      setIsProcessing(true);
+                      setTimeout(() => {
+                        toast({ title: 'Request Rejected', description: `Case returned to Case Officer with feedback.`, variant: 'destructive' });
+                        navigate('/supervisor/escalations');
+                      }, 1000);
+                    }}
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" /> Reject & Return
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Tabs defaultValue="details" className="space-y-6">
         <TabsList className="bg-muted/50 p-1 h-12 border border-border/40">
           <TabsTrigger value="details" className="px-6 h-full font-medium transition-all">Case Details</TabsTrigger>
           <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Officer Assessment</TabsTrigger>
           <TabsTrigger value="rfis" className="px-6 h-full font-medium transition-all flex items-center gap-2">
             Clarification
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
-            </span>
+            <div className="relative flex items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-40"></span>
+              <Badge className="relative h-5 min-w-[20px] px-1.5 border-0 rounded-full bg-destructive flex items-center justify-center text-[10px] font-bold text-destructive-foreground">
+                2
+              </Badge>
+            </div>
           </TabsTrigger>
           <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
           <TabsTrigger value="escalation" className="px-6 h-full font-medium transition-all">Escalation Info</TabsTrigger>

@@ -4,17 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CheckCircle, XCircle, Eye, AlertTriangle } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const pendingEscalations = [
-  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', officer: 'Ahmad Razif', severity: 'Critical', lea: 'PDRM – Commercial Crime', submitted: '2025-06-10', days: 2 },
-  { id: 'PSIRP-2025-0052', title: 'Dangerous goods interception', officer: 'Nurul Hana', severity: 'High', lea: 'PDRM – Narcotics', submitted: '2025-06-10', days: 1 },
-  { id: 'PSIRP-2025-0058', title: 'Suspicious parcel pattern', officer: 'Lee Wei', severity: 'High', lea: 'PDRM – Intelligence', submitted: '2025-06-08', days: 3 },
-  { id: 'PSIRP-2025-0060', title: 'Cross-border contraband attempt', officer: 'Farah Amin', severity: 'Critical', lea: 'Royal Malaysian Customs', submitted: '2025-06-10', days: 1 },
-  { id: 'PSIRP-2025-0063', title: 'Tampering at sorting centre', officer: 'Raj Kumar', severity: 'Medium', lea: 'PDRM – Commercial Crime', submitted: '2025-06-09', days: 4 },
+  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', officer: 'Ahmad Razif', severity: 'Critical', lea: ['PDRM'], submitted: '2025-06-10', days: 2 },
+  { id: 'PSIRP-2025-0052', title: 'Dangerous goods interception', officer: 'Nurul Hana', severity: 'High', lea: ['PDRM', 'NACSA'], submitted: '2025-06-10', days: 1 },
+  { id: 'PSIRP-2025-0058', title: 'Suspicious parcel pattern', officer: 'Lee Wei', severity: 'High', lea: ['PDRM'], submitted: '2025-06-08', days: 3 },
+  { id: 'PSIRP-2025-0060', title: 'Cross-border contraband attempt', officer: 'Farah Amin', severity: 'Critical', lea: ['CUSTOMS', 'MCMC', 'CSM'], submitted: '2025-06-10', days: 1 },
+  { id: 'PSIRP-2025-0063', title: 'Tampering at sorting centre', officer: 'Raj Kumar', severity: 'Medium', lea: ['PDRM'], submitted: '2025-06-09', days: 4 },
 ];
 
 export default function EscalationQueue() {
@@ -46,7 +45,7 @@ export default function EscalationQueue() {
               {[
                 ['Requesting Officer', esc.officer],
                 ['Submitted', esc.submitted],
-                ['Selected LEA', esc.lea],
+                ['Selected LEA', esc.lea.join(', ')],
                 ['Severity', esc.severity],
               ].map(([l, v]) => (
                 <div key={l}><p className="text-xs text-muted-foreground">{l}</p><p className="text-sm">{v}</p></div>
@@ -124,42 +123,67 @@ export default function EscalationQueue() {
         </Badge>
       </div>
 
-      <Card>
+      <Card className="w-full overflow-hidden border">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Reference</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Officer</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Target LEA</TableHead>
-                <TableHead>Submitted</TableHead>
-                <TableHead>Age (days)</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pendingEscalations.map((esc) => (
-                <TableRow key={esc.id}>
-                  <TableCell className="font-medium">{esc.id}</TableCell>
-                  <TableCell>{esc.title}</TableCell>
-                  <TableCell>{esc.officer}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={esc.severity === 'Critical' ? 'border-destructive/50 text-destructive' : 'border-status-in-review/50 text-status-in-review'}>
-                      {esc.severity}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{esc.lea}</TableCell>
-                  <TableCell className="text-muted-foreground">{esc.submitted}</TableCell>
-                  <TableCell>{esc.days}</TableCell>
-                  <TableCell>
-                    <Button size="sm" variant="outline" onClick={() => navigate(`/supervisor/escalations/${esc.id}`)}>Review</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="relative group w-full overflow-hidden">
+            <div className="overflow-x-auto w-full">
+              <table className="table-auto w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Reference</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[200px]">Incident Title</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Officer</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[120px]">Severity</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[150px]">Target LEA</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[140px]">Submitted</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground min-w-[100px]">Age (days)</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold min-w-[100px] text-foreground"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {pendingEscalations.map((esc) => (
+                    <tr 
+                      key={esc.id} 
+                      className="border-b hover:bg-muted/30 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/supervisor/escalations/${esc.id}`)}
+                    >
+                      <td className="px-3 py-4 text-center align-middle text-sm font-mono font-bold text-primary">{esc.id}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm whitespace-normal font-medium">{esc.title}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">{esc.officer}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex justify-center">
+                          <Badge variant="outline" className={esc.severity === 'Critical' ? 'border-destructive/50 text-destructive' : 'border-status-in-review/50 text-status-in-review'}>
+                            {esc.severity}
+                          </Badge>
+                        </div>
+                      </td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {esc.lea.slice(0, 2).map((l, idx) => (
+                            <Badge key={idx} variant="secondary" className="bg-slate-100 text-slate-700 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold uppercase whitespace-nowrap">
+                              {l}
+                            </Badge>
+                          ))}
+                          {esc.lea.length > 2 && (
+                            <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+                              +{esc.lea.length - 2} more
+                            </Badge>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{esc.submitted}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">{esc.days}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">
+                        <Button size="sm" variant="ghost" className="h-8">Review</Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Scroll Hint Shadow */}
+            <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-r" />
+          </div>
         </CardContent>
       </Card>
     </div>

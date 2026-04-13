@@ -13,10 +13,10 @@ import AdvancedFilterDrawer, {
 
 const cases = [
   { id: 'ESC-2025-001', title: 'High-Value Package Theft Ring', reporter: 'Ali Hassan', escalationDate: '2025-06-10', org: 'Global Express Logistics', severity: 'High', status: 'Under Investigation', agency: 'PDRM' },
-  { id: 'ESC-2025-002', title: 'Contraband Interception - Narcotics', reporter: 'Siti Aisyah', escalationDate: '2025-06-12', org: 'Pos Malaysia', severity: 'Critical', status: 'Evidence Seized', agency: 'JKDM' },
+  { id: 'ESC-2025-002', title: 'Contraband Interception - Narcotics', reporter: 'Siti Aisyah', escalationDate: '2025-06-12', org: 'Pos Malaysia', severity: 'Critical', status: 'Evidence Seized', agency: 'CUSTOMS' },
   { id: 'ESC-2025-003', title: 'Organized Parcel Tampering', reporter: 'Lim Wei Jie', escalationDate: '2025-06-13', org: 'J&T Express', severity: 'High', status: 'Pending Further Information', agency: 'PDRM' },
   { id: 'ESC-2025-004', title: 'Repeated Warehouse Intrusions', reporter: 'Ahmad Zulkifli', escalationDate: '2025-06-14', org: 'Pos Malaysia', severity: 'High', status: 'Pending Further Information', agency: 'PDRM' },
-  { id: 'ESC-2025-005', title: 'Large Scale Delivery Fraud', reporter: 'Tan Mei Ling', escalationDate: '2025-06-15', org: 'J&T Express', severity: 'Critical', status: 'Under Investigation', agency: 'JKDM' },
+  { id: 'ESC-2025-005', title: 'Large Scale Delivery Fraud', reporter: 'Tan Mei Ling', escalationDate: '2025-06-15', org: 'J&T Express', severity: 'Critical', status: 'Under Investigation', agency: 'CUSTOMS' },
   { id: 'ESC-2025-006', title: 'Stolen Goods Resell Syndicate', reporter: 'Kumar Raj', escalationDate: '2025-05-20', org: 'CityLink', severity: 'Medium', status: 'Case Referred for Prosecution', agency: 'PDRM' },
   { id: 'ESC-2025-007', title: 'Suspicious Document Forgery', reporter: 'Wong Kai Wen', escalationDate: '2025-05-15', org: 'DHL eCommerce', severity: 'High', status: 'No Further Action', agency: 'KDN' },
   { id: 'ESC-2025-008', title: 'Inside Job - Delivery Driver Theft', reporter: 'Nurul Izzah', escalationDate: '2025-05-10', org: 'Global Express Logistics', severity: 'Medium', status: 'Case Referred for Prosecution', agency: 'PDRM' },
@@ -59,7 +59,7 @@ export default function LEACaseList() {
     // Note: Agency filter is hidden in UI for LEA, so advFilters.agencies will normally be empty.
     // However, keeping the logic here for internal consistency.
     if (advFilters.agencies.length > 0) {
-        const normalizedCaseAgency = c.agency === 'JKDM' ? 'KASTAM' : c.agency;
+        const normalizedCaseAgency = c.agency === 'CUSTOMS' ? 'CUSTOMS' : c.agency;
         if (!advFilters.agencies.includes(normalizedCaseAgency)) return false;
     }
 
