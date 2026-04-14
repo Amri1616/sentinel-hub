@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import {
   ArrowLeft, ShieldAlert, Send, ArrowUpRight, CheckCircle2, StickyNote, User,
-  MessageSquare, Mail, Copy, Share2, Users,
+  MessageSquare, Mail, Copy, Share2, Users, ChevronRight,
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -20,7 +20,6 @@ import CaseClarificationThread, { type ClarificationMessage } from '@/components
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
 import { fallbackIncident } from '@/lib/mock-data';
 import CaseHeader from '@/components/shared/CaseHeader';
-import { cn } from '@/lib/utils';
 
 export default function CaseReview() {
   const navigate = useNavigate();
@@ -107,6 +106,7 @@ export default function CaseReview() {
 
   const handleSaveAssessment = () => {
     toast({ title: 'Assessment Saved', description: 'Findings have been recorded.' });
+    navigate('/case-officer/all-cases');
   };
 
   return (
@@ -191,7 +191,8 @@ export default function CaseReview() {
             </div>
           </TabsTrigger>
           <TabsTrigger value="timeline" className="px-6 h-full font-medium transition-all">Timeline</TabsTrigger>
-          <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Assessment & Actions</TabsTrigger>
+          <TabsTrigger value="assessment" className="px-6 h-full font-medium transition-all">Assessment</TabsTrigger>
+          <TabsTrigger value="actions" className="px-6 h-full font-medium transition-all">Actions</TabsTrigger>
         </TabsList>
 
         {/* Tab 1: Case Details */}
@@ -199,193 +200,11 @@ export default function CaseReview() {
           <CaseDetailsView incident={incident} />
         </TabsContent>
 
-        {/* Tab 2: Assessment & Actions */}
+        {/* Tab 4: Assessment */}
         <TabsContent value="assessment">
           <div className="space-y-6">
             {!isPeerReview ? (
               <>
-                {/* Case Actions */}
-                <Card>
-                  <CardHeader><CardTitle className="text-sm">Case Actions</CardTitle></CardHeader>
-                  <CardContent className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start" onClick={() => handleUpdateStatus('Under Review')}>
-                      <CheckCircle2 className="mr-2 h-4 w-4 text-status-submitted" />Under Review
-                    </Button>
-
-                    {/* Case Closure — severity-based logic */}
-                    {(incident.severity === 'Low' || incident.severity === 'Medium') ? (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" className="w-full justify-start">
-                            <CheckCircle2 className="mr-2 h-4 w-4 text-status-closed" />Close Case
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader><DialogTitle>Close Case – {incident.id}</DialogTitle></DialogHeader>
-                          <p className="text-sm text-muted-foreground">As a Case Officer, you can close Low/Medium severity cases directly.</p>
-                          <div className="space-y-3">
-                            <div className="space-y-2">
-                              <Label>Closure Summary *</Label>
-                              <Textarea value={clarificationMessage} onChange={(e) => setClarificationMessage(e.target.value)} placeholder="Provide closure summary..." rows={4} />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <Button onClick={() => { toast({ title: 'Case Closed', description: `${incident.id} has been closed.` }); setClarificationMessage(''); }} disabled={!clarificationMessage.trim()}>
-                              <CheckCircle2 className="mr-2 h-4 w-4" />Confirm Closure
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" className="w-full justify-start">
-                            <CheckCircle2 className="mr-2 h-4 w-4 text-status-closed" />Request Closure Approval
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader><DialogTitle>Request Case Closure</DialogTitle></DialogHeader>
-                          <p className="text-sm text-muted-foreground">This request will be routed to the MCMC Supervisor for final approval.</p>
-                          <div className="space-y-3">
-                            <div className="space-y-2">
-                              <Label>Justification for Closure *</Label>
-                              <Textarea value={clarificationMessage} onChange={(e) => setClarificationMessage(e.target.value)} placeholder="Provide your full justification for requesting case closure..." rows={4} />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <Button onClick={() => { handleUpdateStatus('Recommendation for Closure'); toast({ title: 'Closure Request Submitted', description: 'Routed to Supervisor for approval.' }); setClarificationMessage(''); }} disabled={!clarificationMessage.trim()}>
-                              <CheckCircle2 className="mr-2 h-4 w-4" />Submit Request
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    )}
-
-                    {/* Escalation */}
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-destructive border-destructive/30">
-                          <ArrowUpRight className="mr-2 h-4 w-4" />Propose Escalation to LEA
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-lg">
-                        <DialogHeader><DialogTitle>Propose Escalation to LEA</DialogTitle></DialogHeader>
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>Select LEA Agency(s) *</Label>
-                            <div className="relative">
-                              <Input
-                                placeholder="Search agencies..."
-                                className="mb-2"
-                                onChange={(e) => {
-                                  const el = e.target.nextElementSibling as HTMLElement;
-                                  if (el) {
-                                    const items = el.querySelectorAll('[data-agency]');
-                                    items.forEach((item) => {
-                                      const name = (item as HTMLElement).dataset.agency || '';
-                                      (item as HTMLElement).style.display = name.toLowerCase().includes(e.target.value.toLowerCase()) ? '' : 'none';
-                                    });
-                                  }
-                                }}
-                              />
-                              <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
-                                {[
-                                  'AKPS', 'ATOM MALAYSIA', 'CSM', 'CUSTOMS', 'KDN', 'KKM ( Pharmacy )', 'KPDN', 'MCMC', 'MOT', 'NACSA', 'NRES', 'PDRM', 'PERHILITAN', 'OTHERS'
-                                ].map((agency) => (
-                                  <div key={agency} data-agency={agency} className="flex items-center gap-2 py-1">
-                                    <Checkbox checked={selectedAgencies.includes(agency)} onCheckedChange={(checked) => { if (checked) setSelectedAgencies((prev) => [...prev, agency]); else setSelectedAgencies((prev) => prev.filter((a) => a !== agency)); }} />
-                                    <Label className="text-sm cursor-pointer">{agency}</Label>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                            {selectedAgencies.includes('OTHERS') && (
-                              <div className="space-y-2 mt-4 animate-in fade-in slide-in-from-top-1 duration-200">
-                                <Label className="text-destructive font-medium">Specify Other Agency Name *</Label>
-                                <Input placeholder="Enter agency name..." value={otherAgency} onChange={(e) => setOtherAgency(e.target.value)} required className="border-destructive/40 focus-visible:ring-destructive" />
-                              </div>
-                            )}
-                            {selectedAgencies.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-4">
-                                {selectedAgencies.map((a) => (
-                                  <Badge key={a} variant="outline" className="text-xs cursor-pointer hover:bg-destructive/10" onClick={() => setSelectedAgencies((prev) => prev.filter((x) => x !== a))}>
-                                    {a === 'OTHERS' && otherAgency ? `OTHERS (${otherAgency})` : a} ✕
-                                  </Badge>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Justification</Label>
-                            <Textarea value={escalationJustification} onChange={(e) => setEscalationJustification(e.target.value)} placeholder="Provide justification for escalation..." rows={4} />
-                          </div>
-                          <p className="text-xs text-muted-foreground">This will be routed to MCMC Supervisor for approval.</p>
-                        </div>
-                        <DialogFooter>
-                          <Button onClick={handleSubmitEscalation} variant="destructive">
-                            <ArrowUpRight className="mr-2 h-4 w-4" />Submit Escalation Request
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                    
-                    {/* Case Transfer */}
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-indigo-600 border-indigo-200 hover:bg-indigo-50">
-                          <Users className="mr-2 h-4 w-4" />Request Case Transfer
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Request Case Transfer</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <div className="space-y-2">
-                            <Label>Target Case Officer *</Label>
-                            <Select value={transferOfficer} onValueChange={setTransferOfficer}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select officer..." />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="hanis">Hanis Zakaria (CO-2024-008)</SelectItem>
-                                <SelectItem value="faizal">Faizal Ariffin (CO-2024-021)</SelectItem>
-                                <SelectItem value="sarah">Sarah Lim (CO-2024-005)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Transfer Justification *</Label>
-                            <Textarea 
-                              value={transferJustification} 
-                              onChange={(e) => setTransferJustification(e.target.value)} 
-                              placeholder="Explain why this case needs to be transferred to another officer (e.g., workload, conflict of interest, specialised expertise)..." 
-                              rows={4} 
-                            />
-                          </div>
-                          <p className="text-[11px] text-muted-foreground bg-indigo-50 p-2 rounded border border-indigo-100 italic">
-                            💡 This request will be routed to the MCMC Supervisor for final approval. The case will remain in your queue until approved.
-                          </p>
-                        </div>
-                        <DialogFooter>
-                          <Button 
-                            className="bg-indigo-600 hover:bg-indigo-700 glow-indigo" 
-                            disabled={!transferOfficer || !transferJustification.trim()}
-                            onClick={() => {
-                              toast({ title: 'Transfer Request Submitted', description: 'Routed to Supervisor for formal approval.' });
-                              setTransferJustification('');
-                              setTransferOfficer('');
-                            }}
-                          >
-                            <Send className="mr-2 h-4 w-4" />Submit Transfer Request
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </CardContent>
-                </Card>
-
-                {/* Initial Assessment */}
                 <Card className="border-role-reviewer/20">
                   <CardHeader><CardTitle className="flex items-center gap-2 text-role-reviewer"><ShieldAlert className="h-5 w-5" />Initial Assessment</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
@@ -414,7 +233,26 @@ export default function CaseReview() {
                         🔒 <span className="opacity-80">Data Siloed: Completely hidden from Peers, Supervisors, and Reporters.</span>
                       </p>
                     </div>
-                    <Button onClick={handleSaveAssessment} className="glow-blue">Save Assessment</Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6 space-y-3">
+                    <Label className="flex items-center gap-2"><User className="h-4 w-4" />Peer Comments</Label>
+                    {peerComments.map((pc, i) => (
+                      <div key={i} className="p-3 border border-border/40 rounded-lg bg-accent/20">
+                        <p className="text-sm">{pc.comment}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{pc.author} · {pc.date}</p>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <Textarea value={peerComment} onChange={(e) => setPeerComment(e.target.value)} placeholder="Add a comment on this assessment..." rows={2} className="flex-1" />
+                      <Button variant="outline" className="self-end" disabled={!peerComment.trim()} onClick={() => { toast({ title: 'Comment Added', description: 'Your comment has been posted.' }); setPeerComment(''); }}>
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex justify-end pt-2">
+                      <Button onClick={handleSaveAssessment} className="glow-blue">Save Assessment</Button>
+                    </div>
                   </CardContent>
                 </Card>
               </>
@@ -447,28 +285,220 @@ export default function CaseReview() {
                     </div>
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardContent className="pt-6 space-y-3">
+                    <Label className="flex items-center gap-2"><User className="h-4 w-4" />Peer Comments</Label>
+                    {peerComments.map((pc, i) => (
+                      <div key={i} className="p-3 border border-border/40 rounded-lg bg-accent/20">
+                        <p className="text-sm">{pc.comment}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{pc.author} · {pc.date}</p>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <Textarea value={peerComment} onChange={(e) => setPeerComment(e.target.value)} placeholder="Add a comment on this assessment..." rows={2} className="flex-1" />
+                      <Button variant="outline" className="self-end" disabled={!peerComment.trim()} onClick={() => { toast({ title: 'Comment Added', description: 'Your comment has been posted.' }); setPeerComment(''); }}>
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </>
             )}
+          </div>
+        </TabsContent>
 
-            {/* Shared Peer Comments */}
+        {/* Tab 5: Actions */}
+        <TabsContent value="actions">
+          {!isPeerReview ? (
             <Card>
-              <CardContent className="pt-6 space-y-3">
-                <Label className="flex items-center gap-2"><User className="h-4 w-4" />Peer Comments</Label>
-                {peerComments.map((pc, i) => (
-                  <div key={i} className="p-3 border border-border/40 rounded-lg bg-accent/20">
-                    <p className="text-sm">{pc.comment}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{pc.author} · {pc.date}</p>
-                  </div>
-                ))}
-                <div className="flex gap-2">
-                  <Textarea value={peerComment} onChange={(e) => setPeerComment(e.target.value)} placeholder="Add a comment on this assessment..." rows={2} className="flex-1" />
-                  <Button variant="outline" className="self-end" disabled={!peerComment.trim()} onClick={() => { toast({ title: 'Comment Added', description: 'Your comment has been posted.' }); setPeerComment(''); }}>
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
+              <CardHeader><CardTitle className="text-sm">Case Actions</CardTitle></CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-border/80 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:bg-accent/70 focus-visible:ring-2 focus-visible:ring-primary/40 transition-all" onClick={() => handleUpdateStatus('Under Review')}>
+                  <CheckCircle2 className="mr-2 h-4 w-4 text-status-submitted" />Under Review
+                  <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" />
+                </Button>
+
+                {(incident.severity === 'Low' || incident.severity === 'Medium') ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-status-closed/40 bg-status-closed/5 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-status-closed hover:bg-status-closed/10 focus-visible:ring-2 focus-visible:ring-status-closed/30 transition-all">
+                        <CheckCircle2 className="mr-2 h-4 w-4" />Close Case
+                        <ChevronRight className="ml-auto h-4 w-4 text-status-closed/70" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader><DialogTitle>Close Case - {incident.id}</DialogTitle></DialogHeader>
+                      <p className="text-sm text-muted-foreground">As a Case Officer, you can close Low/Medium severity cases directly.</p>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label>Closure Summary *</Label>
+                          <Textarea value={clarificationMessage} onChange={(e) => setClarificationMessage(e.target.value)} placeholder="Provide closure summary..." rows={4} />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button onClick={() => { toast({ title: 'Case Closed', description: `${incident.id} has been closed.` }); setClarificationMessage(''); }} disabled={!clarificationMessage.trim()}>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />Confirm Closure
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-status-closed/40 bg-status-closed/5 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-status-closed hover:bg-status-closed/10 focus-visible:ring-2 focus-visible:ring-status-closed/30 transition-all">
+                        <CheckCircle2 className="mr-2 h-4 w-4" />Request Closure Approval
+                        <ChevronRight className="ml-auto h-4 w-4 text-status-closed/70" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader><DialogTitle>Request Case Closure</DialogTitle></DialogHeader>
+                      <p className="text-sm text-muted-foreground">This request will be routed to the MCMC Supervisor for final approval.</p>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label>Justification for Closure</Label>
+                          <Textarea value={clarificationMessage} onChange={(e) => setClarificationMessage(e.target.value)} placeholder="Provide your full justification for requesting case closure..." rows={4} />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button onClick={() => { handleUpdateStatus('Recommendation for Closure'); toast({ title: 'Closure Request Submitted', description: 'Routed to Supervisor for approval.' }); setClarificationMessage(''); }}>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />Submit Request
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-destructive/40 bg-destructive/5 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-destructive hover:bg-destructive/10 focus-visible:ring-2 focus-visible:ring-destructive/30 transition-all">
+                      <ArrowUpRight className="mr-2 h-4 w-4" />Propose Escalation to LEA
+                      <ChevronRight className="ml-auto h-4 w-4 text-destructive/70" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg">
+                    <DialogHeader><DialogTitle>Propose Escalation to LEA</DialogTitle></DialogHeader>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Select LEA Agency(s) *</Label>
+                        <div className="relative">
+                          <Input
+                            placeholder="Search agencies..."
+                            className="mb-2"
+                            onChange={(e) => {
+                              const el = e.target.nextElementSibling as HTMLElement;
+                              if (el) {
+                                const items = el.querySelectorAll('[data-agency]');
+                                items.forEach((item) => {
+                                  const name = (item as HTMLElement).dataset.agency || '';
+                                  (item as HTMLElement).style.display = name.toLowerCase().includes(e.target.value.toLowerCase()) ? '' : 'none';
+                                });
+                              }
+                            }}
+                          />
+                          <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
+                            {[
+                              'AKPS', 'ATOM MALAYSIA', 'CSM', 'CUSTOMS', 'KDN', 'PHARMACY (KKM)', 'KPDN', 'MCMC', 'MOT', 'NACSA', 'NRES', 'PDRM', 'PERHILITAN', 'OTHERS'
+                            ].map((agency) => (
+                              <div key={agency} data-agency={agency} className="flex items-center gap-2 py-1">
+                                <Checkbox checked={selectedAgencies.includes(agency)} onCheckedChange={(checked) => { if (checked) setSelectedAgencies((prev) => [...prev, agency]); else setSelectedAgencies((prev) => prev.filter((a) => a !== agency)); }} />
+                                <Label className="text-sm cursor-pointer">{agency}</Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        {selectedAgencies.includes('OTHERS') && (
+                          <div className="space-y-2 mt-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <Label className="text-destructive font-medium">Specify Other Agency Name *</Label>
+                            <Input placeholder="Enter agency name..." value={otherAgency} onChange={(e) => setOtherAgency(e.target.value)} required className="border-destructive/40 focus-visible:ring-destructive" />
+                          </div>
+                        )}
+                        {selectedAgencies.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-4">
+                            {selectedAgencies.map((a) => (
+                              <Badge key={a} variant="outline" className="text-xs cursor-pointer hover:bg-destructive/10" onClick={() => setSelectedAgencies((prev) => prev.filter((x) => x !== a))}>
+                                {a === 'OTHERS' && otherAgency ? `OTHERS (${otherAgency})` : a} x
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Justification</Label>
+                        <Textarea value={escalationJustification} onChange={(e) => setEscalationJustification(e.target.value)} placeholder="Provide justification for escalation..." rows={4} />
+                      </div>
+                      <p className="text-xs text-muted-foreground">This will be routed to MCMC Supervisor for approval.</p>
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handleSubmitEscalation} variant="destructive">
+                        <ArrowUpRight className="mr-2 h-4 w-4" />Submit Escalation Request
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-blue-300 bg-blue-50/50 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-blue-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300 transition-all">
+                      <Users className="mr-2 h-4 w-4" />Request Case Transfer
+                      <ChevronRight className="ml-auto h-4 w-4 text-blue-500" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Request Case Transfer</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label>Target Case Officer *</Label>
+                        <Select value={transferOfficer} onValueChange={setTransferOfficer}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select officer..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hanis">Hanis Zakaria (CO-2024-008)</SelectItem>
+                            <SelectItem value="faizal">Faizal Ariffin (CO-2024-021)</SelectItem>
+                            <SelectItem value="sarah">Sarah Lim (CO-2024-005)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Transfer Justification</Label>
+                        <Textarea
+                          value={transferJustification}
+                          onChange={(e) => setTransferJustification(e.target.value)}
+                          placeholder="Explain why this case needs to be transferred to another officer (e.g., workload, conflict of interest, specialised expertise)..."
+                          rows={4}
+                        />
+                      </div>
+                      <p className="text-[11px] text-muted-foreground bg-blue-50 p-2 rounded border border-blue-100 italic">
+                        This request will be routed to the MCMC Supervisor for final approval. The case will remain in your queue until approved.
+                      </p>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        className="bg-blue-600 hover:bg-blue-700"
+                        disabled={!transferOfficer}
+                        onClick={() => {
+                          toast({ title: 'Transfer Request Submitted', description: 'Routed to Supervisor for formal approval.' });
+                          setTransferJustification('');
+                          setTransferOfficer('');
+                        }}
+                      >
+                        <Send className="mr-2 h-4 w-4" />Submit Transfer Request
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
-          </div>
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground">Case Actions are available only to the assigned Case Officer.</p>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* Tab 3: Clarification */}
@@ -486,6 +516,7 @@ export default function CaseReview() {
         <TabsContent value="timeline">
           <CaseTimeline events={timeline} />
         </TabsContent>
+
       </Tabs>
     </div>
   );
