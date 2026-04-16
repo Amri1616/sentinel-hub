@@ -65,7 +65,6 @@ import EscalationQueue from "./pages/validator/EscalationQueue";
 import EscalationApprovals from "./pages/validator/EscalationApprovals";
 import TransferApprovals from "./pages/validator/TransferApprovals";
 import ClosureApprovals from "./pages/validator/ClosureApprovals";
-import AuditCompliance from "./pages/validator/AuditCompliance";
 import SupervisorNotifications from "./pages/validator/Notifications";
 import SupervisorSecurity from "./pages/validator/Security";
 import SupervisorAnalytics from "./pages/validator/Analytics";
@@ -196,7 +195,6 @@ const App = () => (
                     <Route path="cases/:id" element={<CaseDetail />} />
                     <Route path="escalations" element={<EscalationQueue />} />
                     <Route path="escalations/:id" element={<EscalationQueue />} />
-                    <Route path="audit" element={<AuditCompliance />} />
                     <Route path="notifications" element={<SupervisorNotifications />} />
                     <Route path="analytics" element={<SupervisorAnalytics />} />
                     <Route path="security" element={<SupervisorSecurity />} />

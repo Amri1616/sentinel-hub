@@ -190,7 +190,7 @@ export default function CaseDetail() {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Target Officer:</span>
-                          <span className="font-bold text-indigo-700 select-none">Hanis Zakaria (CO-2024-008)</span>
+                          <span className="font-bold text-indigo-700 select-none">Hanis Zakaria</span>
                         </div>
                       </>
                     ) : (
@@ -337,9 +337,9 @@ export default function CaseDetail() {
             <CardHeader><CardTitle>Escalation Request</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               {[
-                ['Requesting Officer', 'Ahmad Razif (CO-2024-015)'],
+                ['Requesting Officer', 'Ahmad Razif'],
                 ['Request Date', '2025-06-10 09:00'],
-                ['Selected LEA(s)', 'Royal Malaysia Police (PDRM) – Commercial Crime Division'],
+                ['Selected LEA(s)', 'Royal Malaysia Police (PDRM) – Commercial Crime Division, National Anti-Drug Agency (NACSA)'],
                 ['Justification', 'Strong evidence of organised theft pattern at KL Central Hub. CCTV footage confirms unauthorized access. Pattern matches prior incidents suggesting systematic operation. Recommend immediate LEA involvement for criminal investigation.'],
               ].map(([l, v]) => (
                 <div key={l}><p className="text-xs text-muted-foreground">{l}</p><p className="text-sm">{v}</p></div>

@@ -63,27 +63,28 @@ export default function ReporterDrafts() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="pt-6">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="pb-3 px-4 font-medium text-muted-foreground text-center">Title</th>
-                  <th className="pb-3 px-4 font-medium text-muted-foreground text-center">Category</th>
-                  <th className="pb-3 px-4 font-medium text-muted-foreground text-center">Last Updated</th>
-                  <th className="pb-3 px-4 font-medium text-muted-foreground text-center">Days Remaining</th>
-                  <th className="pb-3 px-4 font-medium text-muted-foreground text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+      <Card className="w-full overflow-hidden border">
+        <CardContent className="p-0">
+          <div className="relative group w-full overflow-hidden">
+            <div className="overflow-x-auto w-full">
+              <table className="table-auto w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground">Title</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground">Category</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground">Last Updated</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground">Days Remaining</th>
+                    <th className="px-3 py-4 text-center align-middle text-sm font-semibold text-foreground">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
                 {filteredDrafts.length > 0 ? (
                   filteredDrafts.map((draft) => (
-                    <tr key={draft.id} className="hover:bg-accent/30 transition-colors">
-                      <td className="py-3 px-4 text-center font-medium">{draft.title}</td>
-                      <td className="py-3 px-4 text-center text-muted-foreground">{draft.category}</td>
-                      <td className="py-3 px-4 text-center text-muted-foreground">{draft.updated}</td>
-                      <td className="py-3 px-4 text-center">
+                    <tr key={draft.id} className="hover:bg-accent/30 transition-colors border-b">
+                      <td className="px-3 py-4 text-center align-middle text-sm font-medium">{draft.title}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{draft.category}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm text-muted-foreground">{draft.updated}</td>
+                      <td className="px-3 py-4 text-center align-middle text-sm">
                         <div className="flex justify-center">
                           <Badge 
                             variant="outline" 
@@ -99,7 +100,7 @@ export default function ReporterDrafts() {
                           </Badge>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="px-3 py-4 text-center align-middle text-sm">
                         <div className="flex items-center justify-center gap-2">
                           <Button size="sm" variant="outline" onClick={() => navigate('/licensee-reporter/incidents/new')}>
                             Continue <ArrowRight className="ml-2 h-4 w-4" />
@@ -118,8 +119,9 @@ export default function ReporterDrafts() {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </CardContent>
       </Card>

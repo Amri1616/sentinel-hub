@@ -73,25 +73,25 @@ export default function LicenseeAdminUnderReview() {
             <table className="w-full">
               <thead className="border-b bg-muted/50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Reference No</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Reporter</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Case Type</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Severity</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Submitted Date</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Reference No</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Reporter</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Case Type</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Severity</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Submitted Date</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((incident) => (
                   <tr key={incident.id} className="border-b hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => navigate(`/licensee-admin/incidents/${incident.id}`)}>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 text-center align-middle">
                       <span className="font-mono text-sm text-primary">{incident.id}</span>
                     </td>
-                    <td className="px-4 py-4 text-sm">{incident.reporter}</td>
-                    <td className="px-4 py-4 text-sm">{incident.type}</td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 text-center align-middle text-sm">{incident.reporter}</td>
+                    <td className="px-4 py-4 text-center align-middle text-sm">{incident.type}</td>
+                    <td className="px-4 py-4 text-center align-middle">
                       <Badge variant="outline" className={severityColors[incident.severity]}>{incident.severity}</Badge>
                     </td>
-                    <td className="px-4 py-4 text-sm text-muted-foreground">{incident.submitted}</td>
+                    <td className="px-4 py-4 text-center align-middle text-sm text-muted-foreground">{incident.submitted}</td>
                   </tr>
                 ))}
               </tbody>
@@ -105,6 +105,8 @@ export default function LicenseeAdminUnderReview() {
         onClose={() => setIsFilterOpen(false)}
         filters={filters}
         onApply={setFilters}
+        hideAgencyFilter
+        hideSpecificLogic
       />
     </div>
   );

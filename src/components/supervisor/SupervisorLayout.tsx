@@ -32,7 +32,6 @@ const navItems = [
   { title: 'Pending Tasks', path: '/supervisor/escalations', icon: AlertTriangle, badge: 5 },
   { title: 'Case Monitoring', path: '/supervisor/cases', icon: FolderOpen },
   { title: 'Analytics & Report', path: '/supervisor/analytics', icon: BarChart3 },
-  { title: 'Audit & Compliance', path: '/supervisor/audit', icon: Shield },
   { title: 'Profile', path: '/supervisor/security', icon: Shield },
 ];
 

@@ -44,21 +44,21 @@ export default function LicenseeAdminUsers() {
             <table className="w-full">
               <thead className="border-b bg-muted/50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Email</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Phone Number</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Submissions</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Name</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Email</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Phone Number</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Submissions</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((user) => (
                   <tr key={user.id} className="border-b hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 text-center align-middle">
                       <span className="font-medium">{user.name}</span>
                     </td>
-                    <td className="px-4 py-4 text-sm text-muted-foreground">{user.email}</td>
-                    <td className="px-4 py-4 text-sm text-muted-foreground">{user.phone}</td>
-                    <td className="px-4 py-4 text-sm font-medium">{user.submissions}</td>
+                    <td className="px-4 py-4 text-center align-middle text-sm text-muted-foreground">{user.email}</td>
+                    <td className="px-4 py-4 text-center align-middle text-sm text-muted-foreground">{user.phone}</td>
+                    <td className="px-4 py-4 text-center align-middle text-sm font-medium">{user.submissions}</td>
                   </tr>
                 ))}
               </tbody>

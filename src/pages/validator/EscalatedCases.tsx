@@ -5,13 +5,19 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter, Eye, ArrowLeft, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import AdvancedFilterDrawer, {
   AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
 } from '@/components/shared/AdvancedFilterDrawer';
 
 const escalatedCases = [
   { id: 'PSIRP-2025-0025', org: 'DHL eCommerce', officer: 'Farah Amin', severity: 'High', status: 'Escalated', date: '2025-05-22', lea: 'AKPS, MKN' },
-  { id: 'PSIRP-2025-0018', org: 'Pos Malaysia', officer: 'Raj Kumar', severity: 'Critical', status: 'Escalated', date: '2025-05-10', lea: 'PDRM' },
+  { id: 'PSIRP-2025-0018', org: 'Pos Malaysia', officer: 'Raj Kumar', severity: 'Critical', status: 'Escalated', date: '2025-05-10', lea: 'PDRM, NACSA' },
 ];
 
 export default function SupervisorEscalatedCases() {
@@ -30,6 +36,49 @@ export default function SupervisorEscalatedCases() {
     }
     return true;
   });
+
+  const renderEscalatedTo = (lea: string) => {
+    const agencies = lea.split(', ').filter(Boolean);
+    const preview = agencies.slice(0, 2);
+    const remaining = agencies.length - 2;
+
+    const trigger = (
+      <div className="flex flex-wrap justify-center gap-1">
+        {preview.map((agency) => (
+          <Badge key={agency} variant="secondary" className="bg-slate-100 text-slate-700 border-slate-200 px-1.5 py-0 h-5 text-[10px] font-bold uppercase whitespace-nowrap">
+            {agency}
+          </Badge>
+        ))}
+        {remaining > 0 && (
+          <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 px-1.5 py-0 h-5 text-[10px] font-bold">
+            +{remaining} more
+          </Badge>
+        )}
+      </div>
+    );
+
+    if (agencies.length <= 1) return trigger;
+
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+          <TooltipContent className="p-3 bg-popover border-border shadow-xl min-w-[150px]">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Escalated Agencies</p>
+              <div className="flex flex-wrap gap-1.5">
+                {agencies.map((agency) => (
+                  <Badge key={agency} variant="outline" className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-700 border-slate-200 font-bold uppercase">
+                    {agency}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -76,11 +125,7 @@ export default function SupervisorEscalatedCases() {
                   <tr key={c.id} className="hover:bg-muted/30 cursor-pointer transition-colors border-b" onClick={() => navigate(`/supervisor/cases/${c.id}`)}>
                     <td className="px-3 py-4 text-center align-middle font-mono font-bold text-primary">{c.id}</td>
                     <td className="px-3 py-4 text-center align-middle text-muted-foreground">{c.org}</td>
-                    <td className="px-3 py-4 text-center align-middle flex justify-center gap-1 mt-3">
-                      {c.lea.split(', ').map(lea => (
-                        <Badge key={lea} variant="secondary" className="bg-slate-100 text-slate-700 text-[10px]">{lea}</Badge>
-                      ))}
-                    </td>
+                    <td className="px-3 py-4 text-center align-middle text-sm">{renderEscalatedTo(c.lea)}</td>
                     <td className="px-3 py-4 text-center align-middle">
                       <div className="flex justify-center">
                         <Badge variant="outline" className={c.severity === 'Critical' ? 'bg-destructive/20 text-destructive border-destructive/30' : 'bg-status-in-review/20 text-status-in-review border-status-in-review/30'}>{c.severity}</Badge>

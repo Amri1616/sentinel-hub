@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Plus, MessageSquare, Clock, CheckCircle2, Trash2, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { FileText, Plus, Clock, CheckCircle2, Trash2, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -29,8 +29,6 @@ const monthlySubmissions = [
   { month: 'Jan', count: 7 },
 ];
 
-const pendingClarificationCount = 2;
-
 export default function ReporterDashboard() {
   const navigate = useNavigate();
 
@@ -47,22 +45,6 @@ export default function ReporterDashboard() {
           <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
           <p className="text-muted-foreground">Welcome back, Licensee Reporter</p>
         </div>
-        {pendingClarificationCount > 0 && (
-          <Button
-            variant="outline"
-            onClick={() => navigate('/licensee-reporter/incidents?filter=rfi')}
-            className="border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:border-destructive/60 transition-all gap-2 shrink-0"
-          >
-            <MessageSquare className="h-4 w-4" />
-            Pending Action
-            <span className="relative inline-flex items-center justify-center">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-50" />
-              <span className="relative inline-flex items-center justify-center h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
-                {pendingClarificationCount}
-              </span>
-            </span>
-          </Button>
-        )}
       </div>
 
       {/* Create New Incident */}
