@@ -37,9 +37,10 @@ export default function LEACaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [investigationStatus, setInvestigationStatus] = useState('Under Investigation');
+  const [investigationStatus, setInvestigationStatus] = useState('Under Preliminary Review');
   const [acknowledged, setAcknowledged] = useState(true);
   const [internalNotes, setInternalNotes] = useState('');
+  const [agencyReportRef, setAgencyReportRef] = useState('');
   const [copied, setCopied] = useState(false);
 
   const incident = fallbackIncident(id || 'ESC-2025-001');
@@ -57,8 +58,13 @@ export default function LEACaseDetail() {
 
 
   const handleSaveNotes = () => {
-    if (!internalNotes.trim()) return;
-    toast({ title: 'Notes Saved', description: 'Internal notes have been saved successfully.' });
+    if (!internalNotes.trim() && !agencyReportRef.trim()) return;
+    toast({
+      title: 'Update Saved',
+      description: agencyReportRef.trim()
+        ? `Agency report reference ${agencyReportRef} has been recorded.`
+        : 'Internal notes have been saved successfully.',
+    });
   };
 
   const caseUrl = `https://portal.mcmc.gov.my/cases/${incident.id}`;
@@ -201,11 +207,12 @@ export default function LEACaseDetail() {
                 <Select value={investigationStatus} onValueChange={handleStatusUpdate}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="Under Preliminary Review">Under Preliminary Review</SelectItem>
                     <SelectItem value="Under Investigation">Under Investigation</SelectItem>
-                    <SelectItem value="Evidence Seized">Evidence Seized</SelectItem>
-                    <SelectItem value="Pending Further Information">Pending Further Information</SelectItem>
-                    <SelectItem value="Case Referred for Prosecution">Case Referred for Prosecution</SelectItem>
-                    <SelectItem value="No Further Action">No Further Action</SelectItem>
+                    <SelectItem value="Referred to Relevant Agency">Referred to Relevant Agency</SelectItem>
+                    <SelectItem value="Prosecution / Trial">Prosecution / Trial</SelectItem>
+                    <SelectItem value="Investigation Completed">Investigation Completed</SelectItem>
+                    <SelectItem value="Case Closed">Case Closed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -213,6 +220,17 @@ export default function LEACaseDetail() {
                 <p className="text-xs text-muted-foreground mb-1">Current Status</p>
                 <Badge variant="outline" className="border-primary/50 text-primary">{investigationStatus}</Badge>
                 <p className="text-xs text-muted-foreground mt-2">All status changes are logged with timestamp and user ID.</p>
+              </div>
+
+              <div className="border-t border-border pt-4 space-y-2">
+                <Label htmlFor="agency-report-reference" className="text-base font-semibold">Agency Report Reference Number</Label>
+                <p className="text-xs text-muted-foreground">Enter your agency's official report reference for this case.</p>
+                <Input
+                  id="agency-report-reference"
+                  value={agencyReportRef}
+                  onChange={(e) => setAgencyReportRef(e.target.value)}
+                  placeholder="e.g. PDRM/CCID/2025/00412"
+                />
               </div>
 
               {/* Internal Notes */}
@@ -225,7 +243,7 @@ export default function LEACaseDetail() {
                   placeholder="Write internal notes about the case status, findings, or observations..."
                   rows={4}
                 />
-                <Button onClick={handleSaveNotes} disabled={!internalNotes.trim()}>
+                <Button onClick={handleSaveNotes} disabled={!internalNotes.trim() && !agencyReportRef.trim()}>
                   Save Notes
                 </Button>
               </div>

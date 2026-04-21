@@ -1,9 +1,11 @@
 import mcmcLogo from '@/assets/mcmc-logo.png';
 
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Footer = () => {
     const location = useLocation();
+    const { t } = useTranslation();
     const authRoutes = ['/', '/login', '/otp', '/forgot-password'];
     
     if (authRoutes.includes(location.pathname)) {
@@ -20,11 +22,11 @@ export const Footer = () => {
                         className="h-6 w-auto object-contain"
                     />
                     <p className="font-poppins text-[12px] text-[#111111] dark:text-muted-foreground whitespace-normal md:whitespace-nowrap text-center md:text-left">
-                        Copyright © 2026 Malaysian Communications and Multimedia Commission. All rights reserved.
+                        {t('Copyright © 2026 Malaysian Communications and Multimedia Commission. All rights reserved.')}
                     </p>
                 </div>
                 <div className="font-poppins text-[12px] text-[#111111] dark:text-muted-foreground text-center md:text-right">
-                    IT HELPDESK: 03-8688 8008 | ITHelpdesk@mcmc.gov.my
+                    {t('Contact us at: psirp-support@mcmc.gov.my')}
                 </div>
             </div>
         </footer>

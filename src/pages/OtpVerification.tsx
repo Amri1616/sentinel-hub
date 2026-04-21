@@ -15,12 +15,14 @@ import { Role } from "@/lib/auth";
 import { getRoleConfig } from "@/lib/roleConfig";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function OtpVerification() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const role = (location.state?.role || "reporter") as Role;
   const config = getRoleConfig(role);
   const demoOtp = location.state?.otp || "123456";
@@ -29,17 +31,17 @@ export default function OtpVerification() {
   const [isVerifying, setIsVerifying] = useState(false);
 
   const handleVerify = () => {
-    // if (otp.length !== 6) {
-    //   toast.error("Please enter the full 6-digit OTP");
-    //   return;
-    // }
+    if (otp.length !== 6) {
+      toast.error(t("Please enter the full 6-digit OTP"));
+      return;
+    }
     setIsVerifying(true);
     setTimeout(() => {
       if (otp === demoOtp) {
-        toast.success("MFA verification successful");
+        toast.success(t("MFA verification successful"));
         navigate(`${config.basePath}/dashboard`);
       } else {
-        toast.error("Invalid OTP. Please try again.");
+        toast.error(t("Invalid OTP. Please try again."));
         setOtp("");
       }
       setIsVerifying(false);
@@ -55,7 +57,7 @@ export default function OtpVerification() {
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Login
+          {t("Back to Login")}
         </Button>
 
         <Card className="border-2" style={{ borderColor: `${config.color}40` }}>
@@ -70,9 +72,13 @@ export default function OtpVerification() {
               />
             </div>
             <div className="text-center space-y-2">
-              <CardTitle className="text-2xl">MFA Verification</CardTitle>
+              <CardTitle className="text-2xl">
+                {t("MFA Verification")}
+              </CardTitle>
               <CardDescription className="text-base pt-2">
-                Enter the 6-digit one-time password to verify your identity.
+                {t(
+                  "Enter the 6-digit one-time password to verify your identity."
+                )}
               </CardDescription>
             </div>
           </CardHeader>
@@ -99,12 +105,12 @@ export default function OtpVerification() {
                 color: "hsl(222 47% 3%)",
               }}
             >
-              {isVerifying ? "Verifying..." : "Verify & Continue"}
+              {isVerifying ? t("Verifying...") : t("Verify & Continue")}
             </Button>
 
             <div className="rounded-lg border bg-muted/50 p-4 space-y-2">
               <p className="text-sm font-medium text-foreground">
-                Demo OTP Code
+                {t("Demo OTP Code")}
               </p>
               <p
                 className="text-2xl font-mono font-bold tracking-[0.5em] text-center"
@@ -113,8 +119,9 @@ export default function OtpVerification() {
                 {demoOtp}
               </p>
               <p className="text-xs text-muted-foreground text-center">
-                Enter this code above to proceed. In production, this would be
-                sent via email or SMS.
+                {t(
+                  "Enter this code above to proceed. In production, this would be sent via email or SMS."
+                )}
               </p>
             </div>
           </CardContent>

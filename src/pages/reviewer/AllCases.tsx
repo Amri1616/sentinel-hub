@@ -17,6 +17,8 @@ import AdvancedFilterDrawer, {
   AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
 } from '@/components/shared/AdvancedFilterDrawer';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getCurrentUser } from '@/lib/auth';
+import { getCyberSpecialCases } from '@/lib/cyberCases';
 
 interface Escalation {
   name: string;
@@ -62,6 +64,10 @@ const allCases = [
 export default function ReviewerAllCases() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const currentUser = getCurrentUser();
+  const isCyberSpecialist = currentUser?.isCyberSpecialist === true;
+  const cyberCases = getCyberSpecialCases(currentUser?.email);
+  const combinedCases = [...allCases, ...cyberCases];
   const [searchQuery, setSearchQuery] = useState('');
   const [exportMode, setExportMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -71,7 +77,7 @@ export default function ReviewerAllCases() {
 
   const activeCount = countActiveFilters(advFilters);
 
-  const filtered = allCases.filter((i) => {
+  const filtered = combinedCases.filter((i) => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const match =
@@ -96,6 +102,11 @@ export default function ReviewerAllCases() {
     // Tab Filter
     if (activeTab === 'my-cases' && !i.isOwn) return false;
     if (activeTab === 'peer-cases' && i.isOwn) return false;
+
+    // Cyber specialist officers can only see their own cyber-special cases.
+    if (isCyberSpecialist) {
+      if (!(i.isOwn && i.isCyberSpecialCase)) return false;
+    }
 
     return true;
   });

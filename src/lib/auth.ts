@@ -14,6 +14,7 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  isCyberSpecialist?: boolean;
   organisationId?: string;
   organisationName?: string;
 }
@@ -25,6 +26,7 @@ export const login = (email: string, password: string): User => {
     "ladmin@testing.com": { role: "licensee-admin", pass: "12345" },
     "lreporter@testing.com": { role: "reporter", pass: "12345" },
     "cofficer@mcmc.gov.my": { role: "reviewer", pass: "12345" },
+    "cyber.officer@mcmc.gov.my": { role: "reviewer", pass: "12345" },
     "msupervisor@mcmc.gov.my": { role: "validator", pass: "12345" },
     "minternal@mcmc.gov.my": { role: "investigator", pass: "12345" },
     "agency@lea.gov.my": { role: "lea-viewer", pass: "12345" },
@@ -57,6 +59,7 @@ export const login = (email: string, password: string): User => {
     name: roleNames[role],
     email,
     role,
+    isCyberSpecialist: email === "cyber.officer@mcmc.gov.my",
     organisationId:
       role === "reporter" || role === "licensee-admin" ? "org-001" : undefined,
     organisationName:

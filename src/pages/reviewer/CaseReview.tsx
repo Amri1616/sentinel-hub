@@ -20,11 +20,34 @@ import CaseClarificationThread, { type ClarificationMessage } from '@/components
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
 import { fallbackIncident } from '@/lib/mock-data';
 import CaseHeader from '@/components/shared/CaseHeader';
+import { getCurrentUser } from '@/lib/auth';
+import { getCyberCaseById } from '@/lib/cyberCases';
+
+const LEA_AGENCY_OPTIONS = [
+  { value: 'AKPS', label: 'AKPS' },
+  { value: 'ATOM MALAYSIA', label: 'ATOM MALAYSIA' },
+  { value: 'CSM', label: 'CSM' },
+  { value: 'CUSTOMS', label: 'CUSTOMS' },
+  { value: 'KDN', label: 'KDN' },
+  { value: 'PHARMACY (KKM)', label: 'PHARMACY (KKM)' },
+  { value: 'KPDN', label: 'KPDN' },
+  { value: 'MCMC', label: 'MCMC' },
+  { value: 'MOT', label: 'MOT' },
+  { value: 'NACSA', label: 'NACSA' },
+  { value: 'NRES', label: 'NRES' },
+  { value: 'PDRM', label: 'PDRM' },
+  { value: 'PERHILITAN', label: 'PERHILITAN' },
+  { value: 'OTHERS', label: 'OTHERS' },
+];
 
 export default function CaseReview() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { toast } = useToast();
+  const currentUser = getCurrentUser();
+  const isCyberSpecialist = currentUser?.isCyberSpecialist === true;
+  const cyberCaseMeta = getCyberCaseById(id);
+  const isCyberSpecialCase = cyberCaseMeta?.isCyberSpecialCase === true;
 
   const [severityLevel, setSeverityLevel] = useState('high');
   const [preliminaryFindings, setPreliminaryFindings] = useState('');
@@ -66,7 +89,8 @@ export default function CaseReview() {
   ];
 
   const ownCaseIds = ['PSIRP-2025-0028', 'PSIRP-2025-0027', 'PSIRP-2025-0026'];
-  const isPeerReview = !ownCaseIds.includes(id || '');
+  const isOwnCyberCase = isCyberSpecialist && isCyberSpecialCase;
+  const isPeerReview = !ownCaseIds.includes(id || '') && !isOwnCyberCase;
 
   const incident = fallbackIncident(id || 'PSIRP-2025-0028');
 
@@ -118,7 +142,6 @@ export default function CaseReview() {
         status={incident.status}
         statusColor={getStatusColor(incident.status)}
         severity={incident.severity}
-        severityColor={getSeverityColor(incident.severity)}
         submittedDate={incident.dateReported?.split(' ')[0] || incident.incidentDate}
         backLabel="Back"
         onBack={() => navigate('/case-officer/all-cases')}
@@ -319,7 +342,7 @@ export default function CaseReview() {
                   <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" />
                 </Button>
 
-                {(incident.severity === 'Low' || incident.severity === 'Medium') ? (
+                {(incident.severity === 'Low' || incident.severity === 'Medium' || isCyberSpecialist) ? (
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-status-closed/40 bg-status-closed/5 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-status-closed hover:bg-status-closed/10 focus-visible:ring-2 focus-visible:ring-status-closed/30 transition-all">
@@ -329,7 +352,7 @@ export default function CaseReview() {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader><DialogTitle>Close Case - {incident.id}</DialogTitle></DialogHeader>
-                      <p className="text-sm text-muted-foreground">As a Case Officer, you can close Low/Medium severity cases directly.</p>
+                      <p className="text-sm text-muted-foreground">This case can be closed directly by the assigned Case Officer.</p>
                       <div className="space-y-3">
                         <div className="space-y-2">
                           <Label>Closure Summary *</Label>
@@ -369,75 +392,89 @@ export default function CaseReview() {
                   </Dialog>
                 )}
 
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-destructive/40 bg-destructive/5 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-destructive hover:bg-destructive/10 focus-visible:ring-2 focus-visible:ring-destructive/30 transition-all">
-                      <ArrowUpRight className="mr-2 h-4 w-4" />Propose Escalation to LEA
-                      <ChevronRight className="ml-auto h-4 w-4 text-destructive/70" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-lg">
-                    <DialogHeader><DialogTitle>Propose Escalation to LEA</DialogTitle></DialogHeader>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Select LEA Agency(s) *</Label>
-                        <div className="relative">
-                          <Input
-                            placeholder="Search agencies..."
-                            className="mb-2"
-                            onChange={(e) => {
-                              const el = e.target.nextElementSibling as HTMLElement;
-                              if (el) {
-                                const items = el.querySelectorAll('[data-agency]');
-                                items.forEach((item) => {
-                                  const name = (item as HTMLElement).dataset.agency || '';
-                                  (item as HTMLElement).style.display = name.toLowerCase().includes(e.target.value.toLowerCase()) ? '' : 'none';
-                                });
-                              }
-                            }}
-                          />
-                          <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
-                            {[
-                              'AKPS', 'ATOM MALAYSIA', 'CSM', 'CUSTOMS', 'KDN', 'PHARMACY (KKM)', 'KPDN', 'MCMC', 'MOT', 'NACSA', 'NRES', 'PDRM', 'PERHILITAN', 'OTHERS'
-                            ].map((agency) => (
-                              <div key={agency} data-agency={agency} className="flex items-center gap-2 py-1">
-                                <Checkbox checked={selectedAgencies.includes(agency)} onCheckedChange={(checked) => { if (checked) setSelectedAgencies((prev) => [...prev, agency]); else setSelectedAgencies((prev) => prev.filter((a) => a !== agency)); }} />
-                                <Label className="text-sm cursor-pointer">{agency}</Label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        {selectedAgencies.includes('OTHERS') && (
-                          <div className="space-y-2 mt-4 animate-in fade-in slide-in-from-top-1 duration-200">
-                            <Label className="text-destructive font-medium">Specify Other Agency Name *</Label>
-                            <Input placeholder="Enter agency name..." value={otherAgency} onChange={(e) => setOtherAgency(e.target.value)} required className="border-destructive/40 focus-visible:ring-destructive" />
-                          </div>
-                        )}
-                        {selectedAgencies.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-4">
-                            {selectedAgencies.map((a) => (
-                              <Badge key={a} variant="outline" className="text-xs cursor-pointer hover:bg-destructive/10" onClick={() => setSelectedAgencies((prev) => prev.filter((x) => x !== a))}>
-                                {a === 'OTHERS' && otherAgency ? `OTHERS (${otherAgency})` : a} x
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Justification</Label>
-                        <Textarea value={escalationJustification} onChange={(e) => setEscalationJustification(e.target.value)} placeholder="Provide justification for escalation..." rows={4} />
-                      </div>
-                      <p className="text-xs text-muted-foreground">This will be routed to MCMC Supervisor for approval.</p>
-                    </div>
-                    <DialogFooter>
-                      <Button onClick={handleSubmitEscalation} variant="destructive">
-                        <ArrowUpRight className="mr-2 h-4 w-4" />Submit Escalation Request
+                {!isCyberSpecialist ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-destructive/40 bg-destructive/5 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-destructive hover:bg-destructive/10 focus-visible:ring-2 focus-visible:ring-destructive/30 transition-all">
+                        <ArrowUpRight className="mr-2 h-4 w-4" />Propose Escalation to LEA
+                        <ChevronRight className="ml-auto h-4 w-4 text-destructive/70" />
                       </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-lg">
+                      <DialogHeader><DialogTitle>Propose Escalation to LEA</DialogTitle></DialogHeader>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>Select LEA Agency(s) *</Label>
+                          <div className="relative">
+                            <Input
+                              placeholder="Search agencies..."
+                              className="mb-2"
+                              onChange={(e) => {
+                                const el = e.target.nextElementSibling as HTMLElement;
+                                if (el) {
+                                  const items = el.querySelectorAll('[data-agency]');
+                                  items.forEach((item) => {
+                                    const name = (item as HTMLElement).dataset.agency || '';
+                                    (item as HTMLElement).style.display = name.toLowerCase().includes(e.target.value.toLowerCase()) ? '' : 'none';
+                                  });
+                                }
+                              }}
+                            />
+                            <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
+                              {LEA_AGENCY_OPTIONS.map((agency) => (
+                                <div
+                                  key={agency.value}
+                                  data-agency={`${agency.value.toLowerCase()} ${agency.label.toLowerCase()}`}
+                                  className="flex items-center gap-2 py-1"
+                                >
+                                  <Checkbox
+                                    checked={selectedAgencies.includes(agency.value)}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) setSelectedAgencies((prev) => [...prev, agency.value]);
+                                      else setSelectedAgencies((prev) => prev.filter((a) => a !== agency.value));
+                                    }}
+                                  />
+                                  <Label className="text-sm cursor-pointer">{agency.label}</Label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          {selectedAgencies.includes('OTHERS') && (
+                            <div className="space-y-2 mt-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                              <Label className="text-destructive font-medium">Specify Other Agency Name *</Label>
+                              <Input placeholder="Enter agency name..." value={otherAgency} onChange={(e) => setOtherAgency(e.target.value)} required className="border-destructive/40 focus-visible:ring-destructive" />
+                            </div>
+                          )}
+                          {selectedAgencies.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-4">
+                              {selectedAgencies.map((a) => (
+                                <Badge key={a} variant="outline" className="text-xs cursor-pointer hover:bg-destructive/10" onClick={() => setSelectedAgencies((prev) => prev.filter((x) => x !== a))}>
+                                  {a === 'OTHERS' && otherAgency ? `OTHERS (${otherAgency})` : (LEA_AGENCY_OPTIONS.find((opt) => opt.value === a)?.label || a)} x
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Justification</Label>
+                          <Textarea value={escalationJustification} onChange={(e) => setEscalationJustification(e.target.value)} placeholder="Provide justification for escalation..." rows={4} />
+                        </div>
+                        <p className="text-xs text-muted-foreground">This will be routed to MCMC Supervisor for approval.</p>
+                      </div>
+                      <DialogFooter>
+                        <Button onClick={handleSubmitEscalation} variant="destructive">
+                          <ArrowUpRight className="mr-2 h-4 w-4" />Submit Escalation Request
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <div className="text-xs text-muted-foreground rounded-lg border border-border p-3 bg-muted/30">
+                    Escalation to LEA is disabled for Cyber Specialist Case Officer workflow.
+                  </div>
+                )}
 
-                <Dialog>
+                {!isCyberSpecialist && <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full h-12 justify-start font-semibold rounded-lg border-blue-300 bg-blue-50/50 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-blue-700 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-300 transition-all">
                       <Users className="mr-2 h-4 w-4" />Request Case Transfer
@@ -489,7 +526,7 @@ export default function CaseReview() {
                       </Button>
                     </DialogFooter>
                   </DialogContent>
-                </Dialog>
+                </Dialog>}
               </CardContent>
             </Card>
           ) : (

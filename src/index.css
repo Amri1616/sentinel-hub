@@ -145,6 +145,17 @@ All colors MUST be HSL.
   h6 {
     @apply font-semibold tracking-tight;
   }
+
+  /* Project-wide table consistency */
+  table thead {
+    background-color: hsl(var(--muted) / 0.5) !important;
+  }
+
+  table th,
+  table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
 }
 
 @layer utilities {

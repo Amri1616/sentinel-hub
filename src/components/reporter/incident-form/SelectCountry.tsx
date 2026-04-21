@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useTranslation } from 'react-i18next'
 
 export const countries = [
   { label: "Afghanistan", value: "afghanistan" },
@@ -260,10 +261,12 @@ export const countries = [
 interface SelectCountryProps {
   value: string;
   onValueChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export function SelectCountry({ value, onValueChange }: SelectCountryProps) {
+export function SelectCountry({ value, onValueChange, disabled = false }: SelectCountryProps) {
   const [open, setOpen] = React.useState(false)
+  const { t } = useTranslation()
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -272,19 +275,20 @@ export function SelectCountry({ value, onValueChange }: SelectCountryProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className="w-full justify-between"
         >
           {value
             ? countries.find((country) => country.label === value)?.label
-            : "Select country..."}
+            : t('Select country...')}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
         <Command>
-          <CommandInput placeholder="Search country..." />
+          <CommandInput placeholder={t('Search country...')} />
           <CommandList>
-            <CommandEmpty>No country found.</CommandEmpty>
+            <CommandEmpty>{t('No country found.')}</CommandEmpty>
             <CommandGroup>
               {countries.map((country) => (
                 <CommandItem

@@ -15,8 +15,8 @@ function formatAddress(address: any) {
   const parts = [
     address.addressLine1,
     address.addressLine2,
-    address.city,
     address.zipCode,
+    address.city,
     address.state,
     address.country
   ].filter(Boolean);
@@ -52,19 +52,21 @@ function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: 
     faxNumber: form.faxNumber || undefined,
     leaEscalation: form.reportedToAuthorities === 'Yes' ? 'Yes' : 'No',
     systemServiceAffected: form.systemServiceAffected || undefined,
+    vehicleDetails: form.vehicleDetails || undefined,
+    buildingDetails: form.buildingDetails || undefined,
     observedImpact: form.observedImpact || undefined,
     primaryIncidentType: form.primaryIncidentType,
     staffDetected: form.staffDetected?.name ? form.staffDetected : undefined,
     senderInfo: form.senderInfo?.name ? {
       name: form.senderInfo.name,
       address: `${form.senderInfo.addressLine1}${form.senderInfo.addressLine2 ? ', ' + form.senderInfo.addressLine2 : ''}`,
-      stateCountry: `${form.senderInfo.city}, ${form.senderInfo.state}, ${form.senderInfo.zipCode}, ${form.senderInfo.country}`,
+      stateCountry: `${form.senderInfo.zipCode}, ${form.senderInfo.city}, ${form.senderInfo.state}, ${form.senderInfo.country}`,
       contact: form.senderInfo.contact
     } : undefined,
     recipientInfo: form.recipientInfo?.name ? {
       name: form.recipientInfo.name,
       address: `${form.recipientInfo.addressLine1}${form.recipientInfo.addressLine2 ? ', ' + form.recipientInfo.addressLine2 : ''}`,
-      stateCountry: `${form.recipientInfo.city}, ${form.recipientInfo.state}, ${form.recipientInfo.zipCode}, ${form.recipientInfo.country}`,
+      stateCountry: `${form.recipientInfo.zipCode}, ${form.recipientInfo.city}, ${form.recipientInfo.state}, ${form.recipientInfo.country}`,
       contact: form.recipientInfo.contact
     } : undefined,
     trackingNumber: form.trackingNumber || undefined,
@@ -78,6 +80,7 @@ function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: 
     incidentControlStatus: form.incidentContained || '',
     reportedToAuthority: form.reportedToAuthorities || 'No',
     authorityDetails: form.authorityDetails || undefined,
+    authorityReference: form.authorityReportNumber || undefined,
     parcelHandedOver: form.parcelHandedOver || 'No',
     assistanceRequested: form.assistanceRequired || [],
     documents: form.attachments?.map((a) => ({

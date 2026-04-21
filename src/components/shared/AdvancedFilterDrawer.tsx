@@ -56,6 +56,9 @@ interface AdvancedFilterDrawerProps {
   onApply: (filters: AdvancedFilters) => void;
   activeCount?: number;
   hideAgencyFilter?: boolean;
+  hideCaseStatus?: boolean;
+  hideSeverity?: boolean;
+  hideSpecificLogic?: boolean;
 }
 
 // ─── Static options ──────────────────────────────────────────────────────────
@@ -114,7 +117,15 @@ function SectionHeader({ label }: { label: string }) {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function AdvancedFilterDrawer({
-  open, onClose, filters, onApply, activeCount = 0, hideAgencyFilter = false,
+  open,
+  onClose,
+  filters,
+  onApply,
+  activeCount = 0,
+  hideAgencyFilter = false,
+  hideCaseStatus = false,
+  hideSeverity = false,
+  hideSpecificLogic = false,
 }: AdvancedFilterDrawerProps) {
   const [draft, setDraft] = useState<AdvancedFilters>(filters);
 
@@ -192,38 +203,42 @@ export default function AdvancedFilterDrawer({
           {/* ── Categorisation ── */}
           <SectionHeader label="Categorisation" />
 
-          <div className="space-y-1.5">
-            <Label>Case Status</Label>
-            <Select value={draft.status} onValueChange={(v) => set('status', v)}>
-              <SelectTrigger id="adv-status"><SelectValue placeholder="All statuses" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Draft">Draft</SelectItem>
-                <SelectItem value="Submitted">Submitted</SelectItem>
-                <SelectItem value="Under Review">Under Review</SelectItem>
-                <SelectItem value="In Review">In Review</SelectItem>
-                <SelectItem value="RFI Sent">RFI Sent</SelectItem>
-                <SelectItem value="Escalation Pending">Escalation Pending</SelectItem>
-                <SelectItem value="Escalated">Escalated</SelectItem>
-                <SelectItem value="Under Investigation">Under Investigation</SelectItem>
-                <SelectItem value="Closed">Closed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {!hideCaseStatus && (
+            <div className="space-y-1.5">
+              <Label>Case Status</Label>
+              <Select value={draft.status} onValueChange={(v) => set('status', v)}>
+                <SelectTrigger id="adv-status"><SelectValue placeholder="All statuses" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="Draft">Draft</SelectItem>
+                  <SelectItem value="Submitted">Submitted</SelectItem>
+                  <SelectItem value="Under Review">Under Review</SelectItem>
+                  <SelectItem value="In Review">In Review</SelectItem>
+                  <SelectItem value="RFI Sent">RFI Sent</SelectItem>
+                  <SelectItem value="Escalation Pending">Escalation Pending</SelectItem>
+                  <SelectItem value="Escalated">Escalated</SelectItem>
+                  <SelectItem value="Under Investigation">Under Investigation</SelectItem>
+                  <SelectItem value="Closed">Closed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
-          <div className="space-y-1.5">
-            <Label>Severity</Label>
-            <Select value={draft.severity} onValueChange={(v) => set('severity', v)}>
-              <SelectTrigger id="adv-severity"><SelectValue placeholder="All severities" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Severities</SelectItem>
-                <SelectItem value="Critical">Critical</SelectItem>
-                <SelectItem value="High">High</SelectItem>
-                <SelectItem value="Medium">Medium</SelectItem>
-                <SelectItem value="Low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {!hideSeverity && (
+            <div className="space-y-1.5">
+              <Label>Severity</Label>
+              <Select value={draft.severity} onValueChange={(v) => set('severity', v)}>
+                <SelectTrigger id="adv-severity"><SelectValue placeholder="All severities" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Severities</SelectItem>
+                  <SelectItem value="Critical">Critical</SelectItem>
+                  <SelectItem value="High">High</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="Low">Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-1.5">
             <Label>Incident Type</Label>
@@ -322,42 +337,6 @@ export default function AdvancedFilterDrawer({
             />
           </div>
 
-          {/* ── Specific Logic ── */}
-          <SectionHeader label="Specific Logic" />
-
-          <div className="space-y-1.5">
-            <Label>Assistance Required</Label>
-            <Select value={draft.assistanceRequired} onValueChange={(v) => set('assistanceRequired', v)}>
-              <SelectTrigger id="adv-assistance"><SelectValue placeholder="Any" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any</SelectItem>
-                {ASSISTANCE_OPTIONS.map((o) => (
-                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Incident Contained</Label>
-            <div className="flex gap-2">
-              {(['all', 'yes', 'no'] as const).map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  id={`adv-contained-${v}`}
-                  onClick={() => set('incidentContained', v)}
-                  className={`flex-1 py-2 rounded-md border text-sm font-medium transition-colors
-                    ${draft.incidentContained === v
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-transparent border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'
-                    }`}
-                >
-                  {v === 'all' ? 'Any' : v === 'yes' ? 'Yes' : 'No'}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Footer */}

@@ -74,23 +74,23 @@ export default function LicenseeAdminDrafts() {
             <table className="w-full">
               <thead className="border-b bg-muted/50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Reporter Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Title/Category</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Last Updated</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">Days Remaining</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Reporter Name</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Title/Category</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Last Updated</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Days Remaining</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredDrafts.length > 0 ? (
                   filteredDrafts.map((draft) => (
                     <tr key={draft.id} className="border-b hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-4 text-sm font-medium">{draft.reporter}</td>
-                      <td className="px-4 py-4 text-sm">
+                      <td className="px-4 py-4 text-center align-middle text-sm font-medium">{draft.reporter}</td>
+                      <td className="px-4 py-4 text-center align-middle text-sm">
                         <div className="font-medium">{draft.title}</div>
                         <div className="text-muted-foreground text-xs">{draft.category}</div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-muted-foreground">{draft.updated}</td>
-                      <td className="px-4 py-4 text-sm">
+                      <td className="px-4 py-4 text-center align-middle text-sm text-muted-foreground">{draft.updated}</td>
+                      <td className="px-4 py-4 text-center align-middle text-sm">
                         <Badge
                           variant="outline"
                           className={
@@ -124,6 +124,10 @@ export default function LicenseeAdminDrafts() {
         onClose={() => setIsFilterOpen(false)}
         filters={filters}
         onApply={setFilters}
+        hideCaseStatus
+        hideSeverity
+        hideAgencyFilter
+        hideSpecificLogic
       />
     </div>
   );
