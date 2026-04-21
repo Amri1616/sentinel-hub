@@ -8,11 +8,13 @@ import { login } from '@/lib/auth';
 import { ArrowLeft, User, ShieldCheck, Users, Search, Eye, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 
 import mcmcLogo from '@/assets/mcmc-logo.png';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +31,8 @@ export default function Login() {
   const handleDemoClick = (email: string, pass: string, label: string) => {
     setEmail(email);
     setPassword(pass);
-    toast.info(`Form populated for ${label}`, {
-      description: "Click login to continue",
+    toast.info(t('Form populated for {{label}}', { label }), {
+      description: t('Click login to continue'),
       duration: 2000,
     });
   };
@@ -43,11 +45,11 @@ export default function Login() {
       try {
         const user = login(email, password);
         const otp = '123456';
-        toast.success(`Welcome back, ${user.name}. Please complete MFA.`);
+        toast.success(t('Welcome back, {{name}}. Please complete MFA.', { name: user.name }));
         // Pass the user's role to OTP page so it knows where to redirect after MFA
         navigate('/otp', { state: { role: user.role, otp } });
       } catch (error) {
-        toast.error('Invalid email or password');
+        toast.error(t('Invalid email or password'));
       } finally {
         setIsLoading(false);
       }
@@ -70,20 +72,20 @@ export default function Login() {
           className="mb-6 text-white hover:bg-white/10"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+          {t('Back to Home')}
         </Button>
 
         <Card className="border-t-[4px] border-x-0 border-b-0 border-[#044cd0] bg-white rounded-lg shadow-xl shadow-black/50">
           <CardHeader className="space-y-2 text-center pb-4">
-            <CardTitle className="text-xl text-[#111111] font-poppins">System Login</CardTitle>
+            <CardTitle className="text-xl text-[#111111] font-poppins">{t('System Login')}</CardTitle>
             <CardDescription className="text-sm pt-2 text-gray-600">
-              Enter your credentials to access the secure reporting platform
+              {t('Enter your credentials to access the secure reporting platform')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-[#111111]">Email</Label>
+                <Label htmlFor="email" className="text-[#111111]">{t('Email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -95,11 +97,11 @@ export default function Login() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-[#111111]">Password</Label>
+                <Label htmlFor="password" className="text-[#111111]">{t('Password')}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder={t('Enter your password')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -111,7 +113,7 @@ export default function Login() {
                 className="w-full bg-[#044cd0] hover:bg-[#044cd0]/90 text-white font-semibold h-11"
                 disabled={isLoading}
               >
-                {isLoading ? 'Logging in...' : 'Login'}
+                {isLoading ? t('Logging in...') : t('Login')}
               </Button>
               <div className="text-center pt-2">
                 <button
@@ -119,7 +121,7 @@ export default function Login() {
                   onClick={() => navigate('/forgot-password')}
                   className="text-sm text-gray-500 hover:text-[#044cd0] underline-offset-4 hover:underline"
                 >
-                  Forgot Password?
+                  {t('Forgot Password?')}
                 </button>
               </div>
             </form>
@@ -127,10 +129,10 @@ export default function Login() {
             <div className="mt-8 pt-6 border-t border-gray-100">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                  Demo Accounts
+                  {t('Demo Accounts')}
                 </h3>
                 <Badge variant="outline" className="text-[10px] font-medium border-blue-100 text-[#044cd0] bg-blue-50/50">
-                  Quick Access
+                  {t('Quick Access')}
                 </Badge>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -163,7 +165,7 @@ export default function Login() {
       </div>
 
       <div className="mt-8 font-poppins text-xs text-center text-gray-400">
-        IT HELPDESK: 03-8688 8008 | ITHelpdesk@mcmc.gov.my
+        {t('Contact us at: psirp-support@mcmc.gov.my')}
       </div>
     </div>
   );

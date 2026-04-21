@@ -9,6 +9,8 @@ interface Props {
     incidentTime: string;
     incidentLocation?: string;
     systemServiceAffected?: string;
+    vehicleDetails?: string;
+    buildingDetails?: string;
     observedImpact?: string;
     estimatedImpact?: string;
     staffDetected?: { name: string; designation: string; contactNumber: string; email: string };
@@ -64,9 +66,11 @@ export default function IncidentDescription({ incident }: Props) {
           </div>
         </div>
 
-        {/* Affected Systems & Estimated Impact */}
-        <div className="grid md:grid-cols-2 gap-4">
+        {/* Affected Context & Estimated Impact */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Affected Systems/Services" value={incident.systemServiceAffected || '—'} />
+          <Field label="Vehicle Details" value={incident.vehicleDetails || '—'} />
+          <Field label="Building Details" value={incident.buildingDetails || '—'} />
           <div>
             <p className="text-xs text-muted-foreground mb-1">Estimated Impact</p>
             {impact ? (

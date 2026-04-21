@@ -8,14 +8,15 @@ import {
 } from 'lucide-react';
 
 const escalationQueue = [
-  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', officer: 'Ahmad Razif', severity: 'Critical', days: 2, type: 'Transfer Request' },
-  { id: 'PSIRP-2025-0052', title: 'Dangerous goods interception', officer: 'Nurul Hana', severity: 'High', days: 1, type: 'Closure Approval' },
-  { id: 'PSIRP-2025-0060', title: 'Cross-border contraband attempt', officer: 'Farah Amin', severity: 'Critical', days: 1, type: 'Escalation' },
-  { id: 'PSIRP-2025-0063', title: 'Tampering at sorting centre', officer: 'Raj Kumar', severity: 'Medium', days: 4, type: 'Escalation' },
+  { id: 'PSIRP-2025-0045', title: 'High-value theft – KL hub', officer: 'Ahmad Razif', severity: 'Critical', days: 2, type: 'Transfer Request', deadline: 'Overdue by 6h' },
+  { id: 'PSIRP-2025-0052', title: 'Dangerous goods interception', officer: 'Nurul Hana', severity: 'High', days: 1, type: 'Closure Approval', deadline: 'Due in 3h' },
+  { id: 'PSIRP-2025-0060', title: 'Cross-border contraband attempt', officer: 'Farah Amin', severity: 'Critical', days: 1, type: 'Escalation', deadline: 'Due in 7h' },
+  { id: 'PSIRP-2025-0063', title: 'Tampering at sorting centre', officer: 'Raj Kumar', severity: 'Medium', days: 4, type: 'Escalation', deadline: 'Overdue by 1d' },
 ];
 
 export default function SupervisorDashboard() {
   const navigate = useNavigate();
+  const overdueCount = escalationQueue.filter((item) => item.deadline.toLowerCase().includes('overdue')).length;
 
   const kpis = [
     { label: 'Total Open Cases', value: 34, icon: FolderOpen, color: 'text-role-validator', route: '/supervisor/cases' },
@@ -159,6 +160,15 @@ export default function SupervisorDashboard() {
           </span>
         </CardHeader>
         <CardContent className="space-y-3">
+          <div className="p-3 rounded-lg border border-destructive/30 bg-destructive/5 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-destructive">Overdue Reminder</p>
+              <p className="text-xs text-muted-foreground">{overdueCount} pending task(s) are beyond their SLA window and need immediate supervisor action.</p>
+            </div>
+            <Badge variant="outline" className="border-destructive/40 bg-destructive/10 text-destructive">
+              {overdueCount} Overdue
+            </Badge>
+          </div>
           {escalationQueue.map((item) => (
             <div key={item.id} className="flex items-center justify-between p-3 border border-border/40 rounded-lg hover:bg-accent/30 transition-colors">
               <div className="space-y-1">
@@ -167,6 +177,9 @@ export default function SupervisorDashboard() {
                 <p className="text-xs text-muted-foreground">Officer: {item.officer} · {item.days}d ago</p>
               </div>
               <div className="flex items-center gap-2">
+                <Badge variant="outline" className={item.deadline.toLowerCase().includes('overdue') ? 'border-destructive/40 bg-destructive/10 text-destructive' : 'border-amber-400/40 bg-amber-100 text-amber-700'}>
+                  {item.deadline}
+                </Badge>
                 <Badge variant="secondary" className={cn(
                   "text-[10px] font-bold uppercase",
                   item.type === 'Transfer Request' ? "bg-indigo-100 text-indigo-700" : 

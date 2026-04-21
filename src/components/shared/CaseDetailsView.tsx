@@ -39,6 +39,8 @@ export interface CaseData {
   leaEscalation: string;
   description: string;
   systemServiceAffected?: string;
+  vehicleDetails?: string;
+  buildingDetails?: string;
   observedImpact?: string;
   estimatedImpact?: string;
   primaryIncidentType?: string;
@@ -161,7 +163,7 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
       if (!isValid(incDate) || !isValid(repDate)) return null;
       
       const diffDays = differenceInDays(repDate, incDate);
-      const isOverdue = diffDays > 8;
+      const isOverdue = diffDays > 20;
       
       return { diffDays, isOverdue };
     } catch (e) {
@@ -272,7 +274,7 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
               <>
                 <CheckCircle2 className="h-5 w-5 shrink-0" />
                 <div className="text-sm font-bold">
-                  Submitted within the 8-day reporting window.
+                  Submitted within the 20-day reporting window.
                 </div>
               </>
             )}

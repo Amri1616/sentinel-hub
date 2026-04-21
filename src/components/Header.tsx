@@ -16,6 +16,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import mcmcLogo from '@/assets/mcmc-logo.png';
+import { useTranslation } from 'react-i18next';
 
 const recentNotifications = [
   {
@@ -57,7 +58,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
-  const [language, setLanguage] = useState<'EN' | 'BM'>('EN');
+  const { t, i18n } = useTranslation();
   const [notifOpen, setNotifOpen] = useState(false);
 
   const authRoutes = ['/', '/login', '/otp', '/forgot-password'];
@@ -71,6 +72,11 @@ export const Header = () => {
   };
 
   const unreadCount = recentNotifications.filter((n) => !n.read).length;
+  const language = i18n.language === 'ms' ? 'BM' : 'EN';
+
+  const setLanguage = (nextLanguage: 'EN' | 'BM') => {
+    void i18n.changeLanguage(nextLanguage === 'BM' ? 'ms' : 'en');
+  };
 
   const getNotificationsPath = () => {
     if (!user) return '/';
@@ -92,7 +98,7 @@ export const Header = () => {
             alt="MCMC Logo"
             className="h-12 w-auto object-contain"
           />
-          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block">Postal Security Incident Reporting Platform</h1>
+          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block">{t('Postal Security Incident Reporting Platform')}</h1>
         </div>
 
         <div className="flex items-center gap-4">
@@ -142,8 +148,8 @@ export const Header = () => {
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-80 p-0">
                   <div className="px-4 py-3 border-b border-border">
-                    <p className="text-sm font-semibold">Notifications</p>
-                    <p className="text-xs text-muted-foreground">{unreadCount} unread</p>
+                    <p className="text-sm font-semibold">{t('Notifications')}</p>
+                    <p className="text-xs text-muted-foreground">{t('{{count}} unread', { count: unreadCount })}</p>
                   </div>
                   <div className="max-h-72 overflow-y-auto">
                     {recentNotifications.map((notif) => {
@@ -158,13 +164,13 @@ export const Header = () => {
                           <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium truncate">{notif.title}</p>
+                              <p className="text-sm font-medium truncate">{t(notif.title)}</p>
                               {!notif.read && (
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground truncate">{notif.message}</p>
-                            <p className="text-xs text-muted-foreground/70 mt-0.5">{notif.time}</p>
+                            <p className="text-xs text-muted-foreground truncate">{t(notif.message)}</p>
+                            <p className="text-xs text-muted-foreground/70 mt-0.5">{t(notif.time)}</p>
                           </div>
                         </button>
                       );
@@ -175,7 +181,7 @@ export const Header = () => {
                       onClick={handleNotifClick}
                       className="w-full text-center text-sm font-medium text-primary hover:underline"
                     >
-                      View all notifications
+                      {t('View all notifications')}
                     </button>
                   </div>
                 </PopoverContent>
@@ -200,17 +206,17 @@ export const Header = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate(`${getRoleConfig(user.role).basePath}/${user.role === 'reporter' ? 'profile' : 'security'}`)}>
                     <User className="mr-2 h-4 w-4" />
-                    Profile
+                    {t('Profile')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                    {t('Logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout" className="text-destructive hover:bg-destructive/10">
+              <Button variant="ghost" size="icon" onClick={handleLogout} title={t('Logout')} className="text-destructive hover:bg-destructive/10">
                 <LogOut className="h-5 w-5" />
               </Button>
             </>

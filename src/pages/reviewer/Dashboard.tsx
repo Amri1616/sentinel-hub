@@ -67,6 +67,12 @@ export default function ReviewerDashboard() {
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
+  const deadlineReminders = [
+    { id: 'PSIRP-2025-0028', task: 'Escalation decision deadline', remaining: 'Overdue by 4h', severity: 'overdue' },
+    { id: 'PSIRP-2025-0027', task: 'Clarification response follow-up', remaining: 'Due in 2h', severity: 'at-risk' },
+    { id: 'PSIRP-2025-0026', task: 'Closure recommendation submission', remaining: 'Due in 6h', severity: 'normal' },
+  ];
+
   const [caseActionUpdates, setCaseActionUpdates] = useState<CaseActionUpdate[]>([
     {
       id: 'PSIRP-2025-0028',
@@ -256,6 +262,37 @@ export default function ReviewerDashboard() {
         <Users className="mr-3 h-6 w-6" />
         Go to Case Monitoring
       </Button>
+
+      <Card className="border-amber-300/40 bg-amber-50/40">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Clock className="h-4 w-4 text-amber-700" />
+            Case Action Deadline Reminders (SLA)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {deadlineReminders.map((r) => (
+            <div key={r.id} className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border/50 bg-background/70">
+              <div>
+                <p className="text-sm font-medium">{r.id} · {r.task}</p>
+                <p className="text-xs text-muted-foreground">Action required in Case Monitoring queue.</p>
+              </div>
+              <Badge
+                variant="outline"
+                className={
+                  r.severity === 'overdue'
+                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                    : r.severity === 'at-risk'
+                    ? 'border-amber-400/40 bg-amber-100 text-amber-700'
+                    : 'border-slate-300 bg-slate-100 text-slate-700'
+                }
+              >
+                {r.remaining}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
 
       <div className="flex flex-col gap-6">
         {/* Recent Assigned */}
