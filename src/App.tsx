@@ -87,7 +87,24 @@ import AdminUsers from "./pages/admin/Users";
 import AdminOrganisations from "./pages/admin/Organisations";
 import MasterData from "./pages/admin/MasterData";
 import AuditLogs from "./pages/admin/AuditLogs";
+import SuperAdminLayout from "./components/superAdmin/SuperAdminLayout";
 import SuperAdminDashboard from "./pages/superAdmin/Dashboard";
+import UserList from "./pages/superAdmin/users/UserList";
+import CreateUser from "./pages/superAdmin/users/CreateUser";
+import UserDetail from "./pages/superAdmin/users/UserDetail";
+import NominationList from "./pages/superAdmin/nominations/NominationList";
+import NominationBuilder from "./pages/superAdmin/nominations/NominationBuilder";
+import NominationDetail from "./pages/superAdmin/nominations/NominationDetail";
+import AllCases from "./pages/superAdmin/cases/AllCases";
+import DeletedCases from "./pages/superAdmin/cases/DeletedCases";
+import MasterDataList from "./pages/superAdmin/masterData/MasterDataList";
+import WorkflowSettings from "./pages/superAdmin/workflows/WorkflowSettings";
+import TemplateList from "./pages/superAdmin/notifications/TemplateList";
+import TemplateEdit from "./pages/superAdmin/notifications/TemplateEdit";
+import SecuritySettings from "./pages/superAdmin/security/SecuritySettings";
+import SystemSettings from "./pages/superAdmin/settings/SystemSettings";
+import SuperAuditLogs from "./pages/superAdmin/logs/AuditLogs";
+import Monitoring from "./pages/superAdmin/monitoring/Monitoring";
 import LEALayout from "./components/agency/LEALayout";
 import LEADashboard from "./pages/agency/Dashboard";
 import LEACaseList from "./pages/agency/CaseList";
@@ -223,7 +240,25 @@ const App = () => (
                   <Route path="/admin/audit-logs" element={<ProtectedRoute><AuditLogs /></ProtectedRoute>} />
 
                   {/* Super Admin Routes */}
-                  <Route path="/super-admin/dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
+                  <Route path="/super-admin" element={<ProtectedRoute><SuperAdminLayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<SuperAdminDashboard />} />
+                    <Route path="users" element={<UserList />} />
+                    <Route path="users/new" element={<CreateUser />} />
+                    <Route path="users/:id" element={<UserDetail />} />
+                    <Route path="nominations" element={<NominationList />} />
+                    <Route path="nominations/new" element={<NominationBuilder />} />
+                    <Route path="nominations/:id" element={<NominationDetail />} />
+                    <Route path="cases" element={<AllCases />} />
+                    <Route path="deleted-cases" element={<DeletedCases />} />
+                    <Route path="master-data" element={<MasterDataList />} />
+                    <Route path="workflows" element={<WorkflowSettings />} />
+                    <Route path="notifications" element={<TemplateList />} />
+                    <Route path="notifications/:id" element={<TemplateEdit />} />
+                    <Route path="security" element={<SecuritySettings />} />
+                    <Route path="settings" element={<SystemSettings />} />
+                    <Route path="logs" element={<SuperAuditLogs />} />
+                    <Route path="monitoring" element={<Monitoring />} />
+                  </Route>
 
                   {/* LEA Routes - with sidebar layout */}
                   <Route path="/agency" element={<ProtectedRoute><LEALayout /></ProtectedRoute>}>

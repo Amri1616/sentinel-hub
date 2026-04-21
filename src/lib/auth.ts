@@ -28,6 +28,7 @@ export const login = (email: string, password: string): User => {
     'msupervisor@mcmc.gov.my': { role: 'validator', pass: '12345' },
     'minternal@mcmc.gov.my': { role: 'investigator', pass: '12345' },
     'agency@lea.gov.my': { role: 'lea-viewer', pass: '12345' },
+    'superadmin@mcmc.gov.my': { role: 'super-admin', pass: '12345' },
   };
 
   const cred = credentials[email];

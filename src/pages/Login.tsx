@@ -24,6 +24,7 @@ export default function Login() {
     { label: 'MCMC Supervisor', email: 'msupervisor@mcmc.gov.my', password: '12345', icon: ShieldCheck },
     { label: 'MCMC Internal', email: 'minternal@mcmc.gov.my', password: '12345', icon: Eye },
     { label: 'Agency (LEA)', email: 'agency@lea.gov.my', password: '12345', icon: Users },
+    { label: 'MCMC Super Admin', email: 'superadmin@mcmc.gov.my', password: '12345', icon: ShieldCheck },
   ];
 
   const handleDemoClick = (email: string, pass: string, label: string) => {
