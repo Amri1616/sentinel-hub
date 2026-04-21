@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Eye, Pencil, Power } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const usersData = [
   { id: 1, name: 'Ahmad bin Abdullah', email: 'ahmad.abdullah@expresscourier.com', phone: '+60 12-345 6789', role: 'Reporter', status: 'Active', submissions: 14, draftDate: '2025-02-18', hasDraft: true },
@@ -12,11 +15,22 @@ const usersData = [
 ];
 
 export default function LicenseeAdminUsers() {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
+  const [users, setUsers] = useState(usersData);
 
-  const filtered = usersData.filter(u => {
+  const filtered = users.filter(u => {
     return u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.email.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const toggleStatus = (id: number) => {
+    setUsers((prev) => prev.map((u) => {
+      if (u.id !== id) return u;
+      const nextStatus = u.status === 'Active' ? 'Inactive' : 'Active';
+      toast({ title: `Reporter ${nextStatus}`, description: `${u.name} is now ${nextStatus.toLowerCase()}.` });
+      return { ...u, status: nextStatus };
+    }));
+  };
 
   return (
     <div className="space-y-6">
@@ -48,6 +62,8 @@ export default function LicenseeAdminUsers() {
                   <th className="px-4 py-3 text-center text-sm font-medium">Email</th>
                   <th className="px-4 py-3 text-center text-sm font-medium">Phone Number</th>
                   <th className="px-4 py-3 text-center text-sm font-medium">Submissions</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Status</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,6 +75,24 @@ export default function LicenseeAdminUsers() {
                     <td className="px-4 py-4 text-center align-middle text-sm text-muted-foreground">{user.email}</td>
                     <td className="px-4 py-4 text-center align-middle text-sm text-muted-foreground">{user.phone}</td>
                     <td className="px-4 py-4 text-center align-middle text-sm font-medium">{user.submissions}</td>
+                    <td className="px-4 py-4 text-center align-middle">
+                      <Badge variant="outline" className={user.status === 'Active' ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-slate-300 bg-slate-50 text-slate-700'}>
+                        {user.status}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-4 text-center align-middle">
+                      <div className="flex items-center justify-center gap-1">
+                        <Button variant="ghost" size="icon" title="View" onClick={() => toast({ title: 'View Reporter', description: `Opened reporter profile for ${user.name}.` })}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" title="Edit" onClick={() => toast({ title: 'Edit Reporter', description: `Editing profile for ${user.name}.` })}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" title={user.status === 'Active' ? 'Deactivate' : 'Activate'} onClick={() => toggleStatus(user.id)}>
+                          <Power className={`h-4 w-4 ${user.status === 'Active' ? 'text-destructive' : 'text-emerald-600'}`} />
+                        </Button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

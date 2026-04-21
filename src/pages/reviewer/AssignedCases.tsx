@@ -14,6 +14,8 @@ import {
 import AdvancedFilterDrawer, {
   AdvancedFilters, EMPTY_FILTERS, countActiveFilters,
 } from '@/components/shared/AdvancedFilterDrawer';
+import { getCurrentUser } from '@/lib/auth';
+import { getCyberSpecialCases } from '@/lib/cyberCases';
 
 interface Escalation {
   name: string;
@@ -28,13 +30,17 @@ const assignedCases = [
 
 export default function CaseOfficerAssignedCases() {
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
+  const isCyberSpecialist = currentUser?.isCyberSpecialist === true;
+  const cyberCases = getCyberSpecialCases(currentUser?.email).filter((c) => c.isOwn);
+  const combinedAssignedCases = isCyberSpecialist ? cyberCases : assignedCases;
   const [searchQuery, setSearchQuery] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [advFilters, setAdvFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
 
   const activeCount = countActiveFilters(advFilters);
 
-  const filtered = assignedCases.filter((i) => {
+  const filtered = combinedAssignedCases.filter((i) => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const match =
@@ -43,6 +49,9 @@ export default function CaseOfficerAssignedCases() {
         i.organisation.toLowerCase().includes(q);
       if (!match) return false;
     }
+
+    if (isCyberSpecialist && !(i as any).isCyberSpecialCase) return false;
+
     return true;
   });
 
