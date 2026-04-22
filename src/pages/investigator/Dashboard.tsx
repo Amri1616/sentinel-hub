@@ -45,11 +45,10 @@ export default function InvestigatorDashboard() {
   const navigate = useNavigate();
 
   const kpis = [
-    { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'role-investigator', route: '/internal/cases' },
-    { label: 'Open Cases', value: '47', icon: Clock, color: 'status-in-review', route: '/internal/open-cases' },
-    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'destructive', route: '/internal/escalated-cases' },
-    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'status-closed', route: '/internal/closed-cases' },
-    { label: 'High Severity', value: '38', icon: ShieldAlert, color: 'role-investigator', route: '/internal/high-severity' },
+    { label: 'Total Cases', value: '115', icon: FolderOpen, colorClass: 'text-role-investigator', route: '/internal/cases' },
+    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, colorClass: 'text-destructive', route: '/internal/escalated-cases' },
+    { label: 'Closed Cases', value: '68', icon: CheckCircle, colorClass: 'text-status-closed', route: '/internal/closed-cases' },
+    { label: 'High Severity', value: '38', icon: ShieldAlert, colorClass: 'text-role-investigator', route: '/internal/high-severity' },
   ];
 
   return (
@@ -59,32 +58,20 @@ export default function InvestigatorDashboard() {
         <p className="text-muted-foreground">MCMC Internal — strategic oversight and analytics</p>
       </div>
 
-      <div className="grid gap-4 grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => {
-          const colorClass = k.color === 'role-investigator' ? 'text-role-investigator' :
-                            k.color === 'status-in-review' ? 'text-status-in-review' :
-                            k.color === 'destructive' ? 'text-destructive' :
-                            k.color === 'status-closed' ? 'text-status-closed' :
-                            k.color === 'role-validator' ? 'text-role-validator' : 'text-foreground';
-          
-          const borderColorClass = k.color === 'role-investigator' ? 'border-role-investigator/20' :
-                                  k.color === 'status-in-review' ? 'border-status-in-review/20' :
-                                  k.color === 'destructive' ? 'border-destructive/20' :
-                                  k.color === 'status-closed' ? 'border-status-closed/20' :
-                                  k.color === 'role-validator' ? 'border-role-validator/20' : 'border-border/20';
-
           return (
             <Card
               key={k.label}
-              className={cn(borderColorClass, 'min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border')}
+              className={cn('border-border/40 min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border')}
               onClick={() => navigate(k.route)}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{k.label}</CardTitle>
-                <k.icon className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-xs font-medium text-muted-foreground">{k.label}</CardTitle>
+                <k.icon className={cn('h-4 w-4', k.colorClass)} />
               </CardHeader>
               <CardContent className="flex-1 flex items-end">
-                <div className={cn('text-2xl font-bold', colorClass)}>{k.value}</div>
+                <div className={cn('text-2xl font-bold', k.colorClass)}>{k.value}</div>
               </CardContent>
             </Card>
           );

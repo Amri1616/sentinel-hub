@@ -1,8 +1,10 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Plus, Trash2 } from 'lucide-react';
 import { IncidentFormData, StaffDetected, SenderRecipientInfo, emptySenderRecipient, cyberSecurityIncidentOptions } from './types';
 import { SelectCountry } from './SelectCountry';
 import SearchableSelect from './SearchableSelect';
@@ -32,6 +34,25 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
     onChange('cyberIncidentReport', {
       ...data.cyberIncidentReport,
       incidentChronologyEntries: rows,
+    });
+  };
+
+  const addCyberChronologyRow = () => {
+    onChange('cyberIncidentReport', {
+      ...data.cyberIncidentReport,
+      incidentChronologyEntries: [
+        ...data.cyberIncidentReport.incidentChronologyEntries,
+        { date: '', time: '', event: '' },
+      ],
+    });
+  };
+
+  const removeCyberChronologyRow = (index: number) => {
+    const rows = data.cyberIncidentReport.incidentChronologyEntries;
+    if (rows.length <= 1) return;
+    onChange('cyberIncidentReport', {
+      ...data.cyberIncidentReport,
+      incidentChronologyEntries: rows.filter((_, rowIndex) => rowIndex !== index),
     });
   };
 
@@ -130,6 +151,7 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
                     <th className="px-2 py-2 text-left font-semibold min-w-[130px]">{t('Date')}</th>
                     <th className="px-2 py-2 text-left font-semibold min-w-[120px]">{t('Time')}</th>
                     <th className="px-2 py-2 text-left font-semibold min-w-[260px]">{t('Event')}</th>
+                    <th className="px-2 py-2 text-center font-semibold min-w-[90px]">{t('Action')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -144,10 +166,29 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
                       <td className="p-1.5">
                         <Input value={row.event} onChange={(e) => updateCyberChronologyRow(index, 'event', e.target.value)} placeholder={t('Describe event')} />
                       </td>
+                      <td className="p-1.5 text-center">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeCyberChronologyRow(index)}
+                          disabled={data.cyberIncidentReport.incidentChronologyEntries.length <= 1}
+                          title={t('Delete Row')}
+                          className="h-8 w-8"
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="flex justify-end">
+              <Button type="button" variant="outline" size="sm" onClick={addCyberChronologyRow}>
+                <Plus className="h-4 w-4 mr-2" />
+                {t('Add Row')}
+              </Button>
             </div>
           </div>
 
@@ -321,7 +362,7 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
         </RadioGroup>
       </div>
 
-      {/* Parcel Details */}
+      {!isCyberIncidentSelected && (
       <div className="space-y-3 p-4 border border-border rounded-lg bg-muted/30">
         <div className="flex items-center justify-between gap-3">
           <h4 className="text-sm font-semibold">{t('Parcel Details')}</h4>
@@ -355,8 +396,9 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
           </div>
         </div>
       </div>
+      )}
 
-      {/* Sender Information */}
+      {!isCyberIncidentSelected && (
       <div className="space-y-3 p-4 border border-border rounded-lg bg-muted/30">
         <div className="flex items-center justify-between gap-3">
           <h4 className="text-sm font-semibold">{t('Sender Information')}</h4>
@@ -447,8 +489,9 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
           </div>
         </div>
       </div>
+      )}
 
-      {/* Recipient Information */}
+      {!isCyberIncidentSelected && (
       <div className="space-y-3 p-4 border border-border rounded-lg bg-muted/30">
         <div className="flex items-center justify-between gap-3">
           <h4 className="text-sm font-semibold">{t('Recipient Information')}</h4>
@@ -539,6 +582,7 @@ export default function Part3IncidentInfo({ data, onChange }: Props) {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

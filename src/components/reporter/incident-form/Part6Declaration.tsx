@@ -2,7 +2,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { IncidentFormData, Step } from './types';
+import { IncidentFormData, Step, cyberSecurityIncidentOptions } from './types';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +40,7 @@ function formatAddress(address: any) {
 
 export default function Part6Declaration({ data, declaration, onDeclarationChange, onDateChange, onEditStep }: Props) {
   const { t } = useTranslation();
+  const isCyberIncidentSelected = cyberSecurityIncidentOptions.includes(data.primaryIncidentType);
 
   return (
     <div className="space-y-6">
@@ -90,9 +91,9 @@ export default function Part6Declaration({ data, declaration, onDeclarationChang
           <SummaryRow label="Time" value={data.incidentTime} />
           <SummaryRow label="Location" value={formatAddress(data.incidentLocation)} />
           <SummaryRow label="Staff Detected" value={data.staffDetected.name} />
-          <SummaryRow label="Tracking No." value={data.trackingNumber} />
-          <SummaryRow label="Sender" value={data.senderInfo.name} />
-          <SummaryRow label="Recipient" value={data.recipientInfo.name} />
+          {!isCyberIncidentSelected && <SummaryRow label="Tracking No." value={data.trackingNumber} />}
+          {!isCyberIncidentSelected && <SummaryRow label="Sender" value={data.senderInfo.name} />}
+          {!isCyberIncidentSelected && <SummaryRow label="Recipient" value={data.recipientInfo.name} />}
         </div>
 
         {/* Step 4: Actions Taken */}

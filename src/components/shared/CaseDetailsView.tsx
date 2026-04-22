@@ -12,6 +12,7 @@ import IncidentDescription from '@/components/reporter/incident-details/Incident
 import LogisticsData from '@/components/reporter/incident-details/LogisticsData';
 import ActionsTaken from '@/components/reporter/incident-details/ActionsTaken';
 import EvidenceDeclaration from '@/components/reporter/incident-details/EvidenceDeclaration';
+import { cyberSecurityIncidentOptions } from '@/components/reporter/incident-form/types';
 
 
 export interface CaseData {
@@ -43,6 +44,14 @@ export interface CaseData {
   buildingDetails?: string;
   observedImpact?: string;
   estimatedImpact?: string;
+  isCyberIncident?: boolean;
+  cyberIncidentDetails?: {
+    chronologyEntries?: Array<{ date: string; time: string; event: string }>;
+    downtimeDuration?: string;
+    rootCause?: string;
+    failingComponent?: string;
+    otherInfo?: string;
+  };
   primaryIncidentType?: string;
   postalIncidentTypes?: string[];
   staffDetected?: { name: string; designation: string; contactNumber: string; email: string };
@@ -135,6 +144,7 @@ const leaFullNames: Record<string, string> = {
 
 export default function CaseDetailsView({ incident, hideEscalation, children }: Props) {
   const { hash } = useLocation();
+  const isCyberIncident = incident.isCyberIncident || cyberSecurityIncidentOptions.includes(incident.primaryIncidentType || '');
 
   useEffect(() => {
     if (hash === '#escalation-status') {
@@ -185,10 +195,10 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
       <IncidentDescription incident={incident} />
 
       {/* Section 4: Logistics Data — Parcel, Sender, Recipient (Step 3 parcel fields) */}
-      <LogisticsData incident={incident} />
+      {!isCyberIncident && <LogisticsData incident={incident} />}
 
       {/* NEW: Multi-Agency Escalation Tracking */}
-      {!hideEscalation && incident.escalations && incident.escalations.length > 0 && (
+      {!hideEscalation && !isCyberIncident && incident.escalations && incident.escalations.length > 0 && (
         <Card id="escalation-status" className="border-destructive/20 bg-destructive/5 overflow-hidden shadow-sm">
           <CardHeader className="bg-destructive/10 py-3 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-destructive">

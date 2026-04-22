@@ -59,50 +59,50 @@ export default function ReporterDashboard() {
 
       {/* KPI Cards - 5 cards */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/drafts')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/drafts')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">My Drafts</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">My Drafts</CardTitle>
+            <FileText className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-primary">3</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-submitted/20 hover:border-status-submitted/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/incidents')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Submitted</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Submitted</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-status-submitted" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-submitted">12</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-in-review/20 hover:border-status-in-review/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/under-review')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/under-review')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Under Review</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Under Review</CardTitle>
+            <Clock className="h-4 w-4 text-status-in-review" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-in-review">4</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-investigation/20 hover:border-status-investigation/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/escalated')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/escalated')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Escalated</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Escalated</CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-status-investigation" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-investigation">2</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-closed/20 hover:border-status-closed/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/closed')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/licensee-reporter/closed')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Closed</CardTitle>
-            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Closed</CardTitle>
+            <ShieldCheck className="h-4 w-4 text-status-closed" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-closed">8</div>
