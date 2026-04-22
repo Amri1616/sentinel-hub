@@ -109,13 +109,13 @@ export default function SectionG({ attachments, onChange, linkDescription, onLin
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
-                <Label className="cursor-pointer">
+                <Label className="cursor-pointer" title={t('Replace')}>
                   <Input
                     type="file"
                     className="hidden"
                     onChange={(e) => replaceFile(globalIdx, e.target.files?.[0])}
                   />
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted" title={t('Replace')}>
                     <RefreshCcw className="h-4 w-4" />
                   </span>
                 </Label>

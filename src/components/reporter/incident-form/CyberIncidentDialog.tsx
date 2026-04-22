@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CyberIncidentReport } from './types';
 import mcmcLogo from '@/assets/mcmc-logo.png';
 import { useToast } from '@/hooks/use-toast';
+import { Plus, Trash2 } from 'lucide-react';
 
 interface Props {
   open: boolean;
@@ -47,6 +48,24 @@ export default function CyberIncidentDialog({ open, onOpenChange, data, onChange
   ) => {
     const rows = [...data.incidentChronologyEntries];
     rows[index] = { ...rows[index], [field]: value };
+    updateField('incidentChronologyEntries', rows);
+    const summary = rows
+      .filter((r) => r.date || r.time || r.event)
+      .map((r) => `${r.date || '-'} ${r.time || '-'} ${r.event || '-'}`.trim())
+      .join('\n');
+    updateField('incidentChronology', summary);
+  };
+
+  const addChronologyRow = () => {
+    updateField('incidentChronologyEntries', [
+      ...data.incidentChronologyEntries,
+      { date: '', time: '', event: '' },
+    ]);
+  };
+
+  const removeChronologyRow = (index: number) => {
+    if (data.incidentChronologyEntries.length <= 1) return;
+    const rows = data.incidentChronologyEntries.filter((_, rowIndex) => rowIndex !== index);
     updateField('incidentChronologyEntries', rows);
     const summary = rows
       .filter((r) => r.date || r.time || r.event)
@@ -114,6 +133,7 @@ export default function CyberIncidentDialog({ open, onOpenChange, data, onChange
                       <th className="px-2 py-2 text-left font-semibold min-w-[130px]">Date</th>
                       <th className="px-2 py-2 text-left font-semibold min-w-[120px]">Time</th>
                       <th className="px-2 py-2 text-left font-semibold min-w-[220px]">Event</th>
+                      <th className="px-2 py-2 text-center font-semibold min-w-[90px]">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -140,10 +160,29 @@ export default function CyberIncidentDialog({ open, onOpenChange, data, onChange
                             placeholder="Describe incident event"
                           />
                         </td>
+                        <td className="p-1.5 text-center">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeChronologyRow(index)}
+                            disabled={data.incidentChronologyEntries.length <= 1}
+                            title="Delete Row"
+                            className="h-8 w-8"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className="flex justify-end">
+                <Button type="button" variant="outline" size="sm" onClick={addChronologyRow}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Row
+                </Button>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3">

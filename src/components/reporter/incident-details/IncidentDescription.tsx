@@ -13,6 +13,15 @@ interface Props {
     buildingDetails?: string;
     observedImpact?: string;
     estimatedImpact?: string;
+    isCyberIncident?: boolean;
+    primaryIncidentType?: string;
+    cyberIncidentDetails?: {
+      chronologyEntries?: Array<{ date: string; time: string; event: string }>;
+      downtimeDuration?: string;
+      rootCause?: string;
+      failingComponent?: string;
+      otherInfo?: string;
+    };
     staffDetected?: { name: string; designation: string; contactNumber: string; email: string };
   };
 }
@@ -28,6 +37,7 @@ function Field({ label, value }: { label: string; value: string }) {
 
 export default function IncidentDescription({ incident }: Props) {
   const impact = incident.observedImpact || incident.estimatedImpact;
+  const chronology = incident.cyberIncidentDetails?.chronologyEntries || [];
 
   return (
     <Card>
@@ -85,6 +95,50 @@ export default function IncidentDescription({ incident }: Props) {
             )}
           </div>
         </div>
+
+        {incident.isCyberIncident && (
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30">
+            <p className="text-xs font-semibold text-muted-foreground">Additional Information for Cyber Security Incident</p>
+
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Incident Chronology Table</p>
+              <div className="overflow-x-auto border border-border rounded-md bg-background">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/40">
+                    <tr>
+                      <th className="px-2 py-2 text-left font-semibold min-w-[130px]">Date</th>
+                      <th className="px-2 py-2 text-left font-semibold min-w-[120px]">Time</th>
+                      <th className="px-2 py-2 text-left font-semibold min-w-[260px]">Event</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chronology.length > 0 ? (
+                      chronology.map((row, index) => (
+                        <tr key={index} className="border-t border-border/50">
+                          <td className="p-2 text-sm">{row.date || '—'}</td>
+                          <td className="p-2 text-sm">{row.time || '—'}</td>
+                          <td className="p-2 text-sm">{row.event || '—'}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr className="border-t border-border/50">
+                        <td className="p-2 text-sm" colSpan={3}>—</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <Field label="Downtime Duration" value={incident.cyberIncidentDetails?.downtimeDuration || '—'} />
+              <Field label="Failing Component" value={incident.cyberIncidentDetails?.failingComponent || '—'} />
+            </div>
+
+            <Field label="Internal and External Root Cause Factors" value={incident.cyberIncidentDetails?.rootCause || '—'} />
+            <Field label="Other Related Information" value={incident.cyberIncidentDetails?.otherInfo || '—'} />
+          </div>
+        )}
       </CardContent>
     </Card>
   );

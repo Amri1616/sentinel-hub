@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 
 /* ── Static data ── */
@@ -32,10 +33,10 @@ export default function LEADashboard() {
 
   
   const kpis = [
-    { label: 'Total Cases', value: '115', icon: FolderOpen, color: 'hsl(220 70% 50%)', route: '/agency/cases' },
-    { label: 'Open Cases', value: '47', icon: Clock, color: 'hsl(var(--status-in-review))', route: '/agency/open-cases' },
-    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, color: 'hsl(var(--destructive))', route: '/agency/cases' },
-    { label: 'Closed Cases', value: '68', icon: CheckCircle, color: 'hsl(var(--status-closed))', route: '/agency/closed-cases' },
+    { label: 'Total Cases', value: '115', icon: FolderOpen, colorClass: 'text-role-reviewer', route: '/agency/cases' },
+    { label: 'Open Cases', value: '47', icon: Clock, colorClass: 'text-status-in-review', route: '/agency/open-cases' },
+    { label: 'Escalated Cases', value: '18', icon: ArrowUpRight, colorClass: 'text-destructive', route: '/agency/cases' },
+    { label: 'Closed Cases', value: '68', icon: CheckCircle, colorClass: 'text-status-closed', route: '/agency/closed-cases' },
   ];
 
   return (
@@ -50,15 +51,15 @@ export default function LEADashboard() {
         {kpis.map((k) => (
           <Card
             key={k.label}
-            className="min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border"
+            className="border-border/40 min-h-[120px] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-border"
             onClick={() => navigate(k.route)}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{k.label}</CardTitle>
-              <k.icon className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs font-medium text-muted-foreground">{k.label}</CardTitle>
+              <k.icon className={cn('h-4 w-4', k.colorClass)} />
             </CardHeader>
             <CardContent className="flex-1 flex items-end">
-              <div className="text-2xl font-bold" style={{ color: k.color }}>{k.value}</div>
+              <div className={cn('text-2xl font-bold', k.colorClass)}>{k.value}</div>
             </CardContent>
           </Card>
         ))}

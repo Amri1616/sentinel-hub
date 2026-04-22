@@ -10,13 +10,12 @@ import {
 } from './ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { getCurrentUser, logout } from '@/lib/auth';
-import { RoleChip } from './RoleChip';
 import { getRoleConfig } from '@/lib/roleConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
 import { useTheme } from 'next-themes';
-import mcmcLogo from '@/assets/mcmc-logo.png';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import mcmcLogo from '@/assets/mcmc-logo.png';
 
 const recentNotifications = [
   {
@@ -93,12 +92,10 @@ export const Header = () => {
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-4">
-          <img
-            src={mcmcLogo}
-            alt="MCMC Logo"
-            className="h-12 w-auto object-contain"
-          />
-          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block">{t('Postal Security Incident Reporting Platform')}</h1>
+          <img src={mcmcLogo} alt="MCMC Logo" className="h-12 w-auto object-contain" />
+          <h1 className="text-2xl font-bold font-poppins tracking-tight hidden md:block">
+            {t('Postal Security Incident Reporting Platform')}
+          </h1>
         </div>
 
         <div className="flex items-center gap-4">
@@ -106,44 +103,35 @@ export const Header = () => {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary/50 border border-border">
               <button
                 onClick={() => setLanguage('BM')}
-                className={`px-2 py-1 text-xs font-medium rounded transition-colors ${language === 'BM' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+                  language === 'BM' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
                 BM
               </button>
               <span className="text-muted-foreground">|</span>
               <button
                 onClick={() => setLanguage('EN')}
-                className={`px-2 py-1 text-xs font-medium rounded transition-colors ${language === 'EN' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+                  language === 'EN' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
                 EN
               </button>
             </div>
           )}
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          >
-            {theme === 'dark' ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
+          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
 
           {user && (
             <>
-              {/* Notification Bell Popover */}
               <Popover open={notifOpen} onOpenChange={setNotifOpen}>
                 <PopoverTrigger asChild>
                   <Button variant="ghost" size="icon" className="relative">
                     <Bell className="h-5 w-5" />
-                    {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive"></span>
-                    )}
+                    {unreadCount > 0 && <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive"></span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-80 p-0">
@@ -158,16 +146,15 @@ export const Header = () => {
                         <button
                           key={notif.id}
                           onClick={handleNotifClick}
-                          className={`w-full flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent/50 border-b border-border last:border-b-0 ${!notif.read ? 'bg-primary/5' : ''
-                            }`}
+                          className={`w-full flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent/50 border-b border-border last:border-b-0 ${
+                            !notif.read ? 'bg-primary/5' : ''
+                          }`}
                         >
                           <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <p className="text-sm font-medium truncate">{t(notif.title)}</p>
-                              {!notif.read && (
-                                <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                              )}
+                              {!notif.read && <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />}
                             </div>
                             <p className="text-xs text-muted-foreground truncate">{t(notif.message)}</p>
                             <p className="text-xs text-muted-foreground/70 mt-0.5">{t(notif.time)}</p>
@@ -177,10 +164,7 @@ export const Header = () => {
                     })}
                   </div>
                   <div className="px-4 py-2.5 border-t border-border">
-                    <button
-                      onClick={handleNotifClick}
-                      className="w-full text-center text-sm font-medium text-primary hover:underline"
-                    >
+                    <button onClick={handleNotifClick} className="w-full text-center text-sm font-medium text-primary hover:underline">
                       {t('View all notifications')}
                     </button>
                   </div>
@@ -204,7 +188,9 @@ export const Header = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`${getRoleConfig(user.role).basePath}/${user.role === 'reporter' ? 'profile' : 'security'}`)}>
+                  <DropdownMenuItem
+                    onClick={() => navigate(`${getRoleConfig(user.role).basePath}/${user.role === 'reporter' ? 'profile' : 'security'}`)}
+                  >
                     <User className="mr-2 h-4 w-4" />
                     {t('Profile')}
                   </DropdownMenuItem>
@@ -216,7 +202,13 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="ghost" size="icon" onClick={handleLogout} title={t('Logout')} className="text-destructive hover:bg-destructive/10">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                title={t('Logout')}
+                className="text-destructive hover:bg-destructive/10"
+              >
                 <LogOut className="h-5 w-5" />
               </Button>
             </>

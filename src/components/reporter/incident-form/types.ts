@@ -264,7 +264,7 @@ export const emptyCyberIncidentReport: CyberIncidentReport = {
 
   incidentDescription: '',
   incidentChronology: '',
-  incidentChronologyEntries: Array.from({ length: 10 }, () => ({
+  incidentChronologyEntries: Array.from({ length: 3 }, () => ({
     date: '',
     time: '',
     event: '',

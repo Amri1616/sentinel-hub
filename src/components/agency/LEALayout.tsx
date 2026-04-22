@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 
 const navItems = [
   { title: 'Dashboard', path: '/agency/dashboard', icon: LayoutDashboard },
@@ -39,6 +40,7 @@ const sidebarAnnouncements = [
 ];
 
 export default function LEALayout() {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ export default function LEALayout() {
                 <Shield className="h-5 w-5" style={{ color: 'hsl(220 70% 50%)' }} />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">Agency</p>
+                <p className="text-sm font-semibold truncate">{t('Agency')}</p>
                 <p className="text-xs text-muted-foreground truncate">Ahmad Faizal</p>
               </div>
             </div>
@@ -93,7 +95,7 @@ export default function LEALayout() {
                 <item.icon className={cn('h-5 w-5 shrink-0')} style={isActive ? { color: 'hsl(220 70% 50%)' } : undefined} />
                 {!collapsed && (
                   <>
-                    <span className="flex-1 text-left">{item.title}</span>
+                    <span className="flex-1 text-left">{t(item.title)}</span>
                     {item.badge && (
                       <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30 text-xs px-1.5 py-0">
                         {item.badge}
@@ -116,7 +118,7 @@ export default function LEALayout() {
             <div className="px-5 py-4">
               <div className="flex items-center gap-1.5 mb-2.5">
                 <Megaphone className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-primary">Announcements</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-primary">{t('Announcements')}</span>
               </div>
               <div className="space-y-3">
                 {sidebarAnnouncements.map((a) => (
@@ -131,10 +133,10 @@ export default function LEALayout() {
                         : 'border-border/60 bg-secondary/20 hover:bg-secondary/40'
                     )}
                   >
-                    <p className="text-xs font-medium leading-tight mb-1.5 line-clamp-1">{a.title}</p>
+                    <p className="text-xs font-medium leading-tight mb-1.5 line-clamp-1">{t(a.title)}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-muted-foreground">{a.from}</span>
-                      <span className="text-[10px] text-muted-foreground">{a.time}</span>
+                      <span className="text-[10px] text-muted-foreground">{t(a.from)}</span>
+                      <span className="text-[10px] text-muted-foreground">{t(a.time)}</span>
                     </div>
                   </button>
                 ))}
@@ -157,21 +159,21 @@ export default function LEALayout() {
         <Dialog open={!!selectedAnnouncement} onOpenChange={(open) => { if (!open) setSelectedAnnouncement(null); }}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>{selectedAnnouncement?.title}</DialogTitle>
+              <DialogTitle>{selectedAnnouncement ? t(selectedAnnouncement.title) : ''}</DialogTitle>
               <DialogDescription asChild>
                 <div className="flex items-center gap-3 pt-1">
-                  <span>From: {selectedAnnouncement?.from}</span>
+                  <span>{t('From:')} {selectedAnnouncement?.from ? t(selectedAnnouncement.from) : ''}</span>
                   <span className="text-muted-foreground/50">•</span>
                   <span>{selectedAnnouncement?.date}</span>
                 </div>
               </DialogDescription>
             </DialogHeader>
             <div className="text-sm leading-relaxed text-foreground/90 py-2 whitespace-pre-line">
-              {selectedAnnouncement?.message}
+              {selectedAnnouncement ? t(selectedAnnouncement.message) : ''}
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" className="w-full sm:w-auto">Close</Button>
+                <Button variant="outline" className="w-full sm:w-auto">{t('Close')}</Button>
               </DialogClose>
             </DialogFooter>
           </DialogContent>

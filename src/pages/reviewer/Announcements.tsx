@@ -19,6 +19,7 @@ interface Announcement {
   priority: 'high' | 'medium' | 'low';
   pinned: boolean;
   createdAt: string;
+  publishDate: string;
   author: string;
   expiryDate: string;
   target: string[];
@@ -44,22 +45,29 @@ const targetToAudience = (target: string[]): TargetAudience => {
 };
 
 const initialAnnouncements: Announcement[] = [
-  { id: '1', title: 'New SOP for Critical Case Escalation', content: 'All critical severity cases must now be escalated within 24 hours of receipt. Updated guidelines are available in the knowledge base.', priority: 'high', pinned: true, createdAt: '2025-01-18', expiryDate: '2026-05-15', author: 'CO-2024-015', target: ['licensee-admin', 'reporter'], targetAudience: 'both' },
-  { id: '2', title: 'System Maintenance — 25 Jan 2025', content: 'Scheduled maintenance window from 02:00 to 06:00 MYT. The portal will be unavailable during this period.', priority: 'medium', pinned: true, createdAt: '2025-01-17', expiryDate: '2026-04-25', author: 'CO-2024-015', target: ['licensee-admin', 'reporter', 'all-users'], targetAudience: 'all-users' },
-  { id: '3', title: 'Q4 2024 Incident Report Published', content: 'The quarterly incident summary for all licensees has been published. Case officers are encouraged to review trends.', priority: 'low', pinned: false, createdAt: '2025-01-15', expiryDate: '2026-06-30', author: 'CO-2024-015', target: ['licensee-admin'], targetAudience: 'licensee-admin-only' },
-  { id: '4', title: 'Training: Advanced Case Assessment Techniques', content: 'Mandatory training session on 28 Jan 2025 at 10:00 MYT. All case officers must attend via the internal training portal.', priority: 'medium', pinned: false, createdAt: '2025-01-14', expiryDate: '2026-04-23', author: 'CO-2024-015', target: ['reporter'], targetAudience: 'reporter-only' },
+  { id: '1', title: 'New SOP for Critical Case Escalation', content: 'All critical severity cases must now be escalated within 24 hours of receipt. Updated guidelines are available in the knowledge base.', priority: 'high', pinned: true, createdAt: '2025-01-18', publishDate: '2025-01-18', expiryDate: '2026-05-15', author: 'CO-2024-015', target: ['licensee-admin', 'reporter'], targetAudience: 'both' },
+  { id: '2', title: 'System Maintenance — 25 Jan 2025', content: 'Scheduled maintenance window from 02:00 to 06:00 MYT. The portal will be unavailable during this period.', priority: 'medium', pinned: true, createdAt: '2025-01-17', publishDate: '2025-01-17', expiryDate: '2026-04-25', author: 'CO-2024-015', target: ['licensee-admin', 'reporter', 'all-users'], targetAudience: 'all-users' },
+  { id: '3', title: 'Q4 2024 Incident Report Published', content: 'The quarterly incident summary for all licensees has been published. Case officers are encouraged to review trends.', priority: 'low', pinned: false, createdAt: '2025-01-15', publishDate: '2025-01-15', expiryDate: '2026-06-30', author: 'CO-2024-015', target: ['licensee-admin'], targetAudience: 'licensee-admin-only' },
+  { id: '4', title: 'Training: Advanced Case Assessment Techniques', content: 'Mandatory training session on 28 Jan 2025 at 10:00 MYT. All case officers must attend via the internal training portal.', priority: 'medium', pinned: false, createdAt: '2025-01-14', publishDate: '2025-01-14', expiryDate: '2026-04-23', author: 'CO-2024-015', target: ['reporter'], targetAudience: 'reporter-only' },
 ];
 
 export default function CaseOfficerAnnouncements() {
   const { toast } = useToast();
+  const today = new Date().toISOString().split('T')[0];
   const [announcements, setAnnouncements] = useState<Announcement[]>(initialAnnouncements);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: '', content: '', priority: 'medium' as 'high' | 'medium' | 'low', pinned: false, expiryDate: '', target: ['licensee-admin', 'reporter'] as string[], targetAudience: 'both' as TargetAudience });
+  const [form, setForm] = useState({ title: '', content: '', priority: 'medium' as 'high' | 'medium' | 'low', pinned: false, publishDate: today, expiryDate: '', target: ['licensee-admin', 'reporter'] as string[], targetAudience: 'both' as TargetAudience });
 
   const getDaysRemaining = (expiryDate: string) => {
     const remainingDays = Math.ceil((new Date(expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
     return remainingDays;
+  };
+
+  const isScheduled = (publishDate: string) => {
+    const todayDate = new Date(today);
+    const scheduledDate = new Date(publishDate);
+    return scheduledDate.getTime() > todayDate.getTime();
   };
 
   const getPriorityStyle = (p: string) => {
@@ -82,13 +90,13 @@ export default function CaseOfficerAnnouncements() {
 
   const openNew = () => {
     setEditingId(null);
-    setForm({ title: '', content: '', priority: 'medium', pinned: false, expiryDate: '', target: ['licensee-admin', 'reporter'], targetAudience: 'both' });
+    setForm({ title: '', content: '', priority: 'medium', pinned: false, publishDate: today, expiryDate: '', target: ['licensee-admin', 'reporter'], targetAudience: 'both' });
     setDialogOpen(true);
   };
 
   const openEdit = (a: Announcement) => {
     setEditingId(a.id);
-    setForm({ title: a.title, content: a.content, priority: a.priority, pinned: a.pinned, expiryDate: a.expiryDate || '', target: a.target, targetAudience: a.targetAudience ?? targetToAudience(a.target) });
+    setForm({ title: a.title, content: a.content, priority: a.priority, pinned: a.pinned, publishDate: a.publishDate || a.createdAt, expiryDate: a.expiryDate || '', target: a.target, targetAudience: a.targetAudience ?? targetToAudience(a.target) });
     setDialogOpen(true);
   };
 
@@ -101,6 +109,10 @@ export default function CaseOfficerAnnouncements() {
       toast({ title: 'Missing Expiry Date', description: 'Please set an expiry deadline reminder for this announcement.', variant: 'destructive' });
       return;
     }
+    if (!form.publishDate) {
+      toast({ title: 'Missing Publish Date', description: 'Please choose when this announcement should be posted.', variant: 'destructive' });
+      return;
+    }
 
     if (editingId) {
       setAnnouncements(prev => prev.map(a => a.id === editingId ? { ...a, ...form } : a));
@@ -109,11 +121,16 @@ export default function CaseOfficerAnnouncements() {
       const newAnnouncement: Announcement = {
         id: Date.now().toString(),
         ...form,
-        createdAt: new Date().toISOString().split('T')[0],
+        createdAt: today,
         author: 'CO-2024-015',
       };
       setAnnouncements(prev => [newAnnouncement, ...prev]);
-      toast({ title: 'Announcement Posted', description: 'The announcement is now visible to Licensee Admins and Reporters.' });
+      toast({
+        title: isScheduled(form.publishDate) ? 'Announcement Scheduled' : 'Announcement Posted',
+        description: isScheduled(form.publishDate)
+          ? `This announcement will be posted on ${form.publishDate}.`
+          : 'The announcement is now visible to Licensee Admins and Reporters.',
+      });
     }
 
     const remainingDays = Math.ceil((new Date(form.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
@@ -178,6 +195,9 @@ export default function CaseOfficerAnnouncements() {
                     {a.pinned && <Pin className="h-3.5 w-3.5 text-role-reviewer" />}
                     <h3 className="font-semibold">{a.title}</h3>
                     <Badge variant="outline" className={getPriorityBadge(a.priority)}>{a.priority}</Badge>
+                    <Badge variant="outline" className={isScheduled(a.publishDate) ? 'border-blue-400/40 bg-blue-50 text-blue-700' : 'border-emerald-400/40 bg-emerald-50 text-emerald-700'}>
+                      {isScheduled(a.publishDate) ? `Scheduled: ${a.publishDate}` : `Posted: ${a.publishDate}`}
+                    </Badge>
                     {a.target.map(t => (
                       <Badge key={t} variant="outline" className="text-xs bg-muted/50">
                         <Eye className="h-3 w-3 mr-1" />
@@ -250,6 +270,10 @@ export default function CaseOfficerAnnouncements() {
                   <SelectItem value="low">Low</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Label>Scheduled Publish Date</Label>
+              <Input type="date" value={form.publishDate} min={today} onChange={e => setForm(f => ({ ...f, publishDate: e.target.value }))} />
             </div>
             <div>
               <Label>Expiry Deadline Reminder</Label>
