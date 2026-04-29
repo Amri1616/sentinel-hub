@@ -17,7 +17,9 @@ import {
   FileText,
   AlertCircle,
   Lock,
-  ShieldCheck
+  ShieldCheck,
+  AppWindow,
+  Scale
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -46,9 +48,9 @@ export default function SuperAdminDashboard() {
     { label: 'Inactive / Locked', value: '134', icon: UserX, color: 'text-destructive', bg: 'bg-destructive/10' },
   ];
 
-  const nominationStats = [
-    { label: 'Pending Forms', value: '42', icon: FileSignature, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { label: 'Submitted Forms', value: '156', icon: FileText, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+  const applicationStats = [
+    { label: 'Pending Review', value: '42', icon: FileSignature, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: 'Approved', value: '156', icon: FileText, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
   ];
 
   const reportStats = [
@@ -77,88 +79,83 @@ export default function SuperAdminDashboard() {
   ];
 
   const recentActivities = [
-    { id: 1, user: 'Admin User', action: 'Created new user', target: 'John Doe', time: '5 mins ago', type: 'user' },
-    { id: 2, user: 'System', action: 'Nomination form approved', target: 'Global Express', time: '15 mins ago', type: 'nomination' },
-    { id: 3, user: 'Super Admin', action: 'Deleted case report', target: 'PSIR-2026-0082', time: '1 hour ago', type: 'case' },
-    { id: 4, user: 'Admin User', action: 'Updated Master Data', target: 'Incident Categories', time: '2 hours ago', type: 'system' },
-    { id: 5, user: 'System', action: 'MFA Disabled for user', target: 'Ahmad Faiz', time: '3 hours ago', type: 'security' },
+    { id: 1, user: 'Ahmad Faiz', action: 'Approved Application', target: 'Ninja Van Malaysia', time: '5 mins ago', type: 'application' },
+    { id: 2, user: 'System', action: 'Bi-directional sync', target: 'MCMC Database', time: '15 mins ago', type: 'system' },
+    { id: 3, user: 'Super Admin', action: 'Soft-deleted case', target: 'PSIR-2026-0082', time: '1 hour ago', type: 'case' },
+    { id: 4, user: 'Ahmad Faiz', action: 'Updated Master Data', target: 'LEA Acronyms', time: '2 hours ago', type: 'system' },
+    { id: 5, user: 'System', action: 'Auto-locked user', target: 'lim@pdrm.gov.my', time: '3 hours ago', type: 'security' },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
-          <p className="text-muted-foreground mt-1">System Governance & Oversight Management</p>
+          <h1 className="text-3xl font-bold tracking-tight">Governance Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Unified system-level oversight and administrative control.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => navigate('/super-admin/users/new')} size="sm">
             <UserPlus className="mr-2 h-4 w-4" />
-            Create User
-          </Button>
-          <Button onClick={() => navigate('/super-admin/nominations/new')} variant="secondary" size="sm">
-            <Send className="mr-2 h-4 w-4" />
-            Send Nomination
+            Create User Manually
           </Button>
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* Summary Cards with Drill-down */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* User Summary */}
-        <Card className="col-span-1">
+        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/users')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">User Governance</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">User Population</CardTitle>
+            <Users className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,284</div>
+            <div className="text-3xl font-bold">1,284</div>
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-green-500 border-green-500/20 bg-green-500/5">1,150 Active</Badge>
-              <Badge variant="outline" className="text-destructive border-destructive/20 bg-destructive/5">134 Locked</Badge>
+              <Badge variant="outline" className="text-green-500 border-green-500/10 bg-green-500/5 text-[10px]">1,150 ACTIVE</Badge>
+              <Badge variant="outline" className="text-destructive border-destructive/10 bg-destructive/5 text-[10px]">134 LOCKED</Badge>
             </div>
           </CardContent>
         </Card>
 
-        {/* Nomination Summary */}
-        <Card className="col-span-1">
+        {/* Application Summary */}
+        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/applications')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Nomination Pipeline</CardTitle>
-            <FileSignature className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Active Applications</CardTitle>
+            <AppWindow className="h-4 w-4 text-indigo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">198</div>
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-amber-500 border-amber-500/20 bg-amber-500/5">42 Pending</Badge>
-              <Badge variant="outline" className="text-indigo-500 border-indigo-500/20 bg-indigo-500/5">156 Submitted</Badge>
+            <div className="text-3xl font-bold">42</div>
+            <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+              Pending System Onboarding
             </div>
           </CardContent>
         </Card>
 
         {/* Case Summary */}
-        <Card className="col-span-1">
+        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Incidents</CardTitle>
-            <ShieldAlert className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Escalated Cases</CardTitle>
+            <Scale className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3,842</div>
-            <div className="flex items-center gap-2 mt-2 font-medium text-xs text-muted-foreground">
-              <span className="flex items-center gap-1"><ArrowUpRight className="h-3 w-3 text-green-500" /> +12% this month</span>
+            <div className="text-3xl font-bold">156</div>
+            <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+              Active LEA Investigation
             </div>
           </CardContent>
         </Card>
 
-        {/* Audit/Health Summary */}
-        <Card className="col-span-1">
+        {/* Health Summary */}
+        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/logs')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Integrity</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">System Health</CardTitle>
+            <Activity className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">99.9%</div>
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-destructive border-destructive/20 bg-destructive/5">12 Cases Deleted</Badge>
+            <div className="text-3xl font-bold text-green-500">OPTIMAL</div>
+            <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+              Audit Trails Synchronized
             </div>
           </CardContent>
         </Card>
@@ -168,140 +165,89 @@ export default function SuperAdminDashboard() {
         {/* Quick Actions */}
         <Card className="col-span-full lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base">Quick Access</CardTitle>
+            <CardTitle className="text-sm font-bold uppercase tracking-widest">Governance Hub</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-2">
-            <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => navigate('/super-admin/users')}>
+            <Button variant="outline" className="justify-start h-auto py-3 px-4 border-border/40 hover:bg-accent/30" onClick={() => navigate('/super-admin/users')}>
               <Users className="mr-3 h-5 w-5 text-blue-500" />
               <div className="text-left">
-                <div className="font-semibold text-sm">Manage Users</div>
+                <div className="font-bold text-sm">User Management</div>
                 <div className="text-[10px] text-muted-foreground">Governance and role assignment</div>
               </div>
             </Button>
-            <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => navigate('/super-admin/master-data')}>
+            <Button variant="outline" className="justify-start h-auto py-3 px-4 border-border/40 hover:bg-accent/30" onClick={() => navigate('/super-admin/master-data')}>
               <Database className="mr-3 h-5 w-5 text-indigo-500" />
               <div className="text-left">
-                <div className="font-semibold text-sm">Master Data</div>
-                <div className="text-[10px] text-muted-foreground">System categories and settings</div>
+                <div className="font-bold text-sm">Master Data Control</div>
+                <div className="text-[10px] text-muted-foreground">System categories and constants</div>
               </div>
             </Button>
-            <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => navigate('/super-admin/logs')}>
+            <Button variant="outline" className="justify-start h-auto py-3 px-4 border-border/40 hover:bg-accent/30" onClick={() => navigate('/super-admin/logs')}>
               <History className="mr-3 h-5 w-5 text-amber-500" />
               <div className="text-left">
-                <div className="font-semibold text-sm">Audit Logs</div>
-                <div className="text-[10px] text-muted-foreground">Track all system activities</div>
+                <div className="font-bold text-sm">Audit Trail Records</div>
+                <div className="text-[10px] text-muted-foreground">Track all mutation activities</div>
               </div>
             </Button>
-            <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => navigate('/super-admin/deleted-cases')}>
-              <Trash2 className="mr-3 h-5 w-5 text-destructive" />
+            <Button variant="outline" className="justify-start h-auto py-3 px-4 border-border/40 hover:bg-accent/30" onClick={() => navigate('/super-admin/cases')}>
+              <Scale className="mr-3 h-5 w-5 text-primary" />
               <div className="text-left">
-                <div className="font-semibold text-sm">Deleted Cases</div>
-                <div className="text-[10px] text-muted-foreground">View and manage removed records</div>
-              </div>
-            </Button>
-            <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => navigate('/super-admin/settings')}>
-              <Settings className="mr-3 h-5 w-5 text-gray-400" />
-              <div className="text-left">
-                <div className="font-semibold text-sm">System Settings</div>
-                <div className="text-[10px] text-muted-foreground">SMTP, SSO, and platform config</div>
+                <div className="font-bold text-sm">Case Governance</div>
+                <div className="text-[10px] text-muted-foreground">Administrative oversight of cases</div>
               </div>
             </Button>
           </CardContent>
         </Card>
 
-        {/* Login Trends / System Health */}
+        {/* System Activity Chart */}
         <Card className="col-span-full lg:col-span-5">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">System Activity Summary</CardTitle>
-            <Badge variant="outline">Last 24 Hours</Badge>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-bold uppercase tracking-widest">Global Activity Trend</CardTitle>
+            <Badge variant="secondary" className="text-[10px] font-bold">REAL-TIME TRAFFIC</Badge>
           </CardHeader>
           <CardContent>
-            <div className="h-[240px] w-full">
+            <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={loginTrendData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                  <XAxis 
-                    dataKey="name" 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false}
-                    stroke="hsl(var(--muted-foreground))"
-                    tickFormatter={(value) => `${value}`}
-                  />
+                  <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis fontSize={10} tickLine={false} axisLine={false} />
                   <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--background))', 
-                      borderColor: 'hsl(var(--border))' 
-                    }}
-                    itemStyle={{ color: 'hsl(var(--primary))' }}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))', borderRadius: '8px', fontSize: '12px' }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="users" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={2} 
-                    dot={{ r: 4, fill: 'hsl(var(--primary))' }}
-                    activeDot={{ r: 6 }}
-                  />
+                  <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              <div className="text-center p-3 border rounded-lg bg-accent/30">
-                <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Peak Concurrent</div>
-                <div className="text-xl font-bold">520</div>
-              </div>
-              <div className="text-center p-3 border rounded-lg bg-accent/30">
-                <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Total Actions</div>
-                <div className="text-xl font-bold">3,248</div>
-              </div>
-              <div className="text-center p-3 border rounded-lg bg-accent/30">
-                <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Error Rate</div>
-                <div className="text-xl font-bold text-green-500">0.02%</div>
-              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-        {/* Recent System Activities */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Recent System Activities</CardTitle>
-            <Button variant="ghost" size="sm" className="text-xs" onClick={() => navigate('/super-admin/logs')}>
-              View All
-            </Button>
+      {/* Activity and Audit Breakdown */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="border-border/40 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-sm font-bold uppercase tracking-widest">Critical Governance Actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-4 pb-4 border-b last:border-0 last:pb-0">
+                <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg bg-accent/20 border border-border/40 group hover:border-primary/20 transition-all">
                   <div className={cn(
                     "p-2 rounded-full",
-                    activity.type === 'user' ? "bg-blue-500/10 text-blue-500" :
-                    activity.type === 'nomination' ? "bg-indigo-500/10 text-indigo-500" :
+                    activity.type === 'application' ? "bg-blue-500/10 text-blue-500" :
                     activity.type === 'case' ? "bg-destructive/10 text-destructive" :
-                    activity.type === 'security' ? "bg-amber-500/10 text-amber-500" :
-                    "bg-gray-500/10 text-gray-500"
+                    "bg-primary/10 text-primary"
                   )}>
-                    {activity.type === 'user' ? <UserPlus className="h-4 w-4" /> :
-                     activity.type === 'nomination' ? <FileText className="h-4 w-4" /> :
+                    {activity.type === 'application' ? <AppWindow className="h-4 w-4" /> :
                      activity.type === 'case' ? <Trash2 className="h-4 w-4" /> :
-                     activity.type === 'security' ? <Lock className="h-4 w-4" /> :
                      <Activity className="h-4 w-4" />}
                   </div>
-                  <div className="flex-1 space-y-1">
+                  <div className="flex-1">
                     <p className="text-sm">
-                      <span className="font-semibold">{activity.user}</span> {activity.action} <span className="font-medium">{activity.target}</span>
+                      <span className="font-bold">{activity.user}</span> {activity.action} <span className="font-medium text-muted-foreground">{activity.target}</span>
                     </p>
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-widest">{activity.time}</p>
                   </div>
                 </div>
               ))}
@@ -309,42 +255,19 @@ export default function SuperAdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Audit Data Summary */}
-        <Card>
+        <Card className="border-border/40 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base">Audit Activity Weekly Trend</CardTitle>
+            <CardTitle className="text-sm font-bold uppercase tracking-widest">Mutation Frequency (Weekly)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px] w-full">
+            <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={auditData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                  <XAxis 
-                    dataKey="day" 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip 
-                    cursor={{ fill: 'hsl(var(--accent))' }}
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--background))', 
-                      borderColor: 'hsl(var(--border))' 
-                    }}
-                  />
-                  <Bar 
-                    dataKey="activities" 
-                    fill="hsl(var(--primary))" 
-                    radius={[4, 4, 0, 0]} 
-                    barSize={40}
-                  />
+                  <XAxis dataKey="day" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }} />
+                  <Bar dataKey="activities" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={32} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -354,3 +277,4 @@ export default function SuperAdminDashboard() {
     </div>
   );
 }
+

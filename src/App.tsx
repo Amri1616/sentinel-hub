@@ -92,10 +92,11 @@ import SuperAdminDashboard from "./pages/superAdmin/Dashboard";
 import UserList from "./pages/superAdmin/users/UserList";
 import CreateUser from "./pages/superAdmin/users/CreateUser";
 import UserDetail from "./pages/superAdmin/users/UserDetail";
-import NominationList from "./pages/superAdmin/nominations/NominationList";
-import NominationBuilder from "./pages/superAdmin/nominations/NominationBuilder";
-import NominationDetail from "./pages/superAdmin/nominations/NominationDetail";
+import ApplicationList from "./pages/superAdmin/applications/ApplicationList";
+import CreateApplication from "./pages/superAdmin/applications/CreateApplication";
+import ApplicationDetail from "./pages/superAdmin/applications/ApplicationDetail";
 import AllCases from "./pages/superAdmin/cases/AllCases";
+import CaseDetailGovernance from "./pages/superAdmin/cases/CaseDetail";
 import DeletedCases from "./pages/superAdmin/cases/DeletedCases";
 import MasterDataList from "./pages/superAdmin/masterData/MasterDataList";
 import WorkflowSettings from "./pages/superAdmin/workflows/WorkflowSettings";
@@ -245,10 +246,11 @@ const App = () => (
                     <Route path="users" element={<UserList />} />
                     <Route path="users/new" element={<CreateUser />} />
                     <Route path="users/:id" element={<UserDetail />} />
-                    <Route path="nominations" element={<NominationList />} />
-                    <Route path="nominations/new" element={<NominationBuilder />} />
-                    <Route path="nominations/:id" element={<NominationDetail />} />
+                    <Route path="applications" element={<ApplicationList />} />
+                    <Route path="applications/new" element={<CreateApplication />} />
+                    <Route path="applications/:id" element={<ApplicationDetail />} />
                     <Route path="cases" element={<AllCases />} />
+                    <Route path="cases/:id" element={<CaseDetailGovernance />} />
                     <Route path="deleted-cases" element={<DeletedCases />} />
                     <Route path="master-data" element={<MasterDataList />} />
                     <Route path="workflows" element={<WorkflowSettings />} />

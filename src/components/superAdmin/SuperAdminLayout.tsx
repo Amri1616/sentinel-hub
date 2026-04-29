@@ -24,17 +24,11 @@ import { Badge } from '@/components/ui/badge';
 
 const navItems = [
   { title: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
+  { title: 'Application Management', path: '/super-admin/applications', icon: FileSignature, badge: 2 },
   { title: 'User Management', path: '/super-admin/users', icon: Users },
-  { title: 'Nomination Management', path: '/super-admin/nominations', icon: FileSignature, badge: 2 },
   { title: 'Case Governance', path: '/super-admin/cases', icon: ShieldAlert },
-  { title: 'Deleted Cases', path: '/super-admin/deleted-cases', icon: Trash2 },
   { title: 'Master Data', path: '/super-admin/master-data', icon: Database },
-  { title: 'Workflow Settings', path: '/super-admin/workflows', icon: GitBranch },
-  { title: 'Notification Templates', path: '/super-admin/notifications', icon: Mail },
-  { title: 'Security Settings', path: '/super-admin/security', icon: Lock },
-  { title: 'System Settings', path: '/super-admin/settings', icon: Settings },
   { title: 'Audit Logs', path: '/super-admin/logs', icon: History },
-  { title: 'System Monitoring', path: '/super-admin/monitoring', icon: Activity },
 ];
 
 export default function SuperAdminLayout() {

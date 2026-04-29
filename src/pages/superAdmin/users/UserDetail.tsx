@@ -21,47 +21,87 @@ import {
   Lock,
   Edit2,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Fingerprint,
+  Phone,
+  Briefcase,
+  History,
+  RefreshCw,
+  MoreVertical
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RoleChip } from '@/components/RoleChip';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Role } from '@/lib/auth';
 
 export default function UserDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { toast } = useToast();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteReason, setDeleteReason] = useState("");
 
-  const mockUser = {
-    id: 'USR-001',
+  const [userData, setUserData] = useState({
+    id: id || 'USR-001',
     name: 'Ahmad Faiz',
     email: 'afaiz@mcmc.gov.my',
-    role: 'super-admin' as any,
-    organisation: 'Malaysian Communications and Multimedia Commission',
+    phone: '+6012-345 6789',
+    designation: 'Director of Cybersecurity',
+    department: 'Digital Security Division',
+    myKad: '850101-14-5677',
+    role: 'super-admin' as Role,
+    organisation: 'MCMC',
     status: 'active',
     mfa: true,
     lastLogin: '2026-03-08 09:30:12',
-    ip: '10.20.0.12',
-    createdDate: '2025-01-15',
-    createdBy: 'System Initializer',
-    avatar: 'AF'
-  };
+    createdDate: '2025-01-15'
+  });
 
   const activities = [
-    { id: 1, action: 'Delete Case Report', target: 'PSIR-2026-0082', module: 'Case Governance', time: '5 mins ago', severity: 'critical' },
-    { id: 2, action: 'Modified System Label', target: 'Incident Categories', module: 'Master Data', time: '2 hours ago', severity: 'medium' },
-    { id: 3, action: 'Platform Login', target: 'Kuala Lumpur, MY', module: 'Authentication', time: '4 hours ago', severity: 'low' },
-    { id: 4, action: 'Sent Nomination Invitation', target: 'Ninja Van Malaysia', module: 'Nomination', time: '1 day ago', severity: 'low' },
-    { id: 5, action: 'Updated Security Policy', target: 'Password Complexity', module: 'Security Settings', time: '2 days ago', severity: 'high' },
+    { id: 1, action: 'User Update', target: 'Self', module: 'User Management', time: '5 mins ago', severity: 'low' },
+    { id: 2, action: 'Approved Application', target: 'APP-2026-003', module: 'Application Management', time: '2 hours ago', severity: 'medium' },
+    { id: 3, action: 'Platform Login', target: '10.20.0.12', module: 'Authentication', time: '4 hours ago', severity: 'low' },
+    { id: 4, action: 'Modified Master Data', target: 'Incident Categories', module: 'Master Data', time: '1 day ago', severity: 'high' },
+    { id: 5, action: 'Soft Deleted Case', target: 'CASE-0092', module: 'Case Governance', time: '2 days ago', severity: 'critical' },
   ];
 
   const handleAction = (action: string) => {
-    toast({
-      title: "Action Triggered",
-      description: `${action} request has been processed for ${mockUser.name}.`,
-    });
+    toast.success(`${action} successful.`);
+  };
+
+  const handleSave = () => {
+    toast.success("User details updated and synced with application record.");
+    setIsEditDialogOpen(false);
+  };
+
+  const handleDelete = () => {
+    if (!deleteReason) {
+      toast.error("Please provide a reason for deletion.");
+      return;
+    }
+    toast.error("User account soft-deleted and moved to archival state.");
+    setIsDeleteOpen(false);
+    navigate('/super-admin/users');
   };
 
   return (
@@ -73,26 +113,63 @@ export default function UserDetail() {
           </Button>
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl border border-primary/20">
-              {mockUser.avatar}
+              {userData.name.charAt(0)}
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">{mockUser.name}</h1>
+              <h1 className="text-2xl font-bold tracking-tight">{userData.name}</h1>
               <div className="flex items-center gap-2 mt-1">
-                <RoleChip role={mockUser.role} />
-                <Badge className="bg-green-500/10 text-green-500 border-green-500/20 py-0 px-2 uppercase text-[9px] font-bold">Active</Badge>
+                <RoleChip role={userData.role} />
+                <Badge className={cn(
+                  "py-0 px-2 uppercase text-[9px] font-bold",
+                  userData.status === 'active' ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-destructive/10 text-destructive border-destructive/20"
+                )}>
+                  {userData.status}
+                </Badge>
               </div>
             </div>
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleAction('Reset Password')}>
-            <Key className="mr-2 h-4 w-4" />
-            Reset Password
+          <Button variant="outline" onClick={() => setIsEditDialogOpen(true)}>
+            <Edit2 className="mr-2 h-4 w-4" />
+            Edit Profile
           </Button>
-          <Button variant="destructive" onClick={() => handleAction('Lock Account')}>
-            <UserX className="mr-2 h-4 w-4" />
-            Deactivate User
-          </Button>
+          <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+            <DialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Soft Delete
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Soft Delete User</DialogTitle>
+                <DialogDescription>
+                  This will hide the user from all active lists. They will be marked as 'Deleted' and cannot be restored.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>Reason for Deletion</Label>
+                  <Select onValueChange={setDeleteReason}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a reason" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="resigned">User Resigned</SelectItem>
+                      <SelectItem value="transferred">User Transferred</SelectItem>
+                      <SelectItem value="policy">Policy Violation</SelectItem>
+                      <SelectItem value="duplicate">Duplicate Account</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="ghost" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
+                <Button variant="destructive" onClick={handleDelete}>Confirm Deletion</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -100,75 +177,86 @@ export default function UserDetail() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="border-border/40 shadow-sm overflow-hidden">
             <CardHeader className="bg-accent/20 border-b py-4">
-              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">User Overview</CardTitle>
+              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Detailed Identity</CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
                   <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-xs uppercase tracking-tighter text-muted-foreground">Email Address</p>
-                    <p>{mockUser.email}</p>
+                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Email Address</p>
+                    <p className="font-medium">{userData.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
+                  <div className="space-y-0.5 text-sm">
+                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Phone Number</p>
+                    <p className="font-medium">{userData.phone}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Fingerprint className="h-4 w-4 text-muted-foreground mt-0.5" />
+                  <div className="space-y-0.5 text-sm">
+                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">MyKad / Passport</p>
+                    <p className="font-medium">{userData.myKad}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Briefcase className="h-4 w-4 text-muted-foreground mt-0.5" />
+                  <div className="space-y-0.5 text-sm">
+                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Work Details</p>
+                    <p className="font-medium">{userData.designation}</p>
+                    <p className="text-[10px] text-muted-foreground">{userData.department}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Building2 className="h-4 w-4 text-muted-foreground mt-0.5" />
                   <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-xs uppercase tracking-tighter text-muted-foreground">Organisation</p>
-                    <p>{mockUser.organisation}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-xs uppercase tracking-tighter text-muted-foreground">Last Login</p>
-                    <p className="font-mono text-xs">{mockUser.lastLogin}</p>
-                    <p className="text-[10px] text-muted-foreground">Source IP: {mockUser.ip}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-xs uppercase tracking-tighter text-muted-foreground">Security Status</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      {mockUser.mfa ? (
-                        <Badge variant="outline" className="text-green-500 bg-green-500/5 py-0 px-1.5 text-[9px] font-bold">MFA ENABLED</Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-destructive bg-destructive/5 py-0 px-1.5 text-[9px] font-bold">MFA DISABLED</Badge>
-                      )}
-                      <Badge variant="outline" className="text-blue-500 bg-blue-500/5 py-0 px-1.5 text-[9px] font-bold">SSO SYNCED</Badge>
-                    </div>
+                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Organisation</p>
+                    <p className="font-medium">{userData.organisation}</p>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t space-y-1">
-                <p className="text-[10px] text-muted-foreground">User created on {mockUser.createdDate} by {mockUser.createdBy}</p>
-                <p className="text-[10px] text-muted-foreground">Internal System ID: {mockUser.id}</p>
+                <p className="text-[10px] text-muted-foreground italic">System ID: {userData.id}</p>
+                <p className="text-[10px] text-muted-foreground italic">Member since {userData.createdDate}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-border/40 shadow-sm">
             <CardHeader className="py-4">
-              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Administrative Controls</CardTitle>
+              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Governance Controls</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Edit User')}>
-                <Edit2 className="mr-2 h-4 w-4" />
-                Change Details
+              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Password Reset')}>
+                <Key className="mr-2 h-4 w-4" />
+                Reset Password
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Change Role')}>
-                <Lock className="mr-2 h-4 w-4" />
-                Update Role / Permissions
+              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Activation Resent')}>
+                <Mail className="mr-2 h-4 w-4" />
+                Resend Activation
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Force Reset')}>
-                <Unlock className="mr-2 h-4 w-4" />
-                Force Password Reset
+              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Temp PW Regenerated')}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Regenerate Temp PW
               </Button>
-              <Button variant="ghost" className="w-full justify-start text-xs font-semibold text-destructive hover:bg-destructive/10" onClick={() => handleAction('Delete User')}>
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Account Record
+              <Button variant="outline" className="w-full justify-start text-xs font-semibold" onClick={() => handleAction('Role Changed')}>
+                <Shield className="mr-2 h-4 w-4 text-primary" />
+                Change User Role
               </Button>
+              {userData.status === 'active' ? (
+                <Button variant="outline" className="w-full justify-start text-xs font-semibold text-amber-500" onClick={() => handleAction('Deactivated')}>
+                  <UserX className="mr-2 h-4 w-4" />
+                  Deactivate User
+                </Button>
+              ) : (
+                <Button variant="outline" className="w-full justify-start text-xs font-semibold text-green-500" onClick={() => handleAction('Activated')}>
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Activate User
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -178,23 +266,18 @@ export default function UserDetail() {
             <TabsList className="w-full bg-muted/30 p-1 border border-border/40 mb-4 h-11">
               <TabsTrigger value="activity" className="flex-1 py-1.5 font-bold uppercase tracking-wider text-[10px]">
                 <Activity className="h-3 w-3 mr-2" />
-                Activity Timeline
+                User Activity
               </TabsTrigger>
-              <TabsTrigger value="sessions" className="flex-1 py-1.5 font-bold uppercase tracking-wider text-[10px]">
-                <Monitor className="h-3 w-3 mr-2" />
-                Active Sessions
-              </TabsTrigger>
-              <TabsTrigger value="history" className="flex-1 py-1.5 font-bold uppercase tracking-wider text-[10px]">
-                <Database className="h-3 w-3 mr-2" />
-                System Logs
+              <TabsTrigger value="logs" className="flex-1 py-1.5 font-bold uppercase tracking-wider text-[10px]">
+                <History className="h-3 w-3 mr-2" />
+                Governance Logs
               </TabsTrigger>
             </TabsList>
-
             <TabsContent value="activity">
               <Card className="border-border/40 shadow-sm min-h-[500px]">
                 <CardHeader>
-                  <CardTitle className="text-base">Administrative Activity Audit</CardTitle>
-                  <CardDescription>Continuous tracking of actions performed by this user.</CardDescription>
+                  <CardTitle className="text-base">Recent Activity Trail</CardTitle>
+                  <CardDescription>Actions performed by this user in the last 30 days.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-2">
                   <div className="relative space-y-6 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-primary before:via-muted before:to-transparent">
@@ -209,41 +292,71 @@ export default function UserDetail() {
                         )}>
                           <div className="h-4 w-4 rounded-full bg-background/20" />
                         </div>
-                        <div className="flex-1 p-3 rounded-lg border bg-accent/30 group hover:border-primary/20 transition-all cursor-default">
+                        <div className="flex-1 p-3 rounded-lg border bg-accent/30 hover:border-primary/20 transition-all group">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{act.module}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{act.module}</span>
                             <span className="text-[10px] text-muted-foreground">{act.time}</span>
                           </div>
                           <p className="text-sm font-medium">
                             {act.action} on <span className="font-mono text-xs">{act.target}</span>
                           </p>
-                          <div className="mt-2 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center text-primary group-hover:underline cursor-pointer">
-                            View Log Detail <ChevronRight className="h-2.5 w-2.5 ml-1" />
-                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                  
-                  <div className="pt-6 flex justify-center">
-                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground font-bold uppercase tracking-widest">
-                      Load Older History
-                    </Button>
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
-
-            <TabsContent value="sessions">
+            <TabsContent value="logs">
               <div className="p-12 text-center bg-accent/10 rounded-xl border border-dashed border-border/60">
-                <AlertTriangle className="h-8 w-8 text-muted-foreground/40 mx-auto mb-4" />
-                <p className="text-sm font-medium text-muted-foreground">Session tracking functionality is disabled in demo mode.</p>
-                <p className="text-xs text-muted-foreground/60 mt-1 italic">Contact system engineering for real-time traffic monitoring keys.</p>
+                <History className="h-8 w-8 text-muted-foreground/40 mx-auto mb-4" />
+                <p className="text-sm font-medium text-muted-foreground">Accessing full governance logs...</p>
               </div>
             </TabsContent>
           </Tabs>
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit User Profile</DialogTitle>
+            <DialogDescription>Update the identity and organizational details for this user.</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label>Full Name</Label>
+              <Input value={userData.name} onChange={(e) => setUserData({...userData, name: e.target.value})} />
+            </div>
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label>Email Address</Label>
+              <Input value={userData.email} onChange={(e) => setUserData({...userData, email: e.target.value})} />
+            </div>
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label>Phone Number</Label>
+              <Input value={userData.phone} onChange={(e) => setUserData({...userData, phone: e.target.value})} />
+            </div>
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label>MyKad / Passport</Label>
+              <Input value={userData.myKad} onChange={(e) => setUserData({...userData, myKad: e.target.value})} />
+            </div>
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label>Designation</Label>
+              <Input value={userData.designation} onChange={(e) => setUserData({...userData, designation: e.target.value})} />
+            </div>
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label>Department</Label>
+              <Input value={userData.department} onChange={(e) => setUserData({...userData, department: e.target.value})} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
