@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CaseDetailsView, { getStatusColor, getSeverityColor, type CaseData } from '@/components/shared/CaseDetailsView';
 import CaseClarificationThread, { type ClarificationMessage } from '@/components/shared/CaseClarificationThread';
 import CaseTimeline, { type TimelineEvent } from '@/components/shared/CaseTimeline';
-import { IncidentFormData } from '@/components/reporter/incident-form/types';
+import { IncidentFormData, cyberSecurityIncidentOptions } from '@/components/reporter/incident-form/types';
 import { fallbackIncident } from '@/lib/mock-data';
 
 function formatAddress(address: any) {
@@ -15,8 +15,8 @@ function formatAddress(address: any) {
   const parts = [
     address.addressLine1,
     address.addressLine2,
-    address.city,
     address.zipCode,
+    address.city,
     address.state,
     address.country
   ].filter(Boolean);
@@ -26,16 +26,33 @@ function formatAddress(address: any) {
 function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: string, linkDescription?: string }): CaseData {
   const submittedAt = form.submittedAt ? new Date(form.submittedAt) : new Date();
   const dateReported = `${submittedAt.toISOString().split('T')[0]} ${submittedAt.toTimeString().slice(0, 5)}`;
+  const isCyberIncident = cyberSecurityIncidentOptions.includes(form.primaryIncidentType);
+  const cyber = form.cyberIncidentReport;
+  const primaryDescription = isCyberIncident ? (cyber.incidentDescription || form.description) : form.description;
+
+  const documents = (form.attachments && form.attachments.length > 0)
+    ? form.attachments.map((a) => ({
+        name: a.name,
+        size: `${(a.size / (1024 * 1024)).toFixed(1)} MB`,
+        uploadedBy: form.reporterName,
+        uploadDate: dateReported,
+      }))
+    : (cyber.uploadedDocuments || []).map((d) => ({
+        name: d.name,
+        size: `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+        uploadedBy: form.reporterName,
+        uploadDate: dateReported,
+      }));
 
   return {
     id,
     title: form.primaryIncidentType?.startsWith('Other') ? (form.otherRelatedInfo || 'Other Incident') : (form.primaryIncidentType || 'Incident Report'),
     status: 'Submitted',
     severity: 'Medium',
-    description: form.description,
-    incidentDate: form.incidentDate,
-    incidentTime: form.incidentTime,
-    incidentLocation: formatAddress(form.incidentLocation),
+    description: primaryDescription,
+    incidentDate: isCyberIncident ? (cyber.incidentDate || form.incidentDate) : form.incidentDate,
+    incidentTime: isCyberIncident ? (cyber.incidentTime || form.incidentTime) : form.incidentTime,
+    incidentLocation: isCyberIncident ? (cyber.incidentLocation || formatAddress(form.incidentLocation)) : formatAddress(form.incidentLocation),
     dateReported,
     branchName: '',
     address: formatAddress(form.incidentLocation),
@@ -51,41 +68,50 @@ function mapFormToCaseData(id: string, form: IncidentFormData & { submittedAt?: 
     additionalPhone: form.additionalPhone || undefined,
     faxNumber: form.faxNumber || undefined,
     leaEscalation: form.reportedToAuthorities === 'Yes' ? 'Yes' : 'No',
-    systemServiceAffected: form.systemServiceAffected || undefined,
-    observedImpact: form.observedImpact || undefined,
+    systemServiceAffected: isCyberIncident ? (cyber.affectedSystem || form.systemServiceAffected || undefined) : (form.systemServiceAffected || undefined),
+    vehicleDetails: form.vehicleDetails || undefined,
+    buildingDetails: form.buildingDetails || undefined,
+    observedImpact: isCyberIncident ? undefined : (form.observedImpact || undefined),
+    estimatedImpact: isCyberIncident ? (cyber.estimatedImpact || undefined) : undefined,
+    isCyberIncident,
+    cyberIncidentDetails: isCyberIncident ? {
+      chronologyEntries: (cyber.incidentChronologyEntries || []).filter((row) => row.date || row.time || row.event),
+      downtimeDuration: cyber.downtimeDuration || undefined,
+      rootCause: cyber.rootCause || undefined,
+      failingComponent: cyber.failingComponent || undefined,
+      otherInfo: cyber.otherInfo || undefined,
+    } : undefined,
     primaryIncidentType: form.primaryIncidentType,
-    staffDetected: form.staffDetected?.name ? form.staffDetected : undefined,
-    senderInfo: form.senderInfo?.name ? {
+    staffDetected: isCyberIncident
+      ? (cyber.detectedOfficer?.name ? cyber.detectedOfficer : undefined)
+      : (form.staffDetected?.name ? form.staffDetected : undefined),
+    senderInfo: !isCyberIncident && form.senderInfo?.name ? {
       name: form.senderInfo.name,
       address: `${form.senderInfo.addressLine1}${form.senderInfo.addressLine2 ? ', ' + form.senderInfo.addressLine2 : ''}`,
-      stateCountry: `${form.senderInfo.city}, ${form.senderInfo.state}, ${form.senderInfo.zipCode}, ${form.senderInfo.country}`,
+      stateCountry: `${form.senderInfo.zipCode}, ${form.senderInfo.city}, ${form.senderInfo.state}, ${form.senderInfo.country}`,
       contact: form.senderInfo.contact
     } : undefined,
-    recipientInfo: form.recipientInfo?.name ? {
+    recipientInfo: !isCyberIncident && form.recipientInfo?.name ? {
       name: form.recipientInfo.name,
       address: `${form.recipientInfo.addressLine1}${form.recipientInfo.addressLine2 ? ', ' + form.recipientInfo.addressLine2 : ''}`,
-      stateCountry: `${form.recipientInfo.city}, ${form.recipientInfo.state}, ${form.recipientInfo.zipCode}, ${form.recipientInfo.country}`,
+      stateCountry: `${form.recipientInfo.zipCode}, ${form.recipientInfo.city}, ${form.recipientInfo.state}, ${form.recipientInfo.country}`,
       contact: form.recipientInfo.contact
     } : undefined,
-    trackingNumber: form.trackingNumber || undefined,
-    packageDeclaration: form.packageDeclaration || undefined,
-    packageWeight: form.packageWeight || undefined,
-    prohibitedItemType: form.prohibitedItemType || undefined,
+    trackingNumber: !isCyberIncident ? (form.trackingNumber || undefined) : undefined,
+    packageDeclaration: !isCyberIncident ? (form.packageDeclaration || undefined) : undefined,
+    packageWeight: !isCyberIncident ? (form.packageWeight || undefined) : undefined,
+    prohibitedItemType: !isCyberIncident ? (form.prohibitedItemType || undefined) : undefined,
     otherRelatedInfo: form.otherRelatedInfo || undefined,
     linkDescription: form.linkDescription || undefined,
-    immediateActions: form.immediateActions,
-    incidentContained: form.incidentContained || undefined,
-    incidentControlStatus: form.incidentContained || '',
-    reportedToAuthority: form.reportedToAuthorities || 'No',
-    authorityDetails: form.authorityDetails || undefined,
-    parcelHandedOver: form.parcelHandedOver || 'No',
-    assistanceRequested: form.assistanceRequired || [],
-    documents: form.attachments?.map((a) => ({
-      name: a.name,
-      size: `${(a.size / (1024 * 1024)).toFixed(1)} MB`,
-      uploadedBy: form.reporterName,
-      uploadDate: dateReported,
-    })) || [],
+    immediateActions: isCyberIncident ? (cyber.actionsTaken || form.immediateActions) : form.immediateActions,
+    incidentContained: isCyberIncident ? (cyber.incidentControlled || undefined) : (form.incidentContained || undefined),
+    incidentControlStatus: isCyberIncident ? (cyber.incidentControlled || '') : (form.incidentContained || ''),
+    reportedToAuthority: isCyberIncident ? 'No' : (form.reportedToAuthorities || 'No'),
+    authorityDetails: isCyberIncident ? undefined : (form.authorityDetails || undefined),
+    authorityReference: isCyberIncident ? undefined : (form.authorityReportNumber || undefined),
+    parcelHandedOver: isCyberIncident ? 'No' : (form.parcelHandedOver || 'No'),
+    assistanceRequested: isCyberIncident ? [] : (form.assistanceRequired || []),
+    documents,
     declarationAgreed: form.declaration ?? true,
     declarationDate: form.declarationDate || submittedAt.toISOString().split('T')[0],
   };
@@ -119,6 +145,26 @@ const mockClarifications: ClarificationMessage[] = [
   },
 ];
 
+const cyberClarifications: ClarificationMessage[] = [
+  {
+    id: 1,
+    from: 'MCMC Case Officer',
+    role: 'officer',
+    timestamp: '2025-01-18 12:35',
+    message: 'Please confirm the exact exposure window and whether any credential reset has been completed for affected accounts.',
+    status: 'Awaiting Response',
+    isNew: true,
+  },
+  {
+    id: 2,
+    from: 'Licensee Reporter (Ahmad bin Abdullah)',
+    role: 'reporter',
+    timestamp: '2025-01-18 13:05',
+    message: 'Exposure window was from 11:04 to 11:22 MYT. Access tokens were revoked at 11:15 and forced password reset was triggered at 11:28.',
+    status: 'Responded',
+  },
+];
+
 import CaseHeader from '@/components/shared/CaseHeader';
 // ... other imports ...
 
@@ -138,6 +184,10 @@ export default function IncidentDetails() {
     }
     return fallbackIncident(id || 'PSIRP-2025-0025');
   }, [id]);
+
+  const isCyberCase = incident.isCyberIncident || cyberSecurityIncidentOptions.includes(incident.primaryIncidentType || '');
+  const clarificationMessages = isCyberCase ? cyberClarifications : mockClarifications;
+  const clarificationBadgeCount = clarificationMessages.filter((m) => m.status === 'Awaiting Response' || m.isNew).length;
 
   const timeline: TimelineEvent[] = [
     { event: 'Incident Submitted', actor: 'Licensee Reporter', time: incident.dateReported, type: 'submission' },
@@ -169,7 +219,7 @@ export default function IncidentDetails() {
             <div className="relative flex items-center justify-center">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-40"></span>
               <Badge className="relative h-5 min-w-[20px] px-1.5 border-0 rounded-full bg-destructive flex items-center justify-center text-[10px] font-bold text-destructive-foreground">
-                2
+                {clarificationBadgeCount}
               </Badge>
             </div>
           </TabsTrigger>
@@ -183,7 +233,7 @@ export default function IncidentDetails() {
 
         {/* Tab 2: Clarification */}
         <TabsContent value="clarification">
-          <CaseClarificationThread messages={[]} currentRole="reporter" glowClass="glow-cyan" />
+          <CaseClarificationThread messages={clarificationMessages} currentRole="reporter" glowClass="glow-cyan" />
         </TabsContent>
 
         {/* Tab 3: Timeline */}

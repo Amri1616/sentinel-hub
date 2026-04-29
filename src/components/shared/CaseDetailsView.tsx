@@ -12,6 +12,7 @@ import IncidentDescription from '@/components/reporter/incident-details/Incident
 import LogisticsData from '@/components/reporter/incident-details/LogisticsData';
 import ActionsTaken from '@/components/reporter/incident-details/ActionsTaken';
 import EvidenceDeclaration from '@/components/reporter/incident-details/EvidenceDeclaration';
+import { cyberSecurityIncidentOptions } from '@/components/reporter/incident-form/types';
 
 
 export interface CaseData {
@@ -39,8 +40,18 @@ export interface CaseData {
   leaEscalation: string;
   description: string;
   systemServiceAffected?: string;
+  vehicleDetails?: string;
+  buildingDetails?: string;
   observedImpact?: string;
   estimatedImpact?: string;
+  isCyberIncident?: boolean;
+  cyberIncidentDetails?: {
+    chronologyEntries?: Array<{ date: string; time: string; event: string }>;
+    downtimeDuration?: string;
+    rootCause?: string;
+    failingComponent?: string;
+    otherInfo?: string;
+  };
   primaryIncidentType?: string;
   postalIncidentTypes?: string[];
   staffDetected?: { name: string; designation: string; contactNumber: string; email: string };
@@ -133,6 +144,7 @@ const leaFullNames: Record<string, string> = {
 
 export default function CaseDetailsView({ incident, hideEscalation, children }: Props) {
   const { hash } = useLocation();
+  const isCyberIncident = incident.isCyberIncident || cyberSecurityIncidentOptions.includes(incident.primaryIncidentType || '');
 
   useEffect(() => {
     if (hash === '#escalation-status') {
@@ -161,7 +173,7 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
       if (!isValid(incDate) || !isValid(repDate)) return null;
       
       const diffDays = differenceInDays(repDate, incDate);
-      const isOverdue = diffDays > 8;
+      const isOverdue = diffDays > 20;
       
       return { diffDays, isOverdue };
     } catch (e) {
@@ -183,10 +195,10 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
       <IncidentDescription incident={incident} />
 
       {/* Section 4: Logistics Data — Parcel, Sender, Recipient (Step 3 parcel fields) */}
-      <LogisticsData incident={incident} />
+      {!isCyberIncident && <LogisticsData incident={incident} />}
 
       {/* NEW: Multi-Agency Escalation Tracking */}
-      {!hideEscalation && incident.escalations && incident.escalations.length > 0 && (
+      {!hideEscalation && !isCyberIncident && incident.escalations && incident.escalations.length > 0 && (
         <Card id="escalation-status" className="border-destructive/20 bg-destructive/5 overflow-hidden shadow-sm">
           <CardHeader className="bg-destructive/10 py-3 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-destructive">
@@ -272,7 +284,7 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
               <>
                 <CheckCircle2 className="h-5 w-5 shrink-0" />
                 <div className="text-sm font-bold">
-                  Submitted within the 8-day reporting window.
+                  Submitted within the 20-day reporting window.
                 </div>
               </>
             )}

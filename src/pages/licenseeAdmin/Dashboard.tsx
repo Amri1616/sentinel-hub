@@ -10,7 +10,7 @@ import {
 
 const kpiCards = [
   { label: 'Total Incidents', value: 47, icon: FileText, color: 'text-primary', path: '/licensee-admin/incidents' },
-  { label: 'Draft Reports', value: 3, icon: FileText, color: 'text-muted-foreground', path: '/licensee-admin/drafts' },
+  { label: 'Draft Reports', value: 3, icon: FileText, color: 'text-status-draft', path: '/licensee-admin/drafts' },
   { label: 'Under Review', value: 8, icon: Clock, color: 'text-status-in-review', path: '/licensee-admin/under-review' },
   { label: 'Escalated Cases', value: 5, icon: AlertTriangle, color: 'text-destructive', path: '/licensee-admin/escalated' },
   { label: 'Closed Cases', value: 30, icon: CheckCircle2, color: 'text-status-closed', path: '/licensee-admin/closed' },
@@ -59,13 +59,13 @@ export default function LicenseeAdminDashboard() {
       {/* KPI Cards — no trend indicators */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-5 text-left">
         {kpiCards.map((kpi) => (
-          <Card key={kpi.label} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate(kpi.path)}>
+          <Card key={kpi.label} className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate(kpi.path)}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4">
-              <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
+              <CardTitle className="text-xs font-medium text-muted-foreground">{kpi.label}</CardTitle>
               <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
             </CardHeader>
             <CardContent className="p-4 pt-0 flex-1 flex items-end">
-              <div className="text-2xl font-bold">{kpi.value}</div>
+              <div className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</div>
             </CardContent>
           </Card>
         ))}

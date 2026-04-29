@@ -67,6 +67,12 @@ export default function ReviewerDashboard() {
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
+  const deadlineReminders = [
+    { id: 'PSIRP-2025-0028', task: 'Escalation decision deadline', remaining: 'Overdue by 4h', severity: 'overdue' },
+    { id: 'PSIRP-2025-0027', task: 'Clarification response follow-up', remaining: 'Due in 2h', severity: 'at-risk' },
+    { id: 'PSIRP-2025-0026', task: 'Closure recommendation submission', remaining: 'Due in 6h', severity: 'normal' },
+  ];
+
   const [caseActionUpdates, setCaseActionUpdates] = useState<CaseActionUpdate[]>([
     {
       id: 'PSIRP-2025-0028',
@@ -199,40 +205,40 @@ export default function ReviewerDashboard() {
 
       {/* KPI Cards Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card className="border-role-reviewer/20 hover:border-role-reviewer/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/assigned-cases')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/assigned-cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Assigned Cases</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Assigned Cases</CardTitle>
+            <FileText className="h-4 w-4 text-role-reviewer" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-role-reviewer">15</div>
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 hover:border-destructive/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/high-severity')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/high-severity')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">High Severity</CardTitle>
-            <ShieldAlert className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">High Severity</CardTitle>
+            <ShieldAlert className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-destructive">5</div>
           </CardContent>
         </Card>
 
-        <Card className="border-status-rfi/20 hover:border-status-rfi/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/escalation-pending')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/escalation-pending')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Escalation Pending</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Escalation Pending</CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-status-rfi" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-status-rfi">2</div>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/clarification-pending')}>
+        <Card className="border-border/40 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/clarification-pending')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Clarification Pending</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Clarification Pending</CardTitle>
+            <MessageSquare className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
             <div className="text-2xl font-bold text-primary">6</div>
@@ -240,9 +246,9 @@ export default function ReviewerDashboard() {
         </Card>
 
         {/* Priority Alerts Stat Card */}
-        <Card className="border-destructive/40 bg-destructive/5 hover:border-destructive/60 transition-all cursor-pointer group min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/priority-alerts')}>
+        <Card className="border-border/40 bg-destructive/5 hover:-translate-y-1 hover:shadow-lg hover:border-border transition-all duration-200 cursor-pointer group min-h-[120px] flex flex-col" onClick={() => navigate('/case-officer/priority-alerts')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-destructive">Priority Alerts</CardTitle>
+            <CardTitle className="text-xs font-medium text-muted-foreground">Priority Alerts</CardTitle>
             <ShieldAlert className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent className="flex-1 flex items-end">
@@ -256,6 +262,37 @@ export default function ReviewerDashboard() {
         <Users className="mr-3 h-6 w-6" />
         Go to Case Monitoring
       </Button>
+
+      <Card className="border-amber-300/40 bg-amber-50/40">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Clock className="h-4 w-4 text-amber-700" />
+            Case Action Deadline Reminders (SLA)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {deadlineReminders.map((r) => (
+            <div key={r.id} className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border/50 bg-background/70">
+              <div>
+                <p className="text-sm font-medium">{r.id} · {r.task}</p>
+                <p className="text-xs text-muted-foreground">Action required in Case Monitoring queue.</p>
+              </div>
+              <Badge
+                variant="outline"
+                className={
+                  r.severity === 'overdue'
+                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                    : r.severity === 'at-risk'
+                    ? 'border-amber-400/40 bg-amber-100 text-amber-700'
+                    : 'border-slate-300 bg-slate-100 text-slate-700'
+                }
+              >
+                {r.remaining}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
 
       <div className="flex flex-col gap-6">
         {/* Recent Assigned */}

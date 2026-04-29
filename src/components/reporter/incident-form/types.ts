@@ -16,6 +16,50 @@ export interface SenderRecipientInfo {
   contact: string;
 }
 
+export interface CyberIncidentReport {
+  companyName: string;
+  registeredAddress: string;
+  reporterName: string;
+  position: string;
+  email: string;
+  phoneNumber: string;
+  faxNumber: string;
+
+  incidentDescription: string;
+  incidentChronology: string;
+  incidentChronologyEntries: Array<{
+    date: string;
+    time: string;
+    event: string;
+  }>;
+  incidentDate: string;
+  incidentTime: string;
+  incidentLocation: string;
+  detectedOfficer: StaffDetected;
+  affectedSystem: string;
+  estimatedImpact: 'Low' | 'Medium' | 'High' | '';
+  downtimeDuration: string;
+  rootCause: string;
+  failingComponent: string;
+  otherInfo: string;
+
+  actionsTaken: string;
+  incidentControlled: 'Yes' | 'No' | '';
+  assistanceRequired: string[];
+  assistanceOther: string;
+  reportedToAuthority: 'Yes' | 'No' | '';
+  authorityDetails: string;
+
+  hasSupportingDocuments: 'Yes' | 'No' | '';
+  supportingLinkOrMethod: string;
+  uploadedDocuments: Array<{ name: string; size: number }>;
+
+  declarationTruth: boolean;
+  declarationSharing: boolean;
+  declarationDate: string;
+  completed: boolean;
+}
+
 export interface IncidentFormData {
   // Part 1: Reporter Information
   companyName: string;
@@ -36,6 +80,8 @@ export interface IncidentFormData {
   incidentLocation: SenderRecipientInfo;
   staffDetected: StaffDetected;
   systemServiceAffected: string;
+  vehicleDetails: string;
+  buildingDetails: string;
   observedImpact: string;
   senderInfo: SenderRecipientInfo;
   recipientInfo: SenderRecipientInfo;
@@ -43,7 +89,11 @@ export interface IncidentFormData {
   packageDeclaration: string;
   packageWeight: string;
   prohibitedItemType: string;
+  skipParcelDetails: boolean;
+  skipSenderInfo: boolean;
+  skipRecipientInfo: boolean;
   otherRelatedInfo: string;
+  cyberIncidentReport: CyberIncidentReport;
 
   // Part 4: Actions Taken
   immediateActions: string;
@@ -53,9 +103,10 @@ export interface IncidentFormData {
   reportedToAuthorities: string; // Yes | No
   authorityDetails: string;
   parcelHandedOver: string; // Yes | No
+  authorityReportNumber: string;
 
   // Part 5: Supporting Documents
-  attachments: Array<{ name: string; size: number }>;
+  attachments: Array<{ name: string; size: number; category?: string; previewUrl?: string; mimeType?: string }>;
 
   // Part 6: Declaration
   declaration: boolean;
@@ -68,7 +119,7 @@ export const simplifiedIncidentTypes = [
   'Prohibited Items',
   'Postal Operation Disruption',
   'Security Threat',
-  'Customer Information Leakage',
+  'Cyber Security Incidents',
   'Others',
 ];
 
@@ -99,12 +150,26 @@ export const incidentTypeGroups: IncidentTypeGroup[] = [
     label: 'Serious Threat',
     options: [
       'Explosives, biological or chemical threats',
-      'Data leakage or cyber incidents',
       'Sabotage or large-scale infrastructure damage',
       'Criminal activities within postal hubs',
       'Gas leaks, fires, or major accidents',
       'Significant disruption to postal operations',
       'Other (Serious Threat)',
+    ],
+  },
+  {
+    label: 'Cyber Security Incidents',
+    options: [
+      'Denial-of-Service (DoS) / Distributed Denial-of-Service (DDoS)',
+      'Intrusion Attempt',
+      'Intrusion',
+      'Malware',
+      'Malware Hosting',
+      'Social Engineering / Fraud',
+      'Data-Related Incidents',
+      'Potential Attack',
+      'Defacement',
+      'Others',
     ],
   },
   {
@@ -145,6 +210,19 @@ export const observedImpactOptions = [
   'No Significant Impact',
 ];
 
+export const cyberSecurityIncidentOptions = [
+  'Denial-of-Service (DoS) / Distributed Denial-of-Service (DDoS)',
+  'Intrusion Attempt',
+  'Intrusion',
+  'Malware',
+  'Malware Hosting',
+  'Social Engineering / Fraud',
+  'Data-Related Incidents',
+  'Potential Attack',
+  'Defacement',
+  'Others',
+];
+
 // Incident types that require parcel information section
 export const parcelRelatedTypes = new Set([
   // All Prohibited Postal Items
@@ -173,4 +251,48 @@ export const emptySenderRecipient: SenderRecipientInfo = {
   zipCode: '',
   country: 'Malaysia',
   contact: '',
+};
+
+export const emptyCyberIncidentReport: CyberIncidentReport = {
+  companyName: '',
+  registeredAddress: '',
+  reporterName: '',
+  position: '',
+  email: '',
+  phoneNumber: '',
+  faxNumber: '',
+
+  incidentDescription: '',
+  incidentChronology: '',
+  incidentChronologyEntries: Array.from({ length: 3 }, () => ({
+    date: '',
+    time: '',
+    event: '',
+  })),
+  incidentDate: '',
+  incidentTime: '',
+  incidentLocation: '',
+  detectedOfficer: { name: '', designation: '', contactNumber: '', email: '' },
+  affectedSystem: '',
+  estimatedImpact: '',
+  downtimeDuration: '',
+  rootCause: '',
+  failingComponent: '',
+  otherInfo: '',
+
+  actionsTaken: '',
+  incidentControlled: '',
+  assistanceRequired: [],
+  assistanceOther: '',
+  reportedToAuthority: '',
+  authorityDetails: '',
+
+  hasSupportingDocuments: '',
+  supportingLinkOrMethod: '',
+  uploadedDocuments: [],
+
+  declarationTruth: false,
+  declarationSharing: false,
+  declarationDate: '',
+  completed: false,
 };

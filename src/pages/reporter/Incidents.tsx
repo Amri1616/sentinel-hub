@@ -23,6 +23,7 @@ interface Escalation {
 }
 
 const incidents = [
+  { id: 'PSIRP-2025-0032', title: 'Customer Data Exposure in Tracking Portal', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Cyber Security Incident', status: 'In Review', submitted: '2025-01-18', lastUpdated: '30 minutes ago', severity: 'High', escalations: [] },
   { id: 'PSIRP-2025-0025', title: 'High-Value Package Theft', reporter: 'Ahmad bin Abdullah', org: 'Global Express Logistics', category: 'Theft', status: 'In Review', submitted: '2025-01-15', lastUpdated: '2 hours ago', severity: 'High', 
     escalations: [
       { name: 'PDRM', status: 'Under Investigation' }

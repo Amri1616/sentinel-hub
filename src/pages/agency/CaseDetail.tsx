@@ -37,7 +37,7 @@ export default function LEACaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [investigationStatus, setInvestigationStatus] = useState('Under Investigation');
+  const [investigationStatus, setInvestigationStatus] = useState('Under Preliminary Review');
   const [acknowledged, setAcknowledged] = useState(true);
   const [internalNotes, setInternalNotes] = useState('');
   const [agencyReportRef, setAgencyReportRef] = useState('');
@@ -207,11 +207,12 @@ export default function LEACaseDetail() {
                 <Select value={investigationStatus} onValueChange={handleStatusUpdate}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="Under Preliminary Review">Under Preliminary Review</SelectItem>
                     <SelectItem value="Under Investigation">Under Investigation</SelectItem>
-                    <SelectItem value="Evidence Seized">Evidence Seized</SelectItem>
-                    <SelectItem value="Pending Further Information">Pending Further Information</SelectItem>
-                    <SelectItem value="Case Referred for Prosecution">Case Referred for Prosecution</SelectItem>
-                    <SelectItem value="No Further Action">No Further Action</SelectItem>
+                    <SelectItem value="Referred to Relevant Agency">Referred to Relevant Agency</SelectItem>
+                    <SelectItem value="Prosecution / Trial">Prosecution / Trial</SelectItem>
+                    <SelectItem value="Investigation Completed">Investigation Completed</SelectItem>
+                    <SelectItem value="Case Closed">Case Closed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
