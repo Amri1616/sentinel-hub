@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,8 +11,6 @@ import {
   AlertCircle,
   Plus,
   Trash2,
-  Mail,
-  Phone,
   Shield
 } from 'lucide-react';
 import { 
@@ -22,13 +20,13 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from "sonner";
-import { cn } from '@/lib/utils';
 
 export default function CreateApplication() {
   const navigate = useNavigate();
-  const [appType, setAppType] = useState<'Licensee' | 'LEA'>('Licensee');
+  const [searchParams] = useSearchParams();
+  const [appType, setAppType] = useState<'Licensee' | 'LEA'>(searchParams.get('type') === 'lea' ? 'LEA' : 'Licensee');
   const [orgName, setOrgName] = useState('');
   const [regNumber, setRegNumber] = useState('');
   const [reporters, setReporters] = useState([{ id: '1', name: '', email: '', phone: '', designation: '' }]);

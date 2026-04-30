@@ -1,18 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { 
   UserPlus, 
   ArrowLeft, 
-  Save, 
   Mail, 
   User, 
-  Building2, 
   ShieldCheck, 
-  Lock,
-  ChevronDown
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -21,8 +17,35 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function CreateUser() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    myKadNo: '',
+    designation: '',
+    department: '',
+    email: '',
+    altEmail: '',
+    phone: '',
+    altPhone: '',
+    systemRole: '',
+  });
+
+  const handleChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleCreate = () => {
+    const requiredFields: Array<keyof typeof formData> = ['name', 'myKadNo', 'designation', 'department', 'email', 'phone', 'systemRole'];
+    const missingField = requiredFields.find((field) => !formData[field].trim());
+
+    if (missingField) {
+      toast({
+        title: "Missing Information",
+        description: "Please complete all required profile fields before sending the invitation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: "User Created",
       description: "Invitation email and activation link have been sent to the new user.",
@@ -46,59 +69,63 @@ export default function CreateUser() {
         <div className="lg:col-span-2 space-y-6">
           <Card className="border-border/40 shadow-sm overflow-hidden">
             <CardHeader className="bg-accent/20 border-b py-4">
-              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Account Information</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                <User className="h-4 w-4 text-primary" />
+                Profile Information
+              </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="fullname">Full Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="fullname" placeholder="E.g. Tan Sri Ahmad" className="pl-10" />
-                  </div>
+                  <Label htmlFor="fullname">Name</Label>
+                  <Input id="fullname" placeholder="Mohd Kamal" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
+                  <p className="text-[11px] text-muted-foreground">Cannot be changed</p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="email" type="email" placeholder="official@mcmc.gov.my" className="pl-10" />
-                  </div>
+                  <Label htmlFor="mykad">MyKad No</Label>
+                  <Input id="mykad" placeholder="850715-10-6234" value={formData.myKadNo} onChange={(e) => handleChange('myKadNo', e.target.value)} />
+                  <p className="text-[11px] text-muted-foreground">Cannot be changed</p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="role">System Role</Label>
-                  <Select>
+                  <Label htmlFor="designation">Designation</Label>
+                  <Input id="designation" placeholder="Case Officer" value={formData.designation} onChange={(e) => handleChange('designation', e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="department">Department</Label>
+                  <Input id="department" placeholder="MCMC — Postal Security Division" value={formData.department} onChange={(e) => handleChange('department', e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="mohd.kamal@mcmc.gov.my" value={formData.email} onChange={(e) => handleChange('email', e.target.value)} />
+                  <p className="text-[11px] text-muted-foreground">Cannot be changed</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="alt-email">Optional Alternative Email</Label>
+                  <Input id="alt-email" type="email" placeholder="alternative@email.com" value={formData.altEmail} onChange={(e) => handleChange('altEmail', e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone No</Label>
+                  <Input id="phone" placeholder="+60 13-456 7890" value={formData.phone} onChange={(e) => handleChange('phone', e.target.value)} />
+                  <p className="text-[11px] text-muted-foreground">Cannot be changed</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="alt-phone">Optional Alternative Phone No</Label>
+                  <Input id="alt-phone" placeholder="+60 1X-XXX XXXX" value={formData.altPhone} onChange={(e) => handleChange('altPhone', e.target.value)} />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="system-role">System Role</Label>
+                  <Select value={formData.systemRole} onValueChange={(value) => handleChange('systemRole', value)}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select high-level role" />
+                      <SelectValue placeholder="Select system role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="super-admin">MCMC Super Admin</SelectItem>
-                      <SelectItem value="reviewer">MCMC Case Officer</SelectItem>
-                      <SelectItem value="validator">MCMC Supervisor</SelectItem>
-                      <SelectItem value="investigator">MCMC Internal</SelectItem>
+                      <SelectItem value="super-admin">Super Admin</SelectItem>
+                      <SelectItem value="reviewer">Case Officer</SelectItem>
+                      <SelectItem value="validator">Supervisor</SelectItem>
+                      <SelectItem value="investigator">Internal Investigator</SelectItem>
                       <SelectItem value="licensee-admin">Licensee Admin</SelectItem>
-                      <SelectItem value="lea-viewer">LEA Agency User</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="org">Organisation</Label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="org" placeholder="MCMC / PDRM / POS / etc." className="pl-10" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 pt-4 border-t">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30 border border-border/40">
-                  <div className="space-y-0.5">
-                    <Label className="text-sm font-bold flex items-center gap-2">
-                      <Lock className="h-4 w-4 text-primary" />
-                      Initial Access Security
-                    </Label>
-                    <p className="text-xs text-muted-foreground">Force user to create new password and setup MFA upon first login.</p>
-                  </div>
-                  <Switch defaultChecked />
                 </div>
               </div>
             </CardContent>
@@ -120,7 +147,7 @@ export default function CreateUser() {
             <CardHeader>
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" />
-                Role Permissions Hint
+                System Role Guide
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-0">
@@ -133,7 +160,7 @@ export default function CreateUser() {
                 <p className="text-[11px] text-muted-foreground leading-relaxed">Case validation, approval of transfers, closure approval, and team monitoring.</p>
               </div>
               <div className="p-3 bg-background border rounded-lg space-y-2">
-                <p className="text-xs font-bold uppercase tracking-tighter text-indigo-500">Agency User (LEA)</p>
+                <p className="text-xs font-bold uppercase tracking-tighter text-indigo-500">LEA Agency User</p>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">Read-only access to escalated cases, investigation updates, and analytics for their agency.</p>
               </div>
             </CardContent>

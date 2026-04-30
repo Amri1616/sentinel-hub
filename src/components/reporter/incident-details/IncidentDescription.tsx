@@ -1,6 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Info, Edit2 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
   incident: {
@@ -24,6 +30,7 @@ interface Props {
     };
     staffDetected?: { name: string; designation: string; contactNumber: string; email: string };
   };
+  editable?: boolean;
 }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -35,29 +42,106 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function IncidentDescription({ incident }: Props) {
-  const impact = incident.observedImpact || incident.estimatedImpact;
+export default function IncidentDescription({ incident, editable }: Props) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValues, setEditValues] = useState({
+    description: incident.description,
+    incidentDate: incident.incidentDate,
+    incidentTime: incident.incidentTime,
+    incidentLocation: incident.incidentLocation || '',
+    systemServiceAffected: incident.systemServiceAffected || '',
+    vehicleDetails: incident.vehicleDetails || '',
+    buildingDetails: incident.buildingDetails || '',
+    observedImpact: incident.observedImpact || '',
+    estimatedImpact: incident.estimatedImpact || '',
+  });
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    toast.success("Incident details updated successfully.");
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditValues({
+      description: incident.description,
+      incidentDate: incident.incidentDate,
+      incidentTime: incident.incidentTime,
+      incidentLocation: incident.incidentLocation || '',
+      systemServiceAffected: incident.systemServiceAffected || '',
+      vehicleDetails: incident.vehicleDetails || '',
+      buildingDetails: incident.buildingDetails || '',
+      observedImpact: incident.observedImpact || '',
+      estimatedImpact: incident.estimatedImpact || '',
+    });
+    setIsEditing(false);
+  };
+
+  const impact = editValues.observedImpact || editValues.estimatedImpact;
   const chronology = incident.cyberIncidentDetails?.chronologyEntries || [];
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Info className="h-5 w-5 text-primary" />
           Part 3: Incident Details
         </CardTitle>
+        {editable && (
+          !isEditing ? (
+            <Button size="sm" variant="outline" onClick={handleEdit}>
+              <Edit2 className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button size="sm" variant="ghost" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Save Changes
+              </Button>
+            </div>
+          )
+        )}
       </CardHeader>
       <CardContent className="space-y-5">
         {/* Description */}
-        <div>
-          <p className="text-xs text-muted-foreground mb-1">Incident Description</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">{incident.description}</p>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Incident Description</Label>
+          {isEditing ? (
+            <Textarea 
+              value={editValues.description}
+              onChange={(e) => setEditValues({...editValues, description: e.target.value})}
+              className="min-h-[100px]"
+              placeholder="Describe the incident"
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground leading-relaxed">{editValues.description}</p>
+          )}
         </div>
 
         {/* Date & Time */}
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Date of Incident" value={incident.incidentDate} />
-          <Field label="Time of Incident" value={incident.incidentTime} />
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold">Date of Incident</Label>
+            {isEditing ? (
+              <Input type="date" value={editValues.incidentDate} onChange={(e) => setEditValues({...editValues, incidentDate: e.target.value})} />
+            ) : (
+              <p className="text-sm font-medium">{editValues.incidentDate}</p>
+            )}
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold">Time of Incident</Label>
+            {isEditing ? (
+              <Input type="time" value={editValues.incidentTime} onChange={(e) => setEditValues({...editValues, incidentTime: e.target.value})} />
+            ) : (
+              <p className="text-sm font-medium">{editValues.incidentTime}</p>
+            )}
+          </div>
         </div>
 
         {/* Location */}

@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Select,
   SelectContent,
@@ -63,12 +64,16 @@ export default function UserDetail() {
 
   const [userData, setUserData] = useState({
     id: id || 'USR-001',
-    name: 'Ahmad Faiz',
-    email: 'afaiz@mcmc.gov.my',
-    phone: '+6012-345 6789',
-    designation: 'Director of Cybersecurity',
-    department: 'Digital Security Division',
-    myKad: '850101-14-5677',
+    name: 'Ahmad bin Abdullah',
+    myKad: '890312-14-5577',
+    designation: 'Compliance Officer',
+    department: 'Regulatory Affairs',
+    email: 'ahmad.abdullah@expresscourier.com',
+    altEmail: 'ahmad.alt@expresscourier.com',
+    phone: '+60 12-345 6789',
+    altPhone: '+60 17-222 3344',
+    businessAddress: 'Global Express Logistics, Shah Alam, Selangor',
+    internalNotes: 'Primary contact for regional compliance submissions.',
     role: 'super-admin' as Role,
     organisation: 'MCMC',
     status: 'active',
@@ -180,41 +185,47 @@ export default function UserDetail() {
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Detailed Identity</CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Email Address</p>
-                    <p className="font-medium">{userData.email}</p>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-2 gap-3 rounded-lg border bg-background/60 p-3">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Name</p>
+                    <p className="text-sm font-medium">{userData.name}</p>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Phone Number</p>
-                    <p className="font-medium">{userData.phone}</p>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MyKad No</p>
+                    <p className="text-sm font-medium">{userData.myKad}</p>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Fingerprint className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">MyKad / Passport</p>
-                    <p className="font-medium">{userData.myKad}</p>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Designation</p>
+                    <p className="text-sm font-medium">{userData.designation}</p>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Briefcase className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Work Details</p>
-                    <p className="font-medium">{userData.designation}</p>
-                    <p className="text-[10px] text-muted-foreground">{userData.department}</p>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Department</p>
+                    <p className="text-sm font-medium">{userData.department}</p>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Building2 className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="space-y-0.5 text-sm">
-                    <p className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Organisation</p>
-                    <p className="font-medium">{userData.organisation}</p>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Email</p>
+                    <p className="text-sm font-medium break-all">{userData.email}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Optional Alternative Email</p>
+                    <p className="text-sm font-medium break-all">{userData.altEmail}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Phone No</p>
+                    <p className="text-sm font-medium">{userData.phone}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Optional Alternative Phone No</p>
+                    <p className="text-sm font-medium">{userData.altPhone}</p>
+                  </div>
+                  <div className="col-span-2 space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Business Address</p>
+                    <p className="text-sm font-medium">{userData.businessAddress}</p>
+                  </div>
+                  <div className="col-span-2 space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Internal Notes</p>
+                    <p className="text-sm font-medium whitespace-pre-wrap">{userData.internalNotes}</p>
                   </div>
                 </div>
               </div>
@@ -319,35 +330,59 @@ export default function UserDetail() {
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit User Profile</DialogTitle>
             <DialogDescription>Update the identity and organizational details for this user.</DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-4 py-4">
-            <div className="space-y-2 col-span-2 md:col-span-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="space-y-2">
               <Label>Full Name</Label>
               <Input value={userData.name} onChange={(e) => setUserData({...userData, name: e.target.value})} />
             </div>
-            <div className="space-y-2 col-span-2 md:col-span-1">
-              <Label>Email Address</Label>
-              <Input value={userData.email} onChange={(e) => setUserData({...userData, email: e.target.value})} />
-            </div>
-            <div className="space-y-2 col-span-2 md:col-span-1">
-              <Label>Phone Number</Label>
-              <Input value={userData.phone} onChange={(e) => setUserData({...userData, phone: e.target.value})} />
-            </div>
-            <div className="space-y-2 col-span-2 md:col-span-1">
+            <div className="space-y-2">
               <Label>MyKad / Passport</Label>
               <Input value={userData.myKad} onChange={(e) => setUserData({...userData, myKad: e.target.value})} />
             </div>
-            <div className="space-y-2 col-span-2 md:col-span-1">
+            <div className="space-y-2">
               <Label>Designation</Label>
               <Input value={userData.designation} onChange={(e) => setUserData({...userData, designation: e.target.value})} />
             </div>
-            <div className="space-y-2 col-span-2 md:col-span-1">
+            <div className="space-y-2">
               <Label>Department</Label>
               <Input value={userData.department} onChange={(e) => setUserData({...userData, department: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label>Email Address</Label>
+              <Input value={userData.email} onChange={(e) => setUserData({...userData, email: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label>Optional Alternative Email</Label>
+              <Input value={userData.altEmail} onChange={(e) => setUserData({...userData, altEmail: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label>Phone No</Label>
+              <Input value={userData.phone} onChange={(e) => setUserData({...userData, phone: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label>Optional Alternative Phone No</Label>
+              <Input value={userData.altPhone} onChange={(e) => setUserData({...userData, altPhone: e.target.value})} />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label>Business Address</Label>
+              <Textarea
+                value={userData.businessAddress}
+                onChange={(e) => setUserData({...userData, businessAddress: e.target.value})}
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label>Internal Notes</Label>
+              <Textarea
+                value={userData.internalNotes}
+                onChange={(e) => setUserData({...userData, internalNotes: e.target.value})}
+                rows={4}
+              />
             </div>
           </div>
           <DialogFooter>

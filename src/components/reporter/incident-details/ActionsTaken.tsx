@@ -1,6 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { CheckCircle, Edit2 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
   incident: {
@@ -14,6 +20,7 @@ interface Props {
     parcelHandedOver: string;
     assistanceRequested: string[];
   };
+  editable?: boolean;
 }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -25,16 +32,66 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function ActionsTaken({ incident }: Props) {
-  const controlStatus = incident.incidentContained || incident.incidentControlStatus || '—';
+export default function ActionsTaken({ incident, editable }: Props) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValues, setEditValues] = useState({
+    immediateActions: incident.immediateActions,
+    incidentControlStatus: incident.incidentControlStatus || '',
+    reportedToAuthority: incident.reportedToAuthority,
+    authorityAgency: incident.authorityAgency || '',
+    authorityReference: incident.authorityReference || '',
+    authorityDetails: incident.authorityDetails || '',
+    parcelHandedOver: incident.parcelHandedOver || '',
+  });
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    toast.success("Actions and authority tracking updated successfully.");
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditValues({
+      immediateActions: incident.immediateActions,
+      incidentControlStatus: incident.incidentControlStatus || '',
+      reportedToAuthority: incident.reportedToAuthority,
+      authorityAgency: incident.authorityAgency || '',
+      authorityReference: incident.authorityReference || '',
+      authorityDetails: incident.authorityDetails || '',
+      parcelHandedOver: incident.parcelHandedOver || '',
+    });
+    setIsEditing(false);
+  };
+
+  const controlStatus = editValues.incidentControlStatus || '—';
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <CheckCircle className="h-5 w-5 text-primary" />
           Part 5: Action &amp; Authority Tracking
         </CardTitle>
+        {editable && (
+          !isEditing ? (
+            <Button size="sm" variant="outline" onClick={handleEdit}>
+              <Edit2 className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button size="sm" variant="ghost" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Save Changes
+              </Button>
+            </div>
+          )
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         <div>

@@ -1,5 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Package, Edit2 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ContactInfo {
   name: string;
@@ -26,6 +31,7 @@ interface Props {
       receiver: ContactInfo;
     }[];
   };
+  editable?: boolean;
 }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -58,18 +64,62 @@ function ContactCard({ title, info }: { title: string; info: ContactInfo | undef
   );
 }
 
-export default function LogisticsData({ incident }: Props) {
+export default function LogisticsData({ incident, editable }: Props) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValues, setEditValues] = useState({
+    trackingNumber: incident.trackingNumber || '',
+    packageDeclaration: incident.packageDeclaration || '',
+    packageWeight: incident.packageWeight || '',
+    prohibitedItemType: incident.prohibitedItemType || '',
+  });
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    toast.success("Logistics data updated successfully.");
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditValues({
+      trackingNumber: incident.trackingNumber || '',
+      packageDeclaration: incident.packageDeclaration || '',
+      packageWeight: incident.packageWeight || '',
+      prohibitedItemType: incident.prohibitedItemType || '',
+    });
+    setIsEditing(false);
+  };
+
   const hasParcelFields = true; // Always show the section structure
   const hasSenderRecipient = true;
   const hasLegacyItems = incident.items && incident.items.length > 0;
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Package className="h-5 w-5 text-primary" />
           Part 4: Logistics &amp; Parcel Data
         </CardTitle>
+        {editable && (
+          !isEditing ? (
+            <Button size="sm" variant="outline" onClick={handleEdit}>
+              <Edit2 className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button size="sm" variant="ghost" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Save Changes
+              </Button>
+            </div>
+          )
+        )}
       </CardHeader>
       <CardContent className="space-y-5">
         {/* Parcel details */}

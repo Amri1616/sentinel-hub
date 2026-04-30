@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { 
   Table, 
   TableBody, 
@@ -16,6 +17,14 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { 
   Plus, 
@@ -25,16 +34,13 @@ import {
   XCircle,
   Eye,
   Search,
-  Building2,
-  Shield,
   Calendar,
-  ChevronDown,
   Edit2,
-  ArrowUpRight
+  Copy
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const mockApplications = [
   { id: 'APP-2026-001', organisation: 'Ninja Van Malaysia', type: 'Licensee', status: 'submitted', date: '2026-03-05', lastUpdated: '2026-03-08', contactPerson: 'Ariff Kamal' },
@@ -49,6 +55,35 @@ export default function ApplicationList() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+  const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
+  const [copiedCreateLink, setCopiedCreateLink] = useState(false);
+  const [createLinkType, setCreateLinkType] = useState<'licensee' | 'lea'>(activeTab === 'lea' ? 'lea' : 'licensee');
+
+  useEffect(() => {
+    setIsCreateLinkOpen(false);
+    setCopiedCreateLink(false);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'licensee' || activeTab === 'lea') {
+      setCreateLinkType(activeTab);
+    }
+  }, [activeTab]);
+
+  const createApplicationLink = `${window.location.origin}/super-admin/applications/new?type=${createLinkType}`;
+
+  const handleCopyCreateLink = async () => {
+    if (!createApplicationLink) return;
+
+    try {
+      await navigator.clipboard.writeText(createApplicationLink);
+      setCopiedCreateLink(true);
+      toast.success('Create application link copied to clipboard.');
+      window.setTimeout(() => setCopiedCreateLink(false), 2000);
+    } catch {
+      toast.error('Unable to copy link. Please try again.');
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -161,10 +196,68 @@ export default function ApplicationList() {
           <p className="text-muted-foreground mt-1">Review and manage registration applications from Licensees and LEAs.</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate('/super-admin/applications/new')}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Application
-          </Button>
+          <Dialog open={isCreateLinkOpen} onOpenChange={setIsCreateLinkOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Application Link
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Create Application Link</DialogTitle>
+                <DialogDescription>
+                  Choose the application type first, then copy the corresponding link.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Application Type
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant={createLinkType === 'licensee' ? 'default' : 'outline'}
+                      className="h-11"
+                      onClick={() => setCreateLinkType('licensee')}
+                    >
+                      Licensee
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={createLinkType === 'lea' ? 'default' : 'outline'}
+                      className="h-11"
+                      onClick={() => setCreateLinkType('lea')}
+                    >
+                      LEA
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {createLinkType === 'licensee' ? 'Licensee Application Link' : 'LEA Application Link'}
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      readOnly
+                      value={createApplicationLink}
+                      className="text-sm bg-muted/40 cursor-default"
+                      onClick={(e) => (e.target as HTMLInputElement).select()}
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className={`shrink-0 transition-colors ${copiedCreateLink ? 'border-green-500/50 text-green-500' : ''}`}
+                      onClick={handleCopyCreateLink}
+                    >
+                      {copiedCreateLink ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

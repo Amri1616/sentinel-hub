@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { 
   Select,
   SelectContent,
@@ -57,6 +58,8 @@ export default function CaseDetailGovernance() {
     { event: 'RFI sent to Licensee', actor: 'Ahmad Razif', time: '2026-03-08 14:00', type: 'system' },
   ];
 
+
+
   const handleSoftDelete = () => {
     if (confirmText !== 'DELETE CASE') {
       toast.error("Please type DELETE CASE to confirm.");
@@ -78,7 +81,7 @@ export default function CaseDetailGovernance() {
             <h1 className="text-2xl font-bold tracking-tight">Case Governance: {incident.id}</h1>
             <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold flex items-center gap-2 mt-1">
               <ShieldAlert className="h-3 w-3" />
-              Administrative Read-Only View
+              Full Administrative Control
             </p>
           </div>
         </div>
@@ -156,7 +159,7 @@ export default function CaseDetailGovernance() {
         <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
         <div>
           <p className="text-xs text-amber-800 font-medium">
-            Operational Restriction: As a Super Admin, you have full visibility of this case but cannot change its operational status, assign investigators, or perform investigation tasks. Your role is limited to governance oversight and archival management.
+            <span className="font-bold">Super Admin Authority:</span> You have full editing privileges over all case details and contents. Click edit buttons within each section to modify incident information, evidence, and findings. All changes are logged in the audit trail.
           </p>
         </div>
       </div>
@@ -192,7 +195,7 @@ export default function CaseDetailGovernance() {
         </TabsList>
 
         <TabsContent value="details">
-          <CaseDetailsView incident={incident} />
+          <CaseDetailsView incident={incident} editable={true} />
         </TabsContent>
 
         <TabsContent value="timeline">

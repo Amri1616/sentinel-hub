@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, ShieldCheck } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { FileText, Download, ShieldCheck, Edit2 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Doc {
   name: string;
@@ -17,9 +22,35 @@ interface Props {
     declarationDate?: string;
     linkDescription?: string;
   };
+  editable?: boolean;
 }
 
-export default function EvidenceDeclaration({ incident }: Props) {
+export default function EvidenceDeclaration({ incident, editable }: Props) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValues, setEditValues] = useState({
+    declarationAgreed: incident.declarationAgreed || false,
+    declarationDate: incident.declarationDate || '',
+    linkDescription: incident.linkDescription || '',
+  });
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    toast.success("Evidence and declaration updated successfully.");
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditValues({
+      declarationAgreed: incident.declarationAgreed || false,
+      declarationDate: incident.declarationDate || '',
+      linkDescription: incident.linkDescription || '',
+    });
+    setIsEditing(false);
+  };
+
   const photos = incident.documents.filter(d => /\.(jpg|jpeg|png|gif|webp)$/i.test(d.name));
   const docs = incident.documents.filter(d => /\.(pdf|doc|docx|xls|xlsx|csv)$/i.test(d.name));
   const videos = incident.documents.filter(d => /\.(mp4|avi|mov|wmv|webm)$/i.test(d.name));
@@ -52,11 +83,28 @@ export default function EvidenceDeclaration({ incident }: Props) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-primary" />
           Part 6: Evidence &amp; Declaration
         </CardTitle>
+        {editable && (
+          !isEditing ? (
+            <Button size="sm" variant="outline" onClick={handleEdit}>
+              <Edit2 className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button size="sm" variant="ghost" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Save Changes
+              </Button>
+            </div>
+          )
+        )}
       </CardHeader>
       <CardContent className="space-y-5">
         {/* Documents */}

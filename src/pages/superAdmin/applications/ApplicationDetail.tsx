@@ -73,7 +73,9 @@ export default function ApplicationDetail() {
       phone: '+603-2266 2222'
     },
     users: isLEA ? [
-      { role: 'LEA Main User', name: 'ASP Ridzuan Bin Mansor', email: 'ridzuan.m@rmp.gov.my', phone: '012-3456789', designation: 'Assistant Superintendent' }
+      { role: 'LEA Main User', name: 'ASP Ridzuan Bin Mansor', email: 'ridzuan.m@rmp.gov.my', phone: '012-3456789', designation: 'Assistant Superintendent' },
+      { role: 'LEA Secondary User', name: 'Insp. Fatimah Binti Ahmad', email: 'fatimah.a@rmp.gov.my', phone: '013-3456789', designation: 'Inspector' },
+      { role: 'LEA Secondary User', name: 'Sgt. Zahir Mohamed Hassan', email: 'zahir.mh@rmp.gov.my', phone: '014-4567890', designation: 'Sergeant' }
     ] : [
       { id: '1', role: 'Licensee Admin', name: 'Ariff Kamal', email: 'ariff@ninjavan.co', phone: '019-8765432', designation: 'Operations Director' },
       { id: '2', role: 'Licensee Reporter', name: 'Siti Norhaliza', email: 'siti.n@ninjavan.co', phone: '011-22334455', designation: 'Compliance Officer' },
@@ -145,6 +147,17 @@ export default function ApplicationDetail() {
     newUsers[index] = { ...newUsers[index], [field]: value };
     setApplicationData(prev => ({ ...prev, users: newUsers }));
   };
+
+  const renderFieldGrid = (fields: Array<{ label: string; value: string; fullWidth?: boolean }>) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {fields.map((field) => (
+        <div key={field.label} className={field.fullWidth ? 'md:col-span-2 space-y-2' : 'space-y-2'}>
+          <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{field.label}</Label>
+          <p className="font-semibold text-sm leading-relaxed whitespace-pre-line">{field.value}</p>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -226,12 +239,24 @@ export default function ApplicationDetail() {
                   )}
                 </div>
                 <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {applicationData.type === 'LEA' ? 'Agency Type' : 'License Type'}
+                  </Label>
+                  <p className="font-semibold">{applicationData.type === 'LEA' ? 'Police' : 'Courier'}</p>
+                </div>
+                <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Primary Phone</Label>
                   {isEditing ? (
                     <Input value={applicationData.companyInfo.phone} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, phone: e.target.value}})} />
                   ) : (
                     <p className="font-medium">{applicationData.companyInfo.phone}</p>
                   )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {applicationData.type === 'LEA' ? 'Fax Number' : 'Fax Number'}
+                  </Label>
+                  <p className="font-medium">{isLEA ? '+60388888899' : '+603-2266 3333'}</p>
                 </div>
                 <div className="md:col-span-2 space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Address</Label>
@@ -278,7 +303,7 @@ export default function ApplicationDetail() {
                   <CardContent className="p-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Full Name</Label>
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Name</Label>
                         {isEditing ? (
                           <Input value={user.name} onChange={(e) => updateUserField(index, 'name', e.target.value)} placeholder="Full Name" />
                         ) : (
@@ -289,7 +314,7 @@ export default function ApplicationDetail() {
                         )}
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Work Email</Label>
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Email</Label>
                         {isEditing ? (
                           <Input value={user.email} onChange={(e) => updateUserField(index, 'email', e.target.value)} placeholder="email@organisation.com" />
                         ) : (
@@ -317,6 +342,26 @@ export default function ApplicationDetail() {
                             {user.phone}
                           </div>
                         )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MyKad No.</Label>
+                        <p className="text-sm font-medium">{isLEA ? '720815-14-5678' : '880220-08-4321'}</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Department</Label>
+                        <p className="text-sm font-medium">{isLEA ? 'Commercial Crime Investigation Department' : 'Operations'}</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Salutation</Label>
+                        <p className="text-sm font-medium">{index === 0 ? 'Dato\'' : 'Ms'}</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Optional Alternative Email</Label>
+                        <p className="text-sm font-medium">{index === 0 ? 'alternative@email.com' : 'mastura.alt@email.com'}</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Optional Alternative Phone No.</Label>
+                        <p className="text-sm font-medium">{index === 0 ? '+60123456780' : '+60111222333'}</p>
                       </div>
                     </div>
                   </CardContent>

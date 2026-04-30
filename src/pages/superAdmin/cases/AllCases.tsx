@@ -1,52 +1,45 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-  DropdownMenuLabel
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  Eye, 
-  Trash2, 
-  ShieldAlert, 
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import {
+  Search,
+  Filter,
+  MoreVertical,
+  Eye,
+  Trash2,
+  ShieldAlert,
   History,
   AlertTriangle,
   Download,
   Calendar,
   Building2,
-  Lock,
-  MessageSquare
+  MessageSquare,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 const mockCases = [
   { id: 'PSIR-2026-0082', organisation: 'Pos Malaysia Berhad', title: 'Suspicious Package - KLIA Hub', category: 'Dangerous Goods', severity: 'critical', status: 'investigating', date: '2026-03-08 09:20' },
@@ -60,13 +53,22 @@ export default function AllCases() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  
-  // Deletion state
+  const [categoryFilter, setCategoryFilter] = useState('all');
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedCase, setSelectedCase] = useState<any>(null);
   const [deleteReason, setDeleteReason] = useState('');
   const [deleteNote, setDeleteNote] = useState('');
   const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
+
+  const caseCategories = [
+    { id: 'all', label: 'All Cases' },
+    { id: 'prohibited-postal', label: 'Prohibited Postal Items' },
+    { id: 'serious-threat', label: 'Serious Threat' },
+    { id: 'cyber-security', label: 'Cyber Security Incidents' },
+    { id: 'medium-severity', label: 'Medium Severity Incident' },
+    { id: 'operational-issues', label: 'Operational Issues' },
+  ];
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
@@ -110,36 +112,98 @@ export default function AllCases() {
 
   const handleConfirmDelete = () => {
     if (deleteConfirmationText !== 'DELETE CASE') {
-      toast({
-        title: "Validation Error",
-        description: "Please type DELETE CASE exactly to confirm.",
-        variant: "destructive"
-      });
+      toast({ title: 'Validation Error', description: 'Please type DELETE CASE exactly to confirm.', variant: 'destructive' });
       return;
     }
-
     if (!deleteReason || !deleteNote) {
-      toast({
-        title: "Validation Error",
-        description: "Reason and note are mandatory for deletion.",
-        variant: "destructive"
-      });
+      toast({ title: 'Validation Error', description: 'Reason and note are mandatory for deletion.', variant: 'destructive' });
       return;
     }
 
-    // Logic for deletion
-    toast({
-      title: "Case Deleted Successfully",
-      description: `Case ${selectedCase.id} has been removed from active records and logged in audit trails.`,
-    });
-    
+    toast({ title: 'Case Deleted Successfully', description: `Case ${selectedCase.id} has been removed from active records and logged in audit trails.` });
     setIsDeleteDialogOpen(false);
   };
 
-  const filteredCases = mockCases.filter(c => 
-    c.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.organisation.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAndSortedCases = mockCases
+    .filter(c => {
+      const matchesSearch = c.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.organisation.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = categoryFilter === 'all' || c.category === categoryFilter;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const renderTable = () => (
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-muted/30 text-[11px] uppercase tracking-wider font-bold">
+            <TableHead>Case ID</TableHead>
+            <TableHead>Organisation</TableHead>
+            <TableHead>Incident Title</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Severity</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Created Date</TableHead>
+            <TableHead className="text-right">Admin</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredAndSortedCases.map((c) => (
+            <TableRow key={c.id} className="hover:bg-accent/20 transition-colors">
+              <TableCell className="font-mono text-xs font-bold">{c.id}</TableCell>
+              <TableCell className="text-sm">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-3 w-3 text-muted-foreground" />
+                  {c.organisation}
+                </div>
+              </TableCell>
+              <TableCell className="font-medium max-w-[200px] truncate">{c.title}</TableCell>
+              <TableCell className="text-xs">{c.category}</TableCell>
+              <TableCell>{getSeverityBadge(c.severity)}</TableCell>
+              <TableCell>{getStatusBadge(c.status)}</TableCell>
+              <TableCell className="text-[10px] text-muted-foreground whitespace-nowrap">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {c.date}
+                </div>
+              </TableCell>
+              <TableCell className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>Administrative Access</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate(`/super-admin/cases/${c.id}`)}>
+                      <Eye className="mr-2 h-4 w-4 font-bold" />
+                      Global Case View
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <History className="mr-2 h-4 w-4 text-blue-500" />
+                      Case Lifecycle Audit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <MessageSquare className="mr-2 h-4 w-4 text-indigo-500" />
+                      View Clarification Threads
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive font-semibold" onClick={() => handleDeleteInitiate(c)}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Remove Case Record
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 
   return (
@@ -171,111 +235,67 @@ export default function AllCases() {
         </div>
       </div>
 
-      <Card className="border-border/40 overflow-hidden shadow-sm">
-        <CardHeader className="bg-accent/30 py-4 border-b">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search by ID, title, or organisation..." 
-                className="pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Select defaultValue="all">
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Period" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Time</SelectItem>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="week">Past Week</SelectItem>
-                  <SelectItem value="month">Past Month</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                More Filters
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/30 text-[11px] uppercase tracking-wider font-bold">
-                  <TableHead>Case ID</TableHead>
-                  <TableHead>Organisation</TableHead>
-                  <TableHead>Incident Title</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Severity</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created Date</TableHead>
-                  <TableHead className="text-right">Admin</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCases.map((c) => (
-                  <TableRow key={c.id} className="hover:bg-accent/20 transition-colors">
-                    <TableCell className="font-mono text-xs font-bold">{c.id}</TableCell>
-                    <TableCell className="text-sm">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-3 w-3 text-muted-foreground" />
-                        {c.organisation}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium max-w-[200px] truncate">{c.title}</TableCell>
-                    <TableCell className="text-xs">{c.category}</TableCell>
-                    <TableCell>{getSeverityBadge(c.severity)}</TableCell>
-                    <TableCell>{getStatusBadge(c.status)}</TableCell>
-                    <TableCell className="text-[10px] text-muted-foreground whitespace-nowrap">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {c.date}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                          <DropdownMenuLabel>Administrative Access</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => navigate(`/super-admin/cases/${c.id}`)}>
-                            <Eye className="mr-2 h-4 w-4 font-bold" />
-                            Global Case View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <History className="mr-2 h-4 w-4 text-blue-500" />
-                            Case Lifecycle Audit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <MessageSquare className="mr-2 h-4 w-4 text-indigo-500" />
-                            View Clarification Threads
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive font-semibold" onClick={() => handleDeleteInitiate(c)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Remove Case Record
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <Tabs value={categoryFilter} onValueChange={setCategoryFilter} className="w-full space-y-4">
+        <TabsList className="bg-muted/50 p-1 border h-11">
+          {caseCategories.map((category) => (
+            <TabsTrigger key={category.id} value={category.id} className="px-6 h-full font-bold uppercase tracking-widest text-[10px]">{category.label}</TabsTrigger>
+          ))}
+        </TabsList>
 
-      {/* Strict Deletion Modal */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search by ID, title, or organisation..." 
+              className="pl-10 h-11 text-sm bg-card w-full md:w-auto"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="h-11 border-dashed">
+              <Filter className="mr-2 h-4 w-4" />
+              Date Range
+            </Button>
+            <Select defaultValue="all">
+              <SelectTrigger className="w-[150px] h-11">
+                <SelectValue placeholder="Period" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Time</SelectItem>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="week">Past Week</SelectItem>
+                <SelectItem value="month">Past Month</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" className="h-11 border-dashed">
+              More Filters
+            </Button>
+          </div>
+        </div>
+
+        <TabsContent value={categoryFilter} className="mt-0">
+          <Card className="border-border/40 overflow-hidden shadow-sm">
+            <CardContent className="p-0">
+              {renderTable()}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border/40">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <p>Showing <span className="font-bold text-foreground">{filteredAndSortedCases.length}</span> results</p>
+          <div className="h-4 w-px bg-border" />
+          <p>Filtered by: <span className="font-bold text-primary uppercase tracking-widest text-[10px]">{categoryFilter}</span></p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="ghost" size="sm" disabled>Previous</Button>
+          <Button variant="ghost" size="sm" disabled>Next</Button>
+        </div>
+      </div>
+
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-[500px] border-destructive/20 shadow-2xl">
           <DialogHeader>
@@ -287,7 +307,7 @@ export default function AllCases() {
               You are about to permanently remove Case <span className="font-bold text-foreground font-mono">{selectedCase?.id}</span> from the active management system. This action is irreversible and will be logged in the system audit trail.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="reason" className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
@@ -306,7 +326,7 @@ export default function AllCases() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="note" className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                 Justification Note <span className="text-destructive">*</span>
@@ -355,3 +375,4 @@ export default function AllCases() {
     </div>
   );
 }
+

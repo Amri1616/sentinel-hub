@@ -103,59 +103,58 @@ export default function SuperAdminDashboard() {
 
       {/* Summary Cards with Drill-down */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* User Summary */}
-        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/users')}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">User Population</CardTitle>
-            <Users className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">1,284</div>
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-green-500 border-green-500/10 bg-green-500/5 text-[10px]">1,150 ACTIVE</Badge>
-              <Badge variant="outline" className="text-destructive border-destructive/10 bg-destructive/5 text-[10px]">134 LOCKED</Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Application Summary */}
+        {/* Total Licensee Company */}
         <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/applications')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Active Applications</CardTitle>
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Licensee Company</CardTitle>
             <AppWindow className="h-4 w-4 text-indigo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">42</div>
+            <div className="text-3xl font-bold">124</div>
             <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-              Pending System Onboarding
+              Registered Licensee Organisations
             </div>
           </CardContent>
         </Card>
 
-        {/* Case Summary */}
+        {/* Total Licensee Reporter */}
+        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/users')}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Licensee Reporter</CardTitle>
+            <Users className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">487</div>
+            <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+              Registered Reporter Accounts
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Total Reports */}
         <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/cases')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Escalated Cases</CardTitle>
-            <Scale className="h-4 w-4 text-primary" />
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Reports</CardTitle>
+            <ShieldAlert className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">156</div>
+            <div className="text-3xl font-bold">3,842</div>
             <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-              Active LEA Investigation
+              Total Incident Reports Submitted
             </div>
           </CardContent>
         </Card>
 
-        {/* Health Summary */}
-        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/logs')}>
+        {/* Total Agency */}
+        <Card className="col-span-1 cursor-pointer hover:border-primary/40 transition-colors" onClick={() => navigate('/super-admin/master-data')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">System Health</CardTitle>
-            <Activity className="h-4 w-4 text-amber-500" />
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Agency</CardTitle>
+            <Scale className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-500">OPTIMAL</div>
+            <div className="text-3xl font-bold">11</div>
             <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-              Audit Trails Synchronized
+              LEA Agencies Configured
             </div>
           </CardContent>
         </Card>

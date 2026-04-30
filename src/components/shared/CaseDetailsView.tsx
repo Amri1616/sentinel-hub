@@ -125,6 +125,7 @@ interface Props {
   incident: CaseData;
   children?: React.ReactNode;
   hideEscalation?: boolean;
+  editable?: boolean;
 }
 
 const leaFullNames: Record<string, string> = {
@@ -142,7 +143,7 @@ const leaFullNames: Record<string, string> = {
   'PERHILITAN': 'Jabatan Perlindungan Hidupan Liar dan Taman Negara Semenanjung Malaysia',
 };
 
-export default function CaseDetailsView({ incident, hideEscalation, children }: Props) {
+export default function CaseDetailsView({ incident, hideEscalation, children, editable }: Props) {
   const { hash } = useLocation();
   const isCyberIncident = incident.isCyberIncident || cyberSecurityIncidentOptions.includes(incident.primaryIncidentType || '');
 
@@ -186,16 +187,16 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
   return (
     <div className="space-y-6">
       {/* Section 1: Reporter Information (Step 1) */}
-      <BasicCaseInfo incident={incident} getStatusColor={getStatusColor} getSeverityColor={getSeverityColor} />
+      <BasicCaseInfo incident={incident} getStatusColor={getStatusColor} getSeverityColor={getSeverityColor} editable={editable} />
 
       {/* Section 2: Incident Classification (Step 2) */}
-      <IncidentClassification incident={incident} />
+      <IncidentClassification incident={incident} editable={editable} />
 
       {/* Section 3: Incident Details (Step 3) — excludes parcel/sender/recipient */}
-      <IncidentDescription incident={incident} />
+      <IncidentDescription incident={incident} editable={editable} />
 
       {/* Section 4: Logistics Data — Parcel, Sender, Recipient (Step 3 parcel fields) */}
-      {!isCyberIncident && <LogisticsData incident={incident} />}
+      {!isCyberIncident && <LogisticsData incident={incident} editable={editable} />}
 
       {/* NEW: Multi-Agency Escalation Tracking */}
       {!hideEscalation && !isCyberIncident && incident.escalations && incident.escalations.length > 0 && (
@@ -259,11 +260,11 @@ export default function CaseDetailsView({ incident, hideEscalation, children }: 
       )}
 
       {/* Section 5: Action & Authority Tracking (Step 4) */}
-      <ActionsTaken incident={incident} />
+      <ActionsTaken incident={incident} editable={editable} />
 
       {/* Section 6: Evidence & Declaration (Steps 5 & 6) */}
       <div className="space-y-4">
-        <EvidenceDeclaration incident={incident} />
+        <EvidenceDeclaration incident={incident} editable={editable} />
         
         {/* Timeline Validation Notification */}
         {timeline && (
