@@ -25,10 +25,12 @@ import { Badge } from '@/components/ui/badge';
 const navItems = [
   { title: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
   { title: 'Application Management', path: '/super-admin/applications', icon: FileSignature, badge: 2 },
-  { title: 'User Management', path: '/super-admin/users', icon: Users },
+  { title: 'MCMC Staff Management', path: '/super-admin/users', icon: Users },
+  { title: 'Licensee Management', path: '/super-admin/licensee-users', icon: Users },
+  { title: 'LEA Management', path: '/super-admin/lea-users', icon: Users },
   { title: 'Case Governance', path: '/super-admin/cases', icon: ShieldAlert },
   { title: 'Master Data', path: '/super-admin/master-data', icon: Database },
-  { title: 'Audit Logs', path: '/super-admin/logs', icon: History },
+  { title: 'System Activity Log', path: '/super-admin/logs', icon: History },
 ];
 
 export default function SuperAdminLayout() {

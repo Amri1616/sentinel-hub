@@ -106,6 +106,10 @@ import SecuritySettings from "./pages/superAdmin/security/SecuritySettings";
 import SystemSettings from "./pages/superAdmin/settings/SystemSettings";
 import SuperAuditLogs from "./pages/superAdmin/logs/AuditLogs";
 import Monitoring from "./pages/superAdmin/monitoring/Monitoring";
+import LicenseeUserList from "./pages/superAdmin/licenseeUsers/LicenseeUserList";
+import LicenseeUserDetail from "./pages/superAdmin/licenseeUsers/LicenseeUserDetail";
+import LEAUserList from "./pages/superAdmin/leaUsers/LEAUserList";
+import LEAUserDetail from "./pages/superAdmin/leaUsers/LEAUserDetail";
 import LEALayout from "./components/agency/LEALayout";
 import LEADashboard from "./pages/agency/Dashboard";
 import LEACaseList from "./pages/agency/CaseList";
@@ -260,6 +264,10 @@ const App = () => (
                     <Route path="settings" element={<SystemSettings />} />
                     <Route path="logs" element={<SuperAuditLogs />} />
                     <Route path="monitoring" element={<Monitoring />} />
+                    <Route path="licensee-users" element={<LicenseeUserList />} />
+                    <Route path="licensee-users/:id" element={<LicenseeUserDetail />} />
+                    <Route path="lea-users" element={<LEAUserList />} />
+                    <Route path="lea-users/:id" element={<LEAUserDetail />} />
                   </Route>
 
                   {/* LEA Routes - with sidebar layout */}

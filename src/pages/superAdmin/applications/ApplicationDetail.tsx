@@ -22,7 +22,11 @@ import {
   Plus,
   History,
   ShieldAlert,
-  Phone
+  Phone,
+  Download,
+  Paperclip,
+  MapPin,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { 
@@ -68,18 +72,96 @@ export default function ApplicationDetail() {
     lastUpdated: '2026-03-08 14:30',
     companyInfo: {
       regNumber: isLEA ? 'G-12345' : '201501012345',
-      address: 'Level 10, Menara PDRM, Bukit Aman, 50480 Kuala Lumpur',
-      website: isLEA ? 'www.rmp.gov.my' : 'www.ninjavan.co',
-      phone: '+603-2266 2222'
+      addressLine1: isLEA ? 'Level 10, Menara PDRM' : '15, Jalan Tandang',
+      addressLine2: isLEA ? 'Bukit Aman' : 'Seksyen 51',
+      zipCode: isLEA ? '50480' : '46050',
+      city: isLEA ? 'Kuala Lumpur' : 'Petaling Jaya',
+      state: isLEA ? 'WP Kuala Lumpur' : 'Selangor',
+      country: 'Malaysia',
+      phone: '+603-2266 2222',
+      fax: isLEA ? '+60388888899' : '+603-7912 3456',
+      orgSubType: isLEA ? 'Police' : 'Courier'
+    },
+    documents: [
+      { id: 'doc1', name: 'Authorization Letter', type: 'PDF', size: '2.4 MB', date: '2026-03-05', status: 'uploaded' },
+      { id: 'doc2', name: 'Organization Stamp', type: 'PNG', size: '1.1 MB', date: '2026-03-05', status: 'uploaded' }
+    ],
+    authorization: {
+      name: 'Dato\' Seri Ariff Kamal',
+      position: 'Chief Executive Officer',
+      submissionDate: '2026-03-05',
+      declaration: 'I hereby declare that all information provided in this application is true and correct to the best of my knowledge and belief.'
     },
     users: isLEA ? [
-      { role: 'LEA Main User', name: 'ASP Ridzuan Bin Mansor', email: 'ridzuan.m@rmp.gov.my', phone: '012-3456789', designation: 'Assistant Superintendent' },
-      { role: 'LEA Secondary User', name: 'Insp. Fatimah Binti Ahmad', email: 'fatimah.a@rmp.gov.my', phone: '013-3456789', designation: 'Inspector' },
-      { role: 'LEA Secondary User', name: 'Sgt. Zahir Mohamed Hassan', email: 'zahir.mh@rmp.gov.my', phone: '014-4567890', designation: 'Sergeant' }
+      { 
+        role: 'LEA Main User', 
+        salutation: 'Dato\'',
+        firstName: 'Ridzuan',
+        lastName: 'Bin Mansor', 
+        email: 'ridzuan.m@rmp.gov.my', 
+        phone: '012-3456789', 
+        designation: 'Assistant Superintendent',
+        myKad: '720815-14-5678',
+        department: 'Commercial Crime Investigation Department',
+        altEmail: 'alternative@email.com',
+        altPhone: '+60123456780',
+      },
+      { 
+        role: 'LEA Secondary User', 
+        salutation: 'Ms',
+        firstName: 'Fatimah',
+        lastName: 'Binti Ahmad', 
+        email: 'fatimah.a@rmp.gov.my', 
+        phone: '013-3456789', 
+        designation: 'Inspector',
+        myKad: '850101-10-1234',
+        department: 'Cyber Crime Unit',
+        altEmail: '',
+        altPhone: '',
+      }
     ] : [
-      { id: '1', role: 'Licensee Admin', name: 'Ariff Kamal', email: 'ariff@ninjavan.co', phone: '019-8765432', designation: 'Operations Director' },
-      { id: '2', role: 'Licensee Reporter', name: 'Siti Norhaliza', email: 'siti.n@ninjavan.co', phone: '011-22334455', designation: 'Compliance Officer' },
-      { id: '3', role: 'Licensee Reporter', name: 'Tan Kah Boon', email: 'kb.tan@ninjavan.co', phone: '016-55667788', designation: 'Risk Manager' }
+      { 
+        id: '1', 
+        role: 'Licensee Admin', 
+        salutation: 'Mr',
+        firstName: 'Ariff',
+        lastName: 'Kamal', 
+        email: 'ariff@ninjavan.co', 
+        phone: '019-8765432', 
+        designation: 'Operations Director',
+        myKad: '880220-08-4321',
+        department: 'Operations',
+        altEmail: 'ariff.alt@ninjavan.co',
+        altPhone: '+60198765433',
+      },
+      { 
+        id: '2', 
+        role: 'Licensee Reporter', 
+        salutation: 'Ms',
+        firstName: 'Siti',
+        lastName: 'Norhaliza', 
+        email: 'siti.n@ninjavan.co', 
+        phone: '011-22334455', 
+        designation: 'Compliance Officer',
+        myKad: '920303-03-5566',
+        department: 'Legal & Compliance',
+        altEmail: '',
+        altPhone: '',
+      },
+      { 
+        id: '3', 
+        role: 'Licensee Reporter', 
+        salutation: 'Mr',
+        firstName: 'Tan',
+        lastName: 'Kah Boon', 
+        email: 'kb.tan@ninjavan.co', 
+        phone: '016-55667788', 
+        designation: 'Risk Manager',
+        myKad: '851010-14-1122',
+        department: 'Risk Management',
+        altEmail: '',
+        altPhone: '',
+      }
     ]
   });
 
@@ -105,12 +187,7 @@ export default function ApplicationDetail() {
   };
 
   const handleReject = () => {
-    if (!rejectCategory || !rejectReason) {
-      toast.error("Please provide a category and reason for rejection.");
-      return;
-    }
     toast.error(`Application rejected. Notification sent to applicant.`);
-    setIsRejectDialogOpen(false);
     navigate('/super-admin/applications');
   };
 
@@ -124,10 +201,16 @@ export default function ApplicationDetail() {
     const newReporter = {
       id: Math.random().toString(36).substr(2, 9),
       role: 'Licensee Reporter',
-      name: '',
+      salutation: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: '',
-      designation: ''
+      designation: '',
+      myKad: '',
+      department: '',
+      altEmail: '',
+      altPhone: '',
     };
     setApplicationData(prev => ({
       ...prev,
@@ -148,15 +231,156 @@ export default function ApplicationDetail() {
     setApplicationData(prev => ({ ...prev, users: newUsers }));
   };
 
-  const renderFieldGrid = (fields: Array<{ label: string; value: string; fullWidth?: boolean }>) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {fields.map((field) => (
-        <div key={field.label} className={field.fullWidth ? 'md:col-span-2 space-y-2' : 'space-y-2'}>
-          <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{field.label}</Label>
-          <p className="font-semibold text-sm leading-relaxed whitespace-pre-line">{field.value}</p>
+  const removeDocument = (docId: string) => {
+    setApplicationData(prev => ({
+      ...prev,
+      documents: prev.documents.map(doc => 
+        doc.id === docId ? { ...doc, status: 'removed', name: doc.name + ' (Removed)' } : doc
+      )
+    }));
+    toast.info("Document marked for removal.");
+  };
+
+  const replaceDocument = (docId: string) => {
+    // In a real app, this would open a file picker
+    const newDocName = prompt("Enter new document name (Mock upload):") || "New Document.pdf";
+    setApplicationData(prev => ({
+      ...prev,
+      documents: prev.documents.map(doc => 
+        doc.id === docId ? { 
+          ...doc, 
+          name: newDocName, 
+          status: 'uploaded', 
+          date: new Date().toISOString().split('T')[0],
+          size: '1.2 MB',
+          type: newDocName.split('.').pop()?.toUpperCase() || 'PDF'
+        } : doc
+      )
+    }));
+    toast.success("Document replaced successfully.");
+  };
+
+  const renderUserCard = (user: any, index: number) => (
+    <Card key={index} className={cn(
+      "border-border/40 shadow-sm relative group overflow-hidden",
+      user.role.includes('Admin') || user.role.includes('Main') ? "bg-primary/5" : "bg-card"
+    )}>
+      {isEditing && applicationData.users.length > 1 && (
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="absolute top-2 right-2 h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          onClick={() => removeUser(index)}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Salutation</Label>
+            {isEditing ? (
+              <Select value={user.salutation} onValueChange={(v) => updateUserField(index, 'salutation', v)}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Mr">Mr</SelectItem>
+                  <SelectItem value="Ms">Ms</SelectItem>
+                  <SelectItem value="Mrs">Mrs</SelectItem>
+                  <SelectItem value="Dato'">Dato'</SelectItem>
+                  <SelectItem value="Datin">Datin</SelectItem>
+                  <SelectItem value="Dr">Dr</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <p className="text-sm font-semibold text-slate-700">{user.salutation || '---'}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">First Name</Label>
+            {isEditing ? (
+              <Input value={user.firstName} onChange={(e) => updateUserField(index, 'firstName', e.target.value)} placeholder="First Name" className="h-10" />
+            ) : (
+              <p className="font-bold text-slate-900">{user.firstName || '---'}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Last Name</Label>
+            {isEditing ? (
+              <Input value={user.lastName} onChange={(e) => updateUserField(index, 'lastName', e.target.value)} placeholder="Last Name" className="h-10" />
+            ) : (
+              <div className="flex flex-col gap-1">
+                <span className="font-bold text-slate-900">{user.lastName || '---'}</span>
+                <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-tighter w-fit h-4 px-1.5">{user.role}</Badge>
+              </div>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MyKad / Passport No.</Label>
+            {isEditing ? (
+              <Input value={user.myKad} onChange={(e) => updateUserField(index, 'myKad', e.target.value)} placeholder="XXXXXX-XX-XXXX" className="h-10" />
+            ) : (
+              <p className="text-sm font-semibold text-slate-700">{user.myKad || '---'}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Designation</Label>
+            {isEditing ? (
+              <Input value={user.designation} onChange={(e) => updateUserField(index, 'designation', e.target.value)} placeholder="Official Title" className="h-10" />
+            ) : (
+              <p className="text-sm font-semibold text-slate-700">{user.designation || '---'}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Department</Label>
+            {isEditing ? (
+              <Input value={user.department} onChange={(e) => updateUserField(index, 'department', e.target.value)} placeholder="Working Unit" className="h-10" />
+            ) : (
+              <p className="text-sm font-semibold text-slate-700">{user.department || '---'}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Official Email Address</Label>
+            {isEditing ? (
+              <Input value={user.email} onChange={(e) => updateUserField(index, 'email', e.target.value)} placeholder="email@organisation.com" className="h-10" />
+            ) : (
+              <div className="flex items-center gap-2 text-sm text-slate-600">
+                <Mail className="h-3.5 w-3.5 text-blue-500" />
+                {user.email || '---'}
+              </div>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Alt. Email (Optional)</Label>
+            {isEditing ? (
+              <Input value={user.altEmail} onChange={(e) => updateUserField(index, 'altEmail', e.target.value)} placeholder="Personal Email" className="h-10" />
+            ) : (
+              <p className="text-sm font-medium text-slate-500 italic">{user.altEmail || '---'}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Office Phone Number</Label>
+            {isEditing ? (
+              <Input value={user.phone} onChange={(e) => updateUserField(index, 'phone', e.target.value)} placeholder="+60..." className="h-10" />
+            ) : (
+              <div className="flex items-center gap-2 text-sm text-slate-600">
+                <Phone className="h-3.5 w-3.5 text-emerald-500" />
+                {user.phone || '---'}
+              </div>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Alt. Phone No. (Optional)</Label>
+            {isEditing ? (
+              <Input value={user.altPhone} onChange={(e) => updateUserField(index, 'altPhone', e.target.value)} placeholder="Secondary Number" className="h-10" />
+            ) : (
+              <p className="text-sm font-medium text-slate-500 italic">{user.altPhone || '---'}</p>
+            )}
+          </div>
         </div>
-      ))}
-    </div>
+      </CardContent>
+    </Card>
   );
 
   return (
@@ -213,7 +437,7 @@ export default function ApplicationDetail() {
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Organisation Name</Label>
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Company Name</Label>
                   {isEditing ? (
                     <Input value={applicationData.organisation} onChange={(e) => setApplicationData({...applicationData, organisation: e.target.value})} />
                   ) : (
@@ -222,7 +446,7 @@ export default function ApplicationDetail() {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    {applicationData.type === 'LEA' ? 'Agency Code' : 'SSM Registration No.'}
+                    {applicationData.type === 'LEA' ? 'Agency Code' : 'Company Registration No.'}
                   </Label>
                   {isEditing ? (
                     <Input value={applicationData.companyInfo.regNumber} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, regNumber: e.target.value}})} />
@@ -231,21 +455,73 @@ export default function ApplicationDetail() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Website</Label>
-                  {isEditing ? (
-                    <Input value={applicationData.companyInfo.website} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, website: e.target.value}})} />
-                  ) : (
-                    <p className="font-medium text-primary underline underline-offset-4 cursor-pointer">{applicationData.companyInfo.website}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     {applicationData.type === 'LEA' ? 'Agency Type' : 'License Type'}
                   </Label>
-                  <p className="font-semibold">{applicationData.type === 'LEA' ? 'Police' : 'Courier'}</p>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.orgSubType} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, orgSubType: e.target.value}})} />
+                  ) : (
+                    <p className="font-semibold">{applicationData.companyInfo.orgSubType}</p>
+                  )}
+                </div>
+
+                <div className="md:col-span-2 mt-4 pb-2 border-b">
+                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                    <MapPin className="h-3.5 w-3.5 text-slate-500" />
+                    Official Address
+                  </h4>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Address Line 1</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.addressLine1} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, addressLine1: e.target.value}})} />
+                  ) : (
+                    <p className="text-sm">{applicationData.companyInfo.addressLine1}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Primary Phone</Label>
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Address Line 2 (Optional)</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.addressLine2} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, addressLine2: e.target.value}})} />
+                  ) : (
+                    <p className="text-sm">{applicationData.companyInfo.addressLine2 || '---'}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">ZIP / Postal Code</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.zipCode} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, zipCode: e.target.value}})} />
+                  ) : (
+                    <p className="text-sm">{applicationData.companyInfo.zipCode}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">City / Municipality</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.city} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, city: e.target.value}})} />
+                  ) : (
+                    <p className="text-sm">{applicationData.companyInfo.city}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">State</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.state} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, state: e.target.value}})} />
+                  ) : (
+                    <p className="text-sm">{applicationData.companyInfo.state}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Country</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.companyInfo.country} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, country: e.target.value}})} />
+                  ) : (
+                    <p className="text-sm">{applicationData.companyInfo.country}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Phone Number</Label>
                   {isEditing ? (
                     <Input value={applicationData.companyInfo.phone} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, phone: e.target.value}})} />
                   ) : (
@@ -253,174 +529,213 @@ export default function ApplicationDetail() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    {applicationData.type === 'LEA' ? 'Fax Number' : 'Fax Number'}
-                  </Label>
-                  <p className="font-medium">{isLEA ? '+60388888899' : '+603-2266 3333'}</p>
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Address</Label>
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Fax Number</Label>
                   {isEditing ? (
-                    <Textarea value={applicationData.companyInfo.address} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, address: e.target.value}})} />
+                    <Input value={applicationData.companyInfo.fax} onChange={(e) => setApplicationData({...applicationData, companyInfo: {...applicationData.companyInfo, fax: e.target.value}})} />
                   ) : (
-                    <p className="text-sm leading-relaxed">{applicationData.companyInfo.address}</p>
+                    <p className="font-medium">{applicationData.companyInfo.fax || '---'}</p>
                   )}
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* User Information */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
+ 
+          {/* Attached Documents */}
+          <Card className="border-border/40 shadow-sm overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b py-4">
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-primary" />
-                <h3 className="text-sm font-bold uppercase tracking-widest">Onboarding User Profiles</h3>
+                <Paperclip className="h-4 w-4 text-primary" />
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-800">Attached Documents</CardTitle>
               </div>
-              {isEditing && applicationData.type === 'Licensee' && (
-                <Button size="xs" variant="outline" onClick={addReporter}>
-                  <Plus className="mr-1 h-3 w-3" /> Add Reporter
-                </Button>
-              )}
-            </div>
-
-            <div className="grid gap-4">
-              {applicationData.users.map((user: any, index: number) => (
-                <Card key={index} className={cn(
-                  "border-border/40 shadow-sm relative group",
-                  user.role.includes('Admin') || user.role.includes('Main') ? "bg-primary/5" : "bg-card"
-                )}>
-                  {isEditing && applicationData.users.length > 1 && (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="absolute top-2 right-2 h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => removeUser(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                  <CardContent className="p-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Name</Label>
-                        {isEditing ? (
-                          <Input value={user.name} onChange={(e) => updateUserField(index, 'name', e.target.value)} placeholder="Full Name" />
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold">{user.name}</span>
-                            <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-tighter h-5">{user.role}</Badge>
-                          </div>
-                        )}
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-slate-100">
+                {applicationData.documents.map((doc) => (
+                  <div key={doc.id} className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "h-10 w-10 rounded-lg flex items-center justify-center",
+                        doc.status === 'removed' ? "bg-slate-100" : (doc.id === 'doc1' ? "bg-blue-500/10" : "bg-amber-500/10")
+                      )}>
+                        <FileText className={cn(
+                          "h-5 w-5",
+                          doc.status === 'removed' ? "text-slate-400" : (doc.id === 'doc1' ? "text-blue-600" : "text-amber-600")
+                        )} />
                       </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Email</Label>
-                        {isEditing ? (
-                          <Input value={user.email} onChange={(e) => updateUserField(index, 'email', e.target.value)} placeholder="email@organisation.com" />
-                        ) : (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Mail className="h-3 w-3" />
-                            {user.email}
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Designation</Label>
-                        {isEditing ? (
-                          <Input value={user.designation} onChange={(e) => updateUserField(index, 'designation', e.target.value)} placeholder="Official Title" />
-                        ) : (
-                          <p className="text-sm font-medium">{user.designation}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Phone Number</Label>
-                        {isEditing ? (
-                          <Input value={user.phone} onChange={(e) => updateUserField(index, 'phone', e.target.value)} placeholder="+60..." />
-                        ) : (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Phone className="h-3 w-3" />
-                            {user.phone}
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MyKad No.</Label>
-                        <p className="text-sm font-medium">{isLEA ? '720815-14-5678' : '880220-08-4321'}</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Department</Label>
-                        <p className="text-sm font-medium">{isLEA ? 'Commercial Crime Investigation Department' : 'Operations'}</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Salutation</Label>
-                        <p className="text-sm font-medium">{index === 0 ? 'Dato\'' : 'Ms'}</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Optional Alternative Email</Label>
-                        <p className="text-sm font-medium">{index === 0 ? 'alternative@email.com' : 'mastura.alt@email.com'}</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Optional Alternative Phone No.</Label>
-                        <p className="text-sm font-medium">{index === 0 ? '+60123456780' : '+60111222333'}</p>
+                      <div>
+                        <p className={cn(
+                          "text-sm font-bold",
+                          doc.status === 'removed' ? "text-slate-400 line-through" : "text-slate-800"
+                        )}>{doc.name}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
+                          {doc.status === 'removed' ? 'Pending Removal' : `${doc.type} • ${doc.size} • Uploaded ${doc.date}`}
+                        </p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div className="flex items-center gap-2">
+                      {!isEditing ? (
+                        <Button variant="outline" size="sm" className="h-9 px-4 border-slate-200 text-slate-600 hover:bg-slate-600 hover:text-white transition-all font-bold uppercase tracking-widest text-[10px]">
+                          <Download className="mr-2 h-3.5 w-3.5" /> Download
+                        </Button>
+                      ) : (
+                        <>
+                          {doc.status !== 'removed' && (
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-9 w-9 text-red-500 hover:bg-red-50 hover:text-red-600"
+                              onClick={() => removeDocument(doc.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-9 px-4 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all font-bold uppercase tracking-widest text-[10px]"
+                            onClick={() => replaceDocument(doc.id)}
+                          >
+                            <Edit2 className="mr-2 h-3.5 w-3.5" /> {doc.status === 'removed' ? 'Restore & Replace' : 'Replace'}
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+ 
+          {/* User Information */}
+          <div className="space-y-8">
+            {/* Administrative Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <ShieldCheck className="h-4 w-4 text-blue-600" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-slate-800">Administrative Users</h3>
+              </div>
+              <div className="grid gap-4">
+                {applicationData.users
+                  .filter((u: any) => u.role.includes('Admin') || u.role.includes('Main'))
+                  .map((user: any) => {
+                    const originalIndex = applicationData.users.findIndex((u: any) => u === user);
+                    return renderUserCard(user, originalIndex);
+                  })}
+              </div>
             </div>
+ 
+            {/* Reporter Section(s) */}
+            {applicationData.type === 'Licensee' ? (
+              <>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-emerald-600" />
+                      <h3 className="text-sm font-bold uppercase tracking-widest text-slate-800">Licensee Reporter 1 Details</h3>
+                    </div>
+                  </div>
+                  {applicationData.users
+                    .filter((u: any) => u.role.includes('Reporter'))
+                    .slice(0, 1)
+                    .map((user: any) => {
+                      const originalIndex = applicationData.users.findIndex((u: any) => u === user);
+                      return renderUserCard(user, originalIndex);
+                    })}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-emerald-600" />
+                      <h3 className="text-sm font-bold uppercase tracking-widest text-slate-800">Licensee Reporter 2 Details</h3>
+                    </div>
+                  </div>
+                  {applicationData.users
+                    .filter((u: any) => u.role.includes('Reporter'))
+                    .slice(1, 2)
+                    .map((user: any) => {
+                      const originalIndex = applicationData.users.findIndex((u: any) => u === user);
+                      return renderUserCard(user, originalIndex);
+                    })}
+                  {applicationData.users.filter((u: any) => u.role.includes('Reporter')).length < 2 && (
+                    <div className="p-8 border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-muted-foreground bg-slate-50/50">
+                      <Users className="h-8 w-8 mb-2 opacity-20" />
+                      <p className="text-xs font-medium uppercase tracking-widest">Reporter 2 not assigned</p>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-emerald-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-slate-800">Secondary Users</h3>
+                  </div>
+                </div>
+                <div className="grid gap-4">
+                  {applicationData.users
+                    .filter((u: any) => u.role.includes('Secondary'))
+                    .map((user: any) => {
+                      const originalIndex = applicationData.users.findIndex((u: any) => u === user);
+                      return renderUserCard(user, originalIndex);
+                    })}
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Authorization & Declaration */}
+          <Card className="border-border/40 shadow-sm overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b py-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-primary" />
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-800">Authorization & Declaration</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Authorized Person Name</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.authorization.name} onChange={(e) => setApplicationData({...applicationData, authorization: {...applicationData.authorization, name: e.target.value}})} />
+                  ) : (
+                    <p className="font-semibold">{applicationData.authorization.name}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Authorized Person Position</Label>
+                  {isEditing ? (
+                    <Input value={applicationData.authorization.position} onChange={(e) => setApplicationData({...applicationData, authorization: {...applicationData.authorization, position: e.target.value}})} />
+                  ) : (
+                    <p className="font-semibold">{applicationData.authorization.position}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date of Submission</Label>
+                  <p className="font-semibold">{applicationData.authorization.submissionDate}</p>
+                </div>
+                <div className="md:col-span-2 space-y-2 mt-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Declaration</Label>
+                  <div className="p-4 bg-slate-50 border rounded-lg italic text-sm text-slate-600">
+                    "{applicationData.authorization.declaration}"
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Action Bar */}
           {!isEditing && applicationData.status === 'submitted' && (
             <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/40">
-              <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="text-red-500 border-red-500/20 hover:bg-red-500/5 font-bold uppercase tracking-widest text-[10px] h-10 px-8">
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Reject Application
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-red-500">
-                      <ShieldAlert className="h-5 w-5" />
-                      Reject Application
-                    </DialogTitle>
-                    <DialogDescription>
-                      This action will notify the applicant. Please provide a mandatory reason for the rejection.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase tracking-widest">Rejection Category</Label>
-                      <Select onValueChange={setRejectCategory}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select reason type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="incomplete">Incomplete Documentation</SelectItem>
-                          <SelectItem value="invalid">Invalid Registration Data</SelectItem>
-                          <SelectItem value="duplicate">Duplicate Application</SelectItem>
-                          <SelectItem value="policy">Policy Violation</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase tracking-widest">Detailed Remarks</Label>
-                      <Textarea 
-                        placeholder="Provide specific feedback to the applicant..." 
-                        className="min-h-[120px]"
-                        value={rejectReason}
-                        onChange={(e) => setRejectReason(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="ghost" onClick={() => setIsRejectDialogOpen(false)}>Cancel</Button>
-                    <Button variant="destructive" onClick={handleReject} disabled={!rejectCategory || !rejectReason}>Confirm Rejection</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <Button 
+                variant="outline" 
+                className="text-red-500 border-red-500/20 hover:bg-red-500/5 font-bold uppercase tracking-widest text-[10px] h-10 px-8"
+                onClick={handleReject}
+              >
+                <XCircle className="mr-2 h-4 w-4" />
+                Reject Application
+              </Button>
 
               <Dialog open={isApproveDialogOpen} onOpenChange={setIsApproveDialogOpen}>
                 <DialogTrigger asChild>
@@ -444,7 +759,7 @@ export default function ApplicationDetail() {
                       {applicationData.users.map((user: any, i: number) => (
                         <div key={i} className="flex justify-between items-center text-sm border-b border-border/40 pb-2 last:border-0 last:pb-0">
                           <div className="flex flex-col">
-                            <span className="font-bold">{user.name}</span>
+                            <span className="font-bold">{user.firstName} {user.lastName}</span>
                             <span className="text-[10px] text-muted-foreground">{user.email}</span>
                           </div>
                           <Badge variant="outline" className="text-[9px] h-4 uppercase">{user.role}</Badge>

@@ -115,22 +115,20 @@ export default function ApplicationList() {
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/30">
-            <TableHead className="w-[120px]">Application ID</TableHead>
-            <TableHead>Application Type</TableHead>
-            <TableHead>Company / Agency Name</TableHead>
-            <TableHead>Submitted Date</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Last Updated</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-[120px] text-center">Application ID</TableHead>
+            <TableHead className="text-center">Application Type</TableHead>
+            <TableHead className="text-center">Company / Agency Name</TableHead>
+            <TableHead className="text-center">Submitted Date</TableHead>
+            <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {apps.length > 0 ? (
             apps.map((app) => (
               <TableRow key={app.id} className="hover:bg-accent/20 transition-colors cursor-pointer" onClick={() => navigate(`/super-admin/applications/${app.id}`)}>
-                <TableCell className="font-mono text-xs font-bold text-primary">{app.id}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
+                <TableCell className="font-mono text-xs font-bold text-primary text-center">{app.id}</TableCell>
+                <TableCell className="text-center">
+                  <div className="flex items-center justify-center gap-2">
                     {app.type === 'Licensee' ? (
                       <Badge variant="outline" className="bg-blue-500/5 border-blue-500/20 text-blue-500 font-bold uppercase tracking-widest text-[10px]">Licensee</Badge>
                     ) : (
@@ -138,47 +136,25 @@ export default function ApplicationList() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="font-semibold">{app.organisation}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
+                <TableCell className="font-semibold text-center">{app.organisation}</TableCell>
+                <TableCell className="text-xs text-muted-foreground text-center">
+                  <div className="flex items-center justify-center gap-1">
                     <Calendar className="h-3 w-3" />
                     {app.date}
                   </div>
                 </TableCell>
-                <TableCell>{getStatusBadge(app.status)}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">{app.lastUpdated}</TableCell>
-                <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                  <div className="flex justify-end gap-1">
+                <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex justify-center gap-1">
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/super-admin/applications/${app.id}`)}>
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500">
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => navigate(`/super-admin/applications/${app.id}`)}>
-                          <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                          Approve
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-500">
-                          <XCircle className="mr-2 h-4 w-4" />
-                          Reject
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+              <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
                 No applications found.
               </TableCell>
             </TableRow>

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 import { 
   ArrowLeft, 
   ShieldAlert, 
@@ -18,6 +19,7 @@ import {
   Shield
 } from 'lucide-react';
 import CaseDetailsView, { getStatusColor, getSeverityColor } from '@/components/shared/CaseDetailsView';
+import CaseClarificationThread from '@/components/shared/CaseClarificationThread';
 import CaseTimeline from '@/components/shared/CaseTimeline';
 import CaseHeader from '@/components/shared/CaseHeader';
 import { fallbackIncident } from '@/lib/mock-data';
@@ -86,10 +88,7 @@ export default function CaseDetailGovernance() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            Export Archive
-          </Button>
+
           <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
             <DialogTrigger asChild>
               <Button variant="destructive" size="sm">
@@ -119,6 +118,7 @@ export default function CaseDetailGovernance() {
                       <SelectItem value="erroneous">Erroneous Filing</SelectItem>
                       <SelectItem value="legal">Legal Requirement</SelectItem>
                       <SelectItem value="privacy">Privacy Violation</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -186,11 +186,11 @@ export default function CaseDetailGovernance() {
           </TabsTrigger>
           <TabsTrigger value="timeline" className="px-6 h-full font-bold uppercase tracking-widest text-[10px]">
             <History className="h-3 w-3 mr-2" />
-            Lifecycle Timeline
+            Timeline
           </TabsTrigger>
           <TabsTrigger value="governance" className="px-6 h-full font-bold uppercase tracking-widest text-[10px]">
-            <Shield className="h-3 w-3 mr-2" />
-            Governance Logs
+            <MessageSquare className="h-3 w-3 mr-2" />
+            Clarification Thread
           </TabsTrigger>
         </TabsList>
 
@@ -203,30 +203,11 @@ export default function CaseDetailGovernance() {
         </TabsContent>
 
         <TabsContent value="governance">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-bold uppercase tracking-widest">Administrative Audit Trail</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { user: 'Ahmad Faiz (Super Admin)', action: 'Viewed Case Details', time: '2026-03-08 16:45' },
-                  { user: 'System', action: 'Bi-directional Sync triggered', time: '2026-03-08 10:30' },
-                ].map((log, i) => (
-                  <div key={i} className="flex items-center justify-between py-2 border-b border-border/50 text-sm">
-                    <div className="flex items-center gap-3">
-                      <User className="h-4 w-4 text-primary" />
-                      <span className="font-medium">{log.user}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-muted-foreground">{log.action}</span>
-                      <span className="text-xs text-muted-foreground font-mono">{log.time}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <CaseClarificationThread 
+            messages={[]} 
+            currentRole="admin" 
+            isReadOnly={true}
+          />
         </TabsContent>
       </Tabs>
     </div>

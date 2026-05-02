@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { FileText, Download, ShieldCheck, Edit2 } from 'lucide-react';
+import { FileText, Download, ShieldCheck, Edit2, Trash2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -32,6 +33,7 @@ export default function EvidenceDeclaration({ incident, editable }: Props) {
     declarationDate: incident.declarationDate || '',
     linkDescription: incident.linkDescription || '',
   });
+  const [documents, setDocuments] = useState<Doc[]>(incident.documents);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -48,33 +50,71 @@ export default function EvidenceDeclaration({ incident, editable }: Props) {
       declarationDate: incident.declarationDate || '',
       linkDescription: incident.linkDescription || '',
     });
+    setDocuments(incident.documents);
     setIsEditing(false);
   };
 
-  const photos = incident.documents.filter(d => /\.(jpg|jpeg|png|gif|webp)$/i.test(d.name));
-  const docs = incident.documents.filter(d => /\.(pdf|doc|docx|xls|xlsx|csv)$/i.test(d.name));
-  const videos = incident.documents.filter(d => /\.(mp4|avi|mov|wmv|webm)$/i.test(d.name));
-  const others = incident.documents.filter(d =>
+  const handleRemoveFile = (name: string) => {
+    setDocuments(documents.filter(d => d.name !== name));
+  };
+
+  const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const newDoc: Doc = {
+        name: file.name,
+        size: `${(file.size / 1024).toFixed(1)} KB`,
+        uploadedBy: 'Super Admin',
+        uploadDate: new Date().toISOString().split('T')[0]
+      };
+      setDocuments([...documents, newDoc]);
+      toast.success(`${file.name} added to evidence.`);
+    }
+  };
+
+  const photos = documents.filter(d => /\.(jpg|jpeg|png|gif|webp)$/i.test(d.name));
+  const docs = documents.filter(d => /\.(pdf|doc|docx|xls|xlsx|csv)$/i.test(d.name));
+  const videos = documents.filter(d => /\.(mp4|avi|mov|wmv|webm)$/i.test(d.name));
+  const others = documents.filter(d =>
     !photos.includes(d) && !docs.includes(d) && !videos.includes(d)
   );
-
   const renderFileList = (files: Doc[], label: string) => {
     if (files.length === 0) return null;
     return (
       <div className="space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground">{label} ({files.length})</p>
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label} ({files.length})</p>
         {files.map((doc, i) => (
-          <div key={i} className="flex items-center justify-between p-3 border border-border rounded-lg">
+          <div key={i} className={cn(
+            "flex items-center justify-between p-3 border rounded-lg transition-colors",
+            isEditing ? "border-amber-200 bg-amber-50/30" : "border-border"
+          )}>
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded bg-primary/10 flex items-center justify-center">
                 <FileText className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-sm font-medium">{doc.name}</p>
-                <p className="text-xs text-muted-foreground">{doc.size} · Uploaded by {doc.uploadedBy} · {doc.uploadDate}</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-tight">{doc.size} · Uploaded by {doc.uploadedBy} · {doc.uploadDate}</p>
               </div>
             </div>
-            <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-2" />Download</Button>
+            <div className="flex gap-2">
+              {!isEditing ? (
+                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold uppercase">
+                  <Download className="h-3 w-3 mr-2" />
+                  Download
+                </Button>
+              ) : (
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  className="h-8 text-[10px] font-bold uppercase"
+                  onClick={() => handleRemoveFile(doc.name)}
+                >
+                  <Trash2 className="h-3 w-3 mr-2" />
+                  Remove
+                </Button>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -106,17 +146,37 @@ export default function EvidenceDeclaration({ incident, editable }: Props) {
           )
         )}
       </CardHeader>
-      <CardContent className="space-y-5">
+      <CardContent className="space-y-6">
+        {isEditing && (
+          <div className="p-4 border-2 border-dashed border-amber-200 rounded-lg bg-amber-50/20 flex flex-col items-center justify-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+              <Plus className="h-6 w-6" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-bold text-amber-800">Replace / Upload New Evidence</p>
+              <p className="text-[10px] text-amber-600 uppercase tracking-widest mt-1">Accepted formats: JPG, PNG, PDF, MP4 (Max 10MB)</p>
+            </div>
+            <div className="relative">
+              <Button size="sm" className="bg-amber-600 hover:bg-amber-700">Select Files</Button>
+              <input 
+                type="file" 
+                className="absolute inset-0 opacity-0 cursor-pointer" 
+                onChange={handleUploadFile}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Documents */}
-        {incident.documents.length > 0 ? (
-          <div className="space-y-4">
+        {documents.length > 0 ? (
+          <div className="space-y-6">
             {renderFileList(photos, 'Evidence Photos')}
             {renderFileList(docs, 'Supporting Documents')}
             {renderFileList(videos, 'Video Evidence')}
             {renderFileList(others, 'Other Files')}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">No supporting documents uploaded.</p>
+          <p className="text-sm text-muted-foreground italic">No supporting documents uploaded.</p>
         )}
         
         {incident.linkDescription && (

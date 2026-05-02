@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Table, 
   TableBody, 
@@ -20,35 +19,72 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Search, 
-  Filter, 
   MoreVertical, 
   UserPlus, 
-  UserCheck, 
-  UserX, 
-  Shield, 
+  ShieldCheck, 
   Mail, 
   Key,
   Trash2,
   FileText,
-  Lock,
-  Unlock,
-  RefreshCw,
-  ChevronDown
+  UserX,
+  UserCheck,
+  History
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { RoleChip } from '@/components/RoleChip';
 import { Role } from '@/lib/auth';
 import { toast } from 'sonner';
 
-const mockUsers = [
-  { id: '1', name: 'Ahmad Faiz', email: 'afaiz@mcmc.gov.my', role: 'super-admin' as Role, organisation: 'MCMC', status: 'active', mfa: true, lastLogin: '2026-03-08 09:30' },
-  { id: '2', name: 'Mastura Salleh', email: 'mastura@globalexpress.com', role: 'reporter' as Role, organisation: 'Global Express Logistics', status: 'active', mfa: true, lastLogin: '2026-03-07 14:20' },
-  { id: '3', name: 'John Doe', email: 'john@poslaju.com.my', role: 'licensee-admin' as Role, organisation: 'Pos Malaysia', status: 'inactive', mfa: false, lastLogin: '2026-02-28 11:15' },
-  { id: '4', name: 'Siti Aminah', email: 'siti@mcmc.gov.my', role: 'reviewer' as Role, organisation: 'MCMC', status: 'active', mfa: true, lastLogin: '2026-03-08 08:45' },
-  { id: '5', name: 'Lim Keng', email: 'lim@pdrm.gov.my', role: 'lea-viewer' as Role, organisation: 'PDRM', status: 'locked', mfa: true, lastLogin: '2026-03-01 16:30' },
-  { id: '6', name: 'Zulhairi Abdullah', email: 'zulhairi@pos.com.my', role: 'licensee-admin' as Role, organisation: 'Pos Malaysia', status: 'pending_activation', mfa: false, lastLogin: 'N/A' },
+// Filtered mock data to only include MCMC internal users
+const mockInternalUsers = [
+  { 
+    id: '1', 
+    name: 'Ahmad Faiz', 
+    email: 'afaiz@mcmc.gov.my', 
+    role: 'super-admin' as Role, 
+    userType: 'System Administrator',
+    status: 'active', 
+    lastLogin: '2026-04-30 09:30' 
+  },
+  { 
+    id: '2', 
+    name: 'Siti Aminah', 
+    email: 'siti@mcmc.gov.my', 
+    role: 'reviewer' as Role, 
+    userType: 'Case Officer (Standard)',
+    status: 'active', 
+    lastLogin: '2026-04-30 08:45' 
+  },
+  { 
+    id: '3', 
+    name: 'Zulhairi Abdullah', 
+    email: 'zulhairi@mcmc.gov.my', 
+    role: 'validator' as Role, 
+    userType: 'Supervisor',
+    status: 'active', 
+    lastLogin: '2026-04-29 14:20' 
+  },
+  { 
+    id: '4', 
+    name: 'Sarah Tan', 
+    email: 'sarah@mcmc.gov.my', 
+    role: 'investigator' as Role, 
+    userType: 'Internal (View Only)',
+    status: 'inactive', 
+    lastLogin: '2026-04-25 11:15' 
+  },
+  { 
+    id: '5', 
+    name: 'Farhan Hakimi', 
+    email: 'farhan@mcmc.gov.my', 
+    role: 'reviewer' as Role, 
+    userType: 'Case Officer (Cyber)',
+    status: 'active', 
+    lastLogin: '2026-04-30 10:15' 
+  },
 ];
 
 export default function UserList() {
@@ -57,225 +93,173 @@ export default function UserList() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
 
-  const userRoles = [
-    { id: 'all', label: 'All Users' },
-    { id: 'super-admin', label: 'Super Admin' },
-    { id: 'licensee-admin', label: 'Licensee Admin' },
-    { id: 'reporter', label: 'Licensee Reporter' },
-    { id: 'reviewer', label: 'Case Officer' },
-    { id: 'validator', label: 'MCMC Supervisor' },
-    { id: 'investigator', label: 'MCMC Internal' },
-    { id: 'lea-viewer', label: 'LEA Viewer' },
-  ];
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Active</Badge>;
+        return <Badge className="bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-50">Active</Badge>;
       case 'inactive':
-        return <Badge variant="secondary">Inactive</Badge>;
-      case 'locked':
-        return <Badge className="bg-destructive/10 text-destructive border-destructive/20">Locked</Badge>;
-      case 'pending_activation':
-        return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">Pending Activation</Badge>;
-      case 'deleted':
-        return <Badge className="bg-gray-500/10 text-gray-500 border-gray-500/20">Deleted</Badge>;
+        return <Badge variant="secondary" className="bg-slate-100 text-slate-500 border-slate-200">Inactive</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
   };
 
-  const filteredAndSortedUsers = mockUsers
-    .filter(user => {
-      const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           user.organisation.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-      const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-      return matchesSearch && matchesStatus && matchesRole;
-    })
-    .sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+  const filteredUsers = mockInternalUsers.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    return matchesSearch && matchesStatus && matchesRole;
+  });
 
   const handleAction = (action: string, userName: string) => {
-    toast.success(`${action} for ${userName} completed successfully.`);
+    toast.success(`${action} for ${userName} logged in audit trail.`);
   };
 
-  const renderTable = () => (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/30">
-            <TableHead>User</TableHead>
-            <TableHead>Organisation</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Last Activity</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredAndSortedUsers.length > 0 ? (
-            filteredAndSortedUsers.map((user) => (
-              <TableRow key={user.id} className="hover:bg-accent/20 transition-colors">
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span className="font-bold">{user.name}</span>
-                    <span className="text-xs text-muted-foreground">{user.email}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">{user.organisation}</TableCell>
-                <TableCell>
-                  <RoleChip role={user.role} />
-                </TableCell>
-                <TableCell>
-                  {getStatusBadge(user.status)}
-                </TableCell>
-                <TableCell className="text-xs text-muted-foreground">
-                  {user.lastLogin}
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuLabel>Governance Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate(`/super-admin/users/${user.id}`)}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        View Detailed Profile
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleAction("Password Reset", user.name)}>
-                        <Key className="mr-2 h-4 w-4" />
-                        Reset Password
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleAction("Activation Resent", user.name)}>
-                        <Mail className="mr-2 h-4 w-4" />
-                        Resend Activation Link
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleAction("Temp Password Regenerated", user.name)}>
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Regenerate Temp Password
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {user.status === 'locked' ? (
-                        <DropdownMenuItem onClick={() => handleAction("Account Unlocked", user.name)}>
-                          <Unlock className="mr-2 h-4 w-4 text-green-500" />
-                          Unlock Account
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem onClick={() => handleAction("Account Locked", user.name)}>
-                          <Lock className="mr-2 h-4 w-4 text-amber-500" />
-                          Lock Account
-                        </DropdownMenuItem>
-                      )}
-                      {user.status === 'active' ? (
-                        <DropdownMenuItem className="text-amber-500" onClick={() => handleAction("Account Deactivated", user.name)}>
-                          <UserX className="mr-2 h-4 w-4" />
-                          Deactivate User
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem className="text-green-500" onClick={() => handleAction("Account Activated", user.name)}>
-                          <UserCheck className="mr-2 h-4 w-4" />
-                          Activate User
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive" onClick={() => handleAction("User Soft Deleted", user.name)}>
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete (Soft Delete)
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                No users found.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  );
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-slate-50/30 -m-6 p-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-          <p className="text-muted-foreground mt-1">Full governance control over system users, roles, and access states.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">MCMC Internal Users</h1>
+          <p className="text-muted-foreground text-sm mt-1">Manage MCMC staff accounts, roles, and system access levels.</p>
         </div>
-        <Button onClick={() => navigate('/super-admin/users/new')}>
+        <Button onClick={() => navigate('/super-admin/users/new')} className="bg-blue-600 hover:bg-blue-700 shadow-sm">
           <UserPlus className="mr-2 h-4 w-4" />
-          Create User Manually
+          Add Internal User
         </Button>
       </div>
 
-      <Tabs value={roleFilter} onValueChange={setRoleFilter} className="w-full space-y-4">
-        <TabsList className="bg-muted/50 p-1 border h-11">
-          {userRoles.map((role) => (
-            <TabsTrigger key={role.id} value={role.id} className="px-6 h-full font-bold uppercase tracking-widest text-[10px]">{role.label}</TabsTrigger>
-          ))}
-        </TabsList>
+      <Card className="border-none shadow-sm bg-white overflow-hidden">
+        <CardHeader className="border-b border-slate-100 pb-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input 
+                placeholder="Search by name or email..." 
+                className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-blue-500 h-10 text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-3">
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-[180px] bg-white border-slate-200 h-10 text-sm">
+                  <SelectValue placeholder="Filter by Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="reviewer">Case Officer</SelectItem>
+                  <SelectItem value="validator">Supervisor</SelectItem>
+                  <SelectItem value="investigator">Internal (View Only)</SelectItem>
+                  <SelectItem value="super-admin">Superadmin</SelectItem>
+                </SelectContent>
+              </Select>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search users..." 
-              className="pl-10 h-11 text-sm bg-card w-full md:w-auto"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[150px] bg-white border-slate-200 h-10 text-sm">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500 pl-6">Name & Email</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Role</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500">User Type</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Last Login</TableHead>
+                <TableHead className="text-right pr-6">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
+                  <TableRow key={user.id} className="hover:bg-slate-50/30 transition-colors border-b border-slate-100 last:border-0">
+                    <TableCell className="pl-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-slate-900">{user.name}</span>
+                        <span className="text-xs text-slate-500">{user.email}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <RoleChip role={user.role} />
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-slate-600 font-medium">{user.userType}</span>
+                    </TableCell>
+                    <TableCell>
+                      {getStatusBadge(user.status)}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <History className="h-3 w-3" />
+                        {user.lastLogin}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right pr-6">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-100 rounded-full">
+                            <MoreVertical className="h-4 w-4 text-slate-500" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56 border-slate-200 shadow-lg">
+                          <DropdownMenuLabel className="text-xs text-slate-400 font-bold uppercase tracking-widest px-3 py-2">Account Actions</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => navigate(`/super-admin/users/${user.id}`)}>
+                            <FileText className="mr-2 h-4 w-4" />
+                            View Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {user.status === 'active' ? (
+                            <DropdownMenuItem className="text-amber-600" onClick={() => handleAction("Deactivated", user.name)}>
+                              <UserX className="mr-2 h-4 w-4" />
+                              Deactivate Account
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem className="text-emerald-600" onClick={() => handleAction("Activated", user.name)}>
+                              <UserCheck className="mr-2 h-4 w-4" />
+                              Activate Account
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem className="text-rose-600" onClick={() => handleAction("Deleted", user.name)}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete User
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-40 text-center text-slate-400">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <Search className="h-8 w-8 opacity-20" />
+                      <p>No internal MCMC users found matching your search.</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-          <div className="flex items-center gap-2">
-            <Button variant="outline" className="h-11 border-dashed">
-              <Filter className="mr-2 h-4 w-4" />
-              Date Range
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="h-11 border-dashed">
-                  Status
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setStatusFilter('all')}>All Statuses</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('active')}>Active</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('inactive')}>Inactive</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('locked')}>Locked</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('pending_activation')}>Pending Activation</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button variant="outline" className="h-11 border-dashed">Export Logs</Button>
-          </div>
-        </div>
-
-        <TabsContent value={roleFilter} className="mt-0">
-          <Card className="border-border/40 shadow-sm overflow-hidden">
-            <CardContent className="p-0">
-              {renderTable()}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border/40">
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <p>Showing <span className="font-bold text-foreground">{filteredAndSortedUsers.length}</span> results</p>
-          <div className="h-4 w-px bg-border" />
-          <p>Filtered by: <span className="font-bold text-primary uppercase tracking-widest text-[10px]">{roleFilter}</span></p>
-        </div>
+      <div className="flex items-center justify-between text-xs text-slate-500 px-2">
+        <p>Total MCMC Staff: <span className="font-bold text-slate-900">{filteredUsers.length}</span></p>
         <div className="flex gap-2">
-          <Button variant="ghost" size="sm" disabled>Previous</Button>
-          <Button variant="ghost" size="sm" disabled>Next</Button>
+          <Button variant="outline" size="sm" className="h-8 px-3 border-slate-200" disabled>Previous</Button>
+          <Button variant="outline" size="sm" className="h-8 px-3 border-slate-200" disabled>Next</Button>
         </div>
       </div>
     </div>
