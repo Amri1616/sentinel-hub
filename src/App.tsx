@@ -104,7 +104,7 @@ import TemplateList from "./pages/superAdmin/notifications/TemplateList";
 import TemplateEdit from "./pages/superAdmin/notifications/TemplateEdit";
 import SecuritySettings from "./pages/superAdmin/security/SecuritySettings";
 import SystemSettings from "./pages/superAdmin/settings/SystemSettings";
-import SuperAuditLogs from "./pages/superAdmin/logs/AuditLogs";
+import SuperAuditLogs from "./pages/admin/AuditLogs";
 import Monitoring from "./pages/superAdmin/monitoring/Monitoring";
 import LicenseeUserList from "./pages/superAdmin/licenseeUsers/LicenseeUserList";
 import LicenseeUserDetail from "./pages/superAdmin/licenseeUsers/LicenseeUserDetail";
