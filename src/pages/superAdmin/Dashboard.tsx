@@ -63,11 +63,11 @@ export default function SuperAdminDashboard() {
   ];
 
   const statusData = [
-    { name: 'New', value: 120, color: '#3b82f6' },
+    { name: 'Pending Review', value: 120, color: '#3b82f6' },
+    { name: 'RFI Sent', value: 380, color: '#f59e0b' },
     { name: 'Under Review', value: 450, color: '#6366f1' },
-    { name: 'Investigating', value: 380, color: '#f59e0b' },
-    { name: 'Pending Endorsement', value: 520, color: '#8b5cf6' },
-    { name: 'Completed', value: 2372, color: '#10b981' },
+    { name: 'Escalation Pending', value: 520, color: '#8b5cf6' },
+    { name: 'Closed', value: 2372, color: '#10b981' },
   ];
 
   const categoryData = [

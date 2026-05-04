@@ -110,6 +110,7 @@ import LicenseeUserList from "./pages/superAdmin/licenseeUsers/LicenseeUserList"
 import LicenseeUserDetail from "./pages/superAdmin/licenseeUsers/LicenseeUserDetail";
 import LEAUserList from "./pages/superAdmin/leaUsers/LEAUserList";
 import LEAUserDetail from "./pages/superAdmin/leaUsers/LEAUserDetail";
+import SuperAdminAnnouncements from "./pages/superAdmin/Announcements";
 import LEALayout from "./components/agency/LEALayout";
 import LEADashboard from "./pages/agency/Dashboard";
 import LEACaseList from "./pages/agency/CaseList";
@@ -259,6 +260,7 @@ const App = () => (
                     <Route path="master-data" element={<MasterDataList />} />
                     <Route path="workflows" element={<WorkflowSettings />} />
                     <Route path="notifications" element={<TemplateList />} />
+                    <Route path="announcements" element={<SuperAdminAnnouncements />} />
                     <Route path="notifications/:id" element={<TemplateEdit />} />
                     <Route path="security" element={<SecuritySettings />} />
                     <Route path="settings" element={<SystemSettings />} />

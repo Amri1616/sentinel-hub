@@ -1,5 +1,14 @@
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
@@ -18,9 +27,18 @@ import {
   ShieldCheck,
   Trash2,
   Bell,
+  Megaphone,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+
+const sidebarAnnouncements = [
+  { id: '1', title: 'New SOP for Critical Case Escalation', message: 'All Case Officers must follow the updated SOP for escalating cases rated "Critical" or "High" severity to LEA agencies. Key changes include: mandatory supervisor pre-approval before escalation submission, a new justification template, and revised turnaround times. Please review the full SOP document shared via internal portal and acknowledge receipt by 20 January 2025.', from: 'MCMC Management', time: '2 hours ago', date: '18 Jan 2025', priority: 'high' as const },
+  { id: '2', title: 'System Maintenance — 25 Jan 2025', message: 'The PSIRP platform will undergo scheduled maintenance on Saturday, 25 January 2025, from 2:00 AM to 6:00 AM (MYT). During this window, the system will be temporarily unavailable. Please ensure all pending assessments and case updates are saved before the maintenance period begins.', from: 'System Admin', time: '1 day ago', date: '17 Jan 2025', priority: 'normal' as const },
+  { id: '3', title: 'Q4 2024 Incident Report Published', message: 'The quarterly incident analysis report for Q4 2024 has been published. The report covers trends in postal security incidents, response time benchmarks, and recommendations for improved case handling. All Case Officers are encouraged to review the findings and integrate relevant insights into ongoing investigations.', from: 'MCMC Analytics', time: '3 days ago', date: '15 Jan 2025', priority: 'normal' as const },
+  { id: '4', title: 'Training: Advanced Case Review Techniques', message: 'A specialised training session on advanced case review techniques will be held on 22 January 2025 at 10:00 AM. Topics include cross-referencing evidence, identifying fraud patterns, and writing effective preliminary findings. Registration is open on the internal learning portal.', from: 'MCMC Training Unit', time: '5 days ago', date: '13 Jan 2025', priority: 'normal' as const },
+  { id: '5', title: 'Holiday Schedule Reminder', message: 'Please note the upcoming public holiday on 1 February 2025 (Federal Territory Day). The helpdesk and supervisor approvals will resume on the next business day. Urgent escalations during this period should follow the emergency protocol outlined in SOP-ESC-003.', from: 'System Admin', time: '1 week ago', date: '11 Jan 2025', priority: 'normal' as const },
+];
 
 const navItems = [
   { title: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
@@ -29,6 +47,7 @@ const navItems = [
   { title: 'Licensee Management', path: '/super-admin/licensee-users', icon: Users },
   { title: 'LEA Management', path: '/super-admin/lea-users', icon: Users },
   { title: 'Case Governance', path: '/super-admin/cases', icon: ShieldAlert },
+  { title: 'Post Announcement', path: '/super-admin/announcements', icon: Megaphone },
   { title: 'Master Data', path: '/super-admin/master-data', icon: Database },
   { title: 'System Activity Log', path: '/super-admin/logs', icon: History },
 ];
@@ -37,13 +56,15 @@ export default function SuperAdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const isDashboard = location.pathname.endsWith("/dashboard");
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<(typeof sidebarAnnouncements)[number] | null>(null);
 
   return (
     <div className="flex -mx-4 -mt-6 -mb-6 min-h-[calc(100vh-4rem)]">
       <aside
         className={cn(
           'sticky top-16 h-[calc(100vh-4rem)] border-r border-border bg-card/50 backdrop-blur transition-all duration-300 flex flex-col',
-          collapsed ? 'w-16' : 'w-64'
+          collapsed ? 'w-16' : isDashboard ? 'w-80' : 'w-64'
         )}
       >
         {/* Role badge */}
@@ -103,6 +124,40 @@ export default function SuperAdminLayout() {
           })}
         </nav>
 
+        {/* Dashboard sidebar widgets */}
+        {isDashboard && !collapsed && (
+          <div className="flex-1 overflow-y-auto border-t border-border mt-8">
+            {/* Announcements */}
+            <div className="px-5 py-4 pt-4">
+              <div className="flex items-center gap-1.5 mb-3.5">
+                <Megaphone className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-primary">Announcements</span>
+              </div>
+              <div className="space-y-3">
+                {sidebarAnnouncements.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => setSelectedAnnouncement(a)}
+                    className={cn(
+                      'w-full text-left p-2.5 rounded-lg border transition-all cursor-pointer hover:ring-1 hover:ring-primary/30',
+                      a.priority === 'high'
+                        ? 'border-destructive/40 bg-destructive/5 hover:bg-destructive/10'
+                        : 'border-border/60 bg-secondary/20 hover:bg-secondary/40'
+                    )}
+                  >
+                    <p className="text-xs font-medium leading-tight mb-1.5 line-clamp-1">{a.title}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-muted-foreground">{a.from}</span>
+                      <span className="text-[10px] text-muted-foreground">{a.time}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Collapse toggle */}
         <div className="p-2 border-t border-border">
           <Button
@@ -114,6 +169,30 @@ export default function SuperAdminLayout() {
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </Button>
         </div>
+
+        {/* Announcement Detail Modal */}
+        <Dialog open={!!selectedAnnouncement} onOpenChange={(open) => { if (!open) setSelectedAnnouncement(null); }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{selectedAnnouncement ? selectedAnnouncement.title : ''}</DialogTitle>
+              <DialogDescription asChild>
+                <div className="flex items-center gap-3 pt-1">
+                  <span>From: {selectedAnnouncement?.from ? selectedAnnouncement.from : ''}</span>
+                  <span className="text-muted-foreground/50">•</span>
+                  <span>{selectedAnnouncement?.date}</span>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="text-sm leading-relaxed text-foreground/90 py-2 whitespace-pre-line">
+              {selectedAnnouncement ? selectedAnnouncement.message : ''}
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="w-full sm:w-auto">Close</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </aside>
 
       <main className="flex-1 p-6 min-h-screen min-w-0 overflow-hidden">
